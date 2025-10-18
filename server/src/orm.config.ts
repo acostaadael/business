@@ -15,10 +15,10 @@ function ormConfig(): TypeOrmModuleOptions {
       // typeorm fails to auto load driver due to workspaces resolution
       driver: require('pg'),
       database: 'business',
-      host: 'postgresql',
+      host: 'localhost',
       // port: ,
-      username: 'business',
-      password: '',
+      username: 'postgres',
+      password: 'postgres',
       logging: false,
       // synchronize: false,
     };
@@ -36,12 +36,12 @@ function ormConfig(): TypeOrmModuleOptions {
       name: 'default',
       type: 'postgres',
       // typeorm fails to auto load driver due to workspaces resolution
-      driver: require('sqlite3'),
+      driver: require('pg'),
       database: 'business',
-      host: '127.0.0.1',
+      host: 'localhost',
       // port: ,
-      username: 'business',
-      password: '',
+      username: 'postgres',
+      password: 'postgres',
       logging: false,
     };
   } else {
