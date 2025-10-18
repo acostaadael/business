@@ -1,0 +1,33 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "backendType": "NodeJS",
+    "baseName": "business",
+    "blueprints": [
+      {
+        "name": "generator-jhipster-nodejs",
+        "version": "3.2.0"
+      }
+    ],
+    "clientFramework": "vue",
+    "clientTestFrameworks": [],
+    "clientTheme": "none",
+    "creationTimestamp": 1760787600338,
+    "databaseType": "sql",
+    "enableTranslation": true,
+    "entities": [],
+    "jhipsterVersion": "8.10.0",
+    "languages": ["es", "en"],
+    "microfrontend": null,
+    "microfrontends": [],
+    "nativeLanguage": "es",
+    "prodDatabaseType": "postgresql",
+    "serverPort": null,
+    "testFrameworks": [],
+    "withAdminUi": false
+  },
+  "generator-jhipster-nodejs": {
+    "nodejsVersion": "3.2.0"
+  }
+}
