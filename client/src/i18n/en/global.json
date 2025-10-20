@@ -123,7 +123,9 @@
       "pattern": "This field should follow pattern for { pattern }.",
       "number": "This field should be a number.",
       "datetimelocal": "This field should be a date and time.",
-      "patternLogin": "This field can only contain letters, digits and e-mail addresses."
+      "patternLogin": "This field can only contain letters, digits and e-mail addresses.",
+      "minValue": "This field can have a minimum value of { min }",
+      "maxValue": "This field can have a minimum value of { max }"
     },
     "filters": {
       "set": "Following filters are set",

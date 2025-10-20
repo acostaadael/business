@@ -34,15 +34,12 @@
             </th>
             <th scope="row" @click="changeOrder('month')">
               <span v-text="t$('businessApp.period.month')"></span>
-              <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'month'"></jhi-sort-indicator>
             </th>
             <th scope="row" @click="changeOrder('year')">
               <span v-text="t$('businessApp.period.year')"></span>
-              <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'year'"></jhi-sort-indicator>
             </th>
             <th scope="row" @click="changeOrder('status')">
               <span v-text="t$('businessApp.period.status')"></span>
-              <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'status'"></jhi-sort-indicator>
             </th>
             <th scope="row"></th>
           </tr>

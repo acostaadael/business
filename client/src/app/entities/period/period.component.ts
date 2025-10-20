@@ -18,7 +18,7 @@ export default defineComponent({
     const queryCount: Ref<number> = ref(null);
     const page: Ref<number> = ref(1);
     const propOrder = ref('id');
-    const reverse = ref(false);
+    const reverse = ref(true);
     const totalItems = ref(0);
 
     const periods: Ref<IPeriod[]> = ref([]);

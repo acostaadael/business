@@ -9,6 +9,7 @@ import { useAlertService } from '@/shared/alert/alert.service';
 
 import { type IPeriod, Period } from '@/shared/model/period.model';
 import { PeriodStatus } from '@/shared/model/enumerations/period-status.model';
+import type { minValue } from '@vuelidate/validators';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -39,6 +40,8 @@ export default defineComponent({
     if (route.params?.periodId) {
       retrievePeriod(route.params.periodId);
     }
+    const date = new Date();
+    const year = date.getFullYear();
 
     const { t: t$ } = useI18n();
     const validations = useValidation();
@@ -46,10 +49,8 @@ export default defineComponent({
       month: {
         required: validations.required(t$('entity.validation.required').toString()),
         integer: validations.integer(t$('entity.validation.number').toString()),
-      },
-      year: {
-        required: validations.required(t$('entity.validation.required').toString()),
-        integer: validations.integer(t$('entity.validation.number').toString()),
+        minValue: validations.minValue(t$('entity.validation.minValue', { min: 1 }).toString(), 1),
+        maxValue: validations.maxValue(t$('entity.validation.maxValue', { max: 12 }).toString(), 12),
       },
       status: {
         required: validations.required(t$('entity.validation.required').toString()),

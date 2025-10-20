@@ -19,6 +19,14 @@ export class PeriodService {
     return PeriodMapper.fromEntityToDTO(result);
   }
 
+  async findLastClosed(): Promise<PeriodDTO | undefined> {
+    const result = await this.periodRepository.findOne({
+      where: { status: PeriodStatus.CLOSE },
+      order: { id: 'DESC' },
+    });
+    return PeriodMapper.fromEntityToDTO(result);
+  }
+
   async findByFields(options: FindOneOptions<PeriodDTO>): Promise<PeriodDTO | undefined> {
     const result = await this.periodRepository.findOne(options);
     return PeriodMapper.fromEntityToDTO(result);
