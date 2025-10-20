@@ -7,7 +7,8 @@
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "Entities",
-        "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
+        "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
+        "period": "Period"
       },
       "account": {
         "main": "Account",
@@ -94,6 +95,7 @@
       "back": "Back",
       "cancel": "Cancel",
       "delete": "Delete",
+      "close": "Close",
       "edit": "Edit",
       "open": "Open",
       "save": "Save",
@@ -106,6 +108,9 @@
     },
     "delete": {
       "title": "Confirm delete operation"
+    },
+    "close": {
+      "title": "Confirm Period Close operation"
     },
     "validation": {
       "required": "This field is required.",

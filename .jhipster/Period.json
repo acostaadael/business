@@ -1,0 +1,31 @@
+{
+  "annotations": {
+    "changelogDate": "20251020110606"
+  },
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "month",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "year",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "PeriodStatus",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "OPEN,CLOSE"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Period",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

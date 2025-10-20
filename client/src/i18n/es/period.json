@@ -1,0 +1,29 @@
+{
+  "businessApp": {
+    "period": {
+      "home": {
+        "title": "Periodos",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Periodo",
+        "createOrEditLabel": "Crear un nuevo Periodo",
+        "notFound": "Ningún Periodo encontrado"
+      },
+      "created": "Un nuevo Periodo ha sido creado con el identificador { param }",
+      "updated": "Un Periodo ha sido actualizado con el identificador { param }",
+      "deleted": "Un Periodo ha sido eliminado con el identificador { param }",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Periodo { id }?"
+      },
+      "close": {
+        "question": "Desea cerrar periodo del mes { month }, año { year }?"
+      },
+      "detail": {
+        "title": "Periodo"
+      },
+      "id": "ID",
+      "month": "Mes",
+      "year": "Año",
+      "status": "Estado"
+    }
+  }
+}

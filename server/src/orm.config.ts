@@ -3,6 +3,7 @@ import { SeedUsersRoles1570200490072 } from './migrations/1570200490072-SeedUser
 import { CreateTables1570200270081 } from './migrations/1570200270081-CreateTables';
 import { User } from './domain/user.entity';
 import { Authority } from './domain/authority.entity';
+import { Period } from './domain/period.entity';
 // jhipster-needle-add-entity-to-ormconfig-imports - JHipster will add code here, do not remove
 
 function ormConfig(): TypeOrmModuleOptions {
@@ -43,6 +44,7 @@ function ormConfig(): TypeOrmModuleOptions {
       username: 'postgres',
       password: 'postgres',
       logging: false,
+      synchronize: true,
     };
   } else {
     ormconfig = {
@@ -61,6 +63,7 @@ function ormConfig(): TypeOrmModuleOptions {
     entities: [
       User,
       Authority,
+      Period,
       // jhipster-needle-add-entity-to-ormconfig-entities - JHipster will add code here, do not remove
     ],
     migrations: [
