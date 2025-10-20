@@ -11,6 +11,7 @@
       "created": "Un nuevo Periodo ha sido creado con el identificador { param }",
       "updated": "Un Periodo ha sido actualizado con el identificador { param }",
       "deleted": "Un Periodo ha sido eliminado con el identificador { param }",
+      "closed": "El periodo del mes { month }, año { year }, fue cerrado",
       "delete": {
         "question": "¿Seguro que quiere eliminar Periodo { id }?"
       },

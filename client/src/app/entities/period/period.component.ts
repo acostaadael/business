@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import PeriodService from './period.service';
 import { type IPeriod } from '@/shared/model/period.model';
 import { useAlertService } from '@/shared/alert/alert.service';
+import { PeriodStatus } from '@/shared/model/enumerations/period-status.model';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -65,22 +66,26 @@ export default defineComponent({
 
     const month: Ref<number> = ref(null);
     const year: Ref<number> = ref(null);
+    const period: Ref<IPeriod> = ref(null);
     const closePeriodEntity = ref<any>(null);
-    const prepareRemove = (instance: IPeriod) => {
+    const prepareClose = (instance: IPeriod) => {
       month.value = instance.month;
       year.value = instance.year;
+      period.value = instance;
       closePeriodEntity.value.show();
     };
     const closeDialog = () => {
       closePeriodEntity.value.hide();
     };
-    const removePeriod = async () => {
+    const closePeriod = async () => {
       try {
-        await periodService().delete(removeId.value);
-        const message = t$('businessApp.period.deleted', { param: removeId.value }).toString();
+        period.value.status = PeriodStatus.CLOSE;
+        const periodUpdated = await periodService().update(period.value);
+        const message = t$('businessApp.period.closed', { month: periodUpdated.month, year: periodUpdated.year }).toString();
         alertService.showInfo(message, { variant: 'danger' });
         month.value = null;
         year.value = null;
+        period.value = null;
         retrievePeriods();
         closeDialog();
       } catch (error) {
@@ -122,15 +127,16 @@ export default defineComponent({
       month,
       year,
       closePeriodEntity,
-      prepareRemove,
+      prepareClose,
       closeDialog,
-      removePeriod,
+      closePeriod,
       itemsPerPage,
       queryCount,
       page,
       propOrder,
       reverse,
       totalItems,
+      PeriodStatus,
       changeOrder,
       t$,
     };

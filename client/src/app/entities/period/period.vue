@@ -56,16 +56,16 @@
             <td>{{ period.year }}</td>
             <td v-text="t$('businessApp.PeriodStatus.' + period.status)"></td>
             <td class="text-right">
-              <div class="btn-group">
+              <div class="btn-group" v-if="period.status === PeriodStatus.OPEN">
                 <b-button
-                  @click="prepareRemove(period)"
+                  @click="prepareClose(period)"
                   variant="danger"
                   class="btn btn-sm"
-                  data-cy="entityDeleteButton"
+                  data-cy="entityCloseButton"
                   v-b-modal.removeEntity
                 >
                   <font-awesome-icon icon="times"></font-awesome-icon>
-                  <span class="d-none d-md-inline" v-text="t$('entity.action.delete')"></span>
+                  <span class="d-none d-md-inline" v-text="t$('entity.action.close')"></span>
                 </b-button>
               </div>
             </td>
@@ -89,7 +89,7 @@
             id="jhi-confirm-close-period"
             data-cy="entityConfirmCloseButton"
             v-text="t$('entity.action.close')"
-            @click="removePeriod()"
+            @click="closePeriod()"
           ></button>
         </div>
       </template>
@@ -105,4 +105,6 @@
   </div>
 </template>
 
-<script lang="ts" src="./period.component.ts"></script>
+<script lang="ts" src="./period.component.ts">
+import { PeriodStatus } from '@/shared/model/enumerations/period-status.model.js';
+</script>

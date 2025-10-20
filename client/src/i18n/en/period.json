@@ -11,6 +11,7 @@
       "created": "A new Period is created with identifier { param }",
       "updated": "A Period is updated with identifier { param }",
       "deleted": "A Period is deleted with identifier { param }",
+      "closed": "A Period is closed of month { month }, year { year }",
       "delete": {
         "question": "Are you sure you want to delete Period { id }?"
       },
