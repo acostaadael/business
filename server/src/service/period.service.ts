@@ -27,6 +27,13 @@ export class PeriodService {
     return PeriodMapper.fromEntityToDTO(result);
   }
 
+  async findOpen(): Promise<PeriodDTO | undefined> {
+    const result = await this.periodRepository.findOne({
+      where: { status: PeriodStatus.OPEN },
+    });
+    return PeriodMapper.fromEntityToDTO(result);
+  }
+
   async findByFields(options: FindOneOptions<PeriodDTO>): Promise<PeriodDTO | undefined> {
     const result = await this.periodRepository.findOne(options);
     return PeriodMapper.fromEntityToDTO(result);

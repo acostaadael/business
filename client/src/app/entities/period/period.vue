@@ -7,7 +7,7 @@
           <font-awesome-icon icon="sync" :spin="isFetching"></font-awesome-icon>
           <span v-text="t$('businessApp.period.home.refreshListLabel')"></span>
         </button>
-        <router-link :to="{ name: 'PeriodCreate' }" custom v-slot="{ navigate }">
+        <router-link :to="{ name: 'PeriodCreate' }" custom v-slot="{ navigate }" v-if="canCreate">
           <button
             @click="navigate"
             id="jh-create-entity"

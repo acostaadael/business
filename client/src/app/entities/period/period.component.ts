@@ -19,6 +19,7 @@ export default defineComponent({
     const page: Ref<number> = ref(1);
     const propOrder = ref('id');
     const reverse = ref(true);
+    const canCreate = ref(true);
     const totalItems = ref(0);
 
     const periods: Ref<IPeriod[]> = ref([]);
@@ -49,6 +50,10 @@ export default defineComponent({
         totalItems.value = Number(res.headers['x-total-count']);
         queryCount.value = totalItems.value;
         periods.value = res.data;
+        if (totalItems.value > 0) {
+          const open = await periodService().findOpen();
+          canCreate.value = open?.id ? false : true;
+        }
       } catch (err) {
         alertService.showHttpError(err.response);
       } finally {
@@ -139,6 +144,7 @@ export default defineComponent({
       PeriodStatus,
       changeOrder,
       t$,
+      canCreate,
     };
   },
 });

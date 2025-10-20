@@ -49,15 +49,26 @@ export class PeriodController {
     return results;
   }
 
-  @Get('/:id')
+  @Get('/any-open')
   @Roles(RoleType.USER)
   @ApiResponse({
     status: 200,
     description: 'The found record',
     type: PeriodDTO,
   })
-  async getOne(@Param('id') id: number): Promise<PeriodDTO> {
-    return await this.periodService.findById(id);
+  async getAnyOpen(): Promise<PeriodDTO> {
+    return await this.periodService.findOpen();
+  }
+
+  @Get('/last-closed')
+  @Roles(RoleType.USER)
+  @ApiResponse({
+    status: 200,
+    description: 'The found record',
+    type: PeriodDTO,
+  })
+  async getLastClosed(): Promise<PeriodDTO> {
+    return await this.periodService.findLastClosed();
   }
 
   @PostMethod('/')
