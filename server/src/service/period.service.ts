@@ -4,6 +4,7 @@ import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { Period } from '../domain/period.entity';
 import { PeriodDTO } from '../service/dto/period.dto';
 import { PeriodMapper } from '../service/mapper/period.mapper';
+import { PeriodStatus } from '../domain/enumeration/period-status';
 
 @Injectable()
 export class PeriodService {
@@ -41,6 +42,8 @@ export class PeriodService {
       }
       entity.lastModifiedBy = creator;
     }
+    await this.validate(periodDTO);
+
     const result = await this.periodRepository.save(entity);
     return PeriodMapper.fromEntityToDTO(result);
   }
@@ -59,6 +62,24 @@ export class PeriodService {
     const entityFind = await this.findById(id);
     if (entityFind) {
       throw new HttpException('Error, entity not deleted!', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async validate(periodDTO: PeriodDTO): Promise<void | undefined> {
+    //Chequeo si existe algun periodo Abierto
+    const openPeriod = await this.periodRepository.findOne({
+      where: { status: PeriodStatus.OPEN },
+    });
+    if (openPeriod) {
+      throw new HttpException('Ya existe un periodo abierto!', HttpStatus.BAD_REQUEST);
+    }
+
+    //Chequeo si existe algun periodo con el mes y año que quiero crear
+    const existsPeriod = await this.periodRepository.findOne({
+      where: { month: periodDTO.month, year: periodDTO.year },
+    });
+    if (existsPeriod) {
+      throw new HttpException(`Ya existe un periodo del mes: ${periodDTO.month}, año: ${periodDTO.year} !`, HttpStatus.BAD_REQUEST);
     }
   }
 }
