@@ -3,6 +3,7 @@ import { useI18n } from 'vue-i18n';
 
 import PeriodService from './period.service';
 import { type IPeriod } from '@/shared/model/period.model';
+import { usePeriodStore } from '@/store';
 import { useAlertService } from '@/shared/alert/alert.service';
 import { PeriodStatus } from '@/shared/model/enumerations/period-status.model';
 
@@ -14,6 +15,7 @@ export default defineComponent({
     const periodService = inject('periodService', () => new PeriodService());
     const alertService = inject('alertService', () => useAlertService(), true);
 
+    const periodStore = usePeriodStore();
     const itemsPerPage = ref(20);
     const queryCount: Ref<number> = ref(null);
     const page: Ref<number> = ref(1);
@@ -50,10 +52,6 @@ export default defineComponent({
         totalItems.value = Number(res.headers['x-total-count']);
         queryCount.value = totalItems.value;
         periods.value = res.data;
-        if (totalItems.value > 0) {
-          const open = await periodService().findOpen();
-          canCreate.value = open?.id ? false : true;
-        }
       } catch (err) {
         alertService.showHttpError(err.response);
       } finally {
@@ -91,6 +89,7 @@ export default defineComponent({
         month.value = null;
         year.value = null;
         period.value = null;
+        periodStore.closePeriod();
         retrievePeriods();
         closeDialog();
       } catch (error) {
@@ -139,6 +138,7 @@ export default defineComponent({
       queryCount,
       page,
       propOrder,
+      periodStore,
       reverse,
       totalItems,
       PeriodStatus,

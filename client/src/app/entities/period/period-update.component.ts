@@ -10,6 +10,7 @@ import { useAlertService } from '@/shared/alert/alert.service';
 import { type IPeriod, Period } from '@/shared/model/period.model';
 import { PeriodStatus } from '@/shared/model/enumerations/period-status.model';
 import type { minValue } from '@vuelidate/validators';
+import { usePeriodStore } from '@/store';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -25,6 +26,8 @@ export default defineComponent({
 
     const route = useRoute();
     const router = useRouter();
+
+    const periodStore = usePeriodStore();
 
     const previousState = () => router.go(-1);
 
@@ -63,6 +66,7 @@ export default defineComponent({
       periodService,
       alertService,
       period,
+      periodStore,
       previousState,
       periodStatusValues,
       isSaving,
@@ -92,6 +96,7 @@ export default defineComponent({
           .create(this.period)
           .then(param => {
             this.isSaving = false;
+            this.periodStore.setPeriod(this.period);
             this.previousState();
             this.alertService.showSuccess(this.t$('businessApp.period.created', { param: param.id }).toString());
           })
