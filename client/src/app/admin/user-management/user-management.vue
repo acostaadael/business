@@ -19,10 +19,6 @@
       <table class="table table-striped" aria-describedby="Users">
         <thead>
           <tr>
-            <th scope="col" @click="changeOrder('id')">
-              <span v-text="t$('global.field.id')"></span>
-              <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'id'"></jhi-sort-indicator>
-            </th>
             <th scope="col" @click="changeOrder('login')">
               <span v-text="t$('userManagement.login')"></span>
               <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'login'"></jhi-sort-indicator>
@@ -32,31 +28,12 @@
               <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'email'"></jhi-sort-indicator>
             </th>
             <th scope="col"></th>
-            <th scope="col" @click="changeOrder('langKey')">
-              <span v-text="t$('userManagement.langKey')"></span>
-              <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'langKey'"></jhi-sort-indicator>
-            </th>
             <th scope="col"><span v-text="t$('userManagement.profiles')"></span></th>
-            <th scope="col" @click="changeOrder('createdDate')">
-              <span v-text="t$('userManagement.createdDate')"></span>
-              <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'createdDate'"></jhi-sort-indicator>
-            </th>
-            <th scope="col" @click="changeOrder('lastModifiedBy')">
-              <span v-text="t$('userManagement.lastModifiedBy')"></span>
-              <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'lastModifiedBy'"></jhi-sort-indicator>
-            </th>
-            <th scope="col" id="modified-date-sort" @click="changeOrder('lastModifiedDate')">
-              <span v-text="t$('userManagement.lastModifiedDate')"></span>
-              <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'lastModifiedDate'"></jhi-sort-indicator>
-            </th>
             <th scope="col"></th>
           </tr>
         </thead>
         <tbody v-if="users">
           <tr v-for="user in users" :key="user.id" :id="user.login">
-            <td>
-              <router-link :to="{ name: 'JhiUserView', params: { userId: user.login } }">{{ user.id }}</router-link>
-            </td>
             <td>{{ user.login }}</td>
             <td class="jhi-user-email">{{ user.email }}</td>
             <td>
@@ -74,15 +51,11 @@
                 v-text="t$('userManagement.activated')"
               ></button>
             </td>
-            <td>{{ user.langKey }}</td>
             <td>
               <div v-for="authority of user.authorities" :key="authority">
                 <span class="badge badge-info">{{ authority }}</span>
               </div>
             </td>
-            <td>{{ formatDate(user.createdDate) }}</td>
-            <td>{{ user.lastModifiedBy }}</td>
-            <td>{{ formatDate(user.lastModifiedDate) }}</td>
             <td class="text-right">
               <div class="btn-group">
                 <router-link :to="{ name: 'JhiUserView', params: { userId: user.login } }" custom v-slot="{ navigate }">

@@ -109,7 +109,7 @@ export default defineComponent({
           .update(this.userAccount)
           .then(res => {
             this.returnToList();
-            this.alertService.showInfo(this.getToastMessageFromHeader(res));
+            this.alertService.showInfo(this.t$('userManagement.updated', { param: res.data.id }));
           })
           .catch(error => {
             this.isSaving = true;
@@ -120,7 +120,7 @@ export default defineComponent({
           .create(this.userAccount)
           .then(res => {
             this.returnToList();
-            this.alertService.showSuccess(this.getToastMessageFromHeader(res));
+            this.alertService.showInfo(this.t$('userManagement.created', { param: res.data.id }));
           })
           .catch(error => {
             this.isSaving = true;
@@ -132,12 +132,6 @@ export default defineComponent({
     returnToList(): void {
       this.isSaving = false;
       this.previousState();
-    },
-
-    getToastMessageFromHeader(res: any): string {
-      return this.t$(res.headers['x-businessapp-alert'], {
-        param: decodeURIComponent(res.headers['x-businessapp-params'].replace(/\+/g, ' ')),
-      }).toString();
     },
   },
 });
