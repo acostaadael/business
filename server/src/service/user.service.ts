@@ -13,7 +13,7 @@ export class UserService {
   constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
 
   async findById(id: number): Promise<UserDTO | undefined> {
-    const result = await this.userRepository.findOneBy({ id });
+    const result = await this.userRepository.findOne({ where: { id: id }, relations });
     return UserMapper.fromEntityToDTO(this.flatAuthorities(result));
   }
 
@@ -23,7 +23,7 @@ export class UserService {
   }
 
   async find(options: FindManyOptions<UserDTO>): Promise<UserDTO | undefined> {
-    const result = await this.userRepository.findOne(options);
+    const result = await this.userRepository.findOne({ ...options, relations });
     return UserMapper.fromEntityToDTO(this.flatAuthorities(result));
   }
 

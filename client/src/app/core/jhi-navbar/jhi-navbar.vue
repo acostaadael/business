@@ -91,10 +91,6 @@
             <font-awesome-icon icon="wrench" />
             <span v-text="t$('global.menu.account.settings')"></span>
           </b-dropdown-item>
-          <b-dropdown-item data-cy="passwordItem" to="/account/password" v-if="authenticated" active-class="active">
-            <font-awesome-icon icon="lock" />
-            <span v-text="t$('global.menu.account.password')"></span>
-          </b-dropdown-item>
           <b-dropdown-item data-cy="logout" v-if="authenticated" @click="logout()" id="logout" active-class="active">
             <font-awesome-icon icon="sign-out-alt" />
             <span v-text="t$('global.menu.account.logout')"></span>

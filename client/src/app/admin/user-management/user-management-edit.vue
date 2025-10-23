@@ -135,12 +135,83 @@
               <option v-for="authority of authorities" :value="authority" :key="authority">{{ authority }}</option>
             </select>
           </div>
+          <div class="form-group" v-if="!userAccount.id">
+            <label class="form-control-label" for="firstPassword" v-text="t$('global.form[\'newpassword.label\']')"></label>
+            <input
+              type="password"
+              class="form-control"
+              id="firstPassword"
+              name="password"
+              :class="{ valid: !v$.userAccount.password.$invalid, invalid: v$.userAccount.password.$invalid }"
+              v-model="v$.userAccount.password.$model"
+              minlength="4"
+              maxlength="50"
+              required
+              :placeholder="t$('global.form[\'newpassword.placeholder\']')"
+              data-cy="firstPassword"
+            />
+            <div v-if="v$.userAccount.password.$anyDirty && v$.userAccount.password.$invalid">
+              <small
+                class="form-text text-danger"
+                v-if="!v$.userAccount.password.requiredIf"
+                v-text="t$('global.messages.validate.newpassword.required')"
+              ></small>
+              <small
+                class="form-text text-danger"
+                v-if="!v$.userAccount.password.minLength"
+                v-text="t$('global.messages.validate.newpassword.minlength')"
+              ></small>
+              <small
+                class="form-text text-danger"
+                v-if="!v$.userAccount.password.maxLength"
+                v-text="t$('global.messages.validate.newpassword.maxlength')"
+              ></small>
+            </div>
+          </div>
+          <div class="form-group" v-if="!userAccount.id">
+            <label class="form-control-label" for="secondPassword" v-text="t$('global.form[\'confirmpassword.label\']')"></label>
+            <input
+              type="password"
+              class="form-control"
+              id="secondPassword"
+              name="confirmPasswordInput"
+              :class="{ valid: !v$.confirmPassword.$invalid, invalid: v$.confirmPassword.$invalid }"
+              v-model="v$.confirmPassword.$model"
+              minlength="4"
+              maxlength="50"
+              required
+              :placeholder="t$('global.form[\'confirmpassword.placeholder\']')"
+              data-cy="secondPassword"
+            />
+            <div v-if="v$.confirmPassword.$dirty && v$.confirmPassword.$invalid">
+              <small
+                class="form-text text-danger"
+                v-if="!v$.confirmPassword.required"
+                v-text="t$('global.messages.validate.confirmpassword.required')"
+              ></small>
+              <small
+                class="form-text text-danger"
+                v-if="!v$.confirmPassword.minLength"
+                v-text="t$('global.messages.validate.confirmpassword.minlength')"
+              ></small>
+              <small
+                class="form-text text-danger"
+                v-if="!v$.confirmPassword.maxLength"
+                v-text="t$('global.messages.validate.confirmpassword.maxlength')"
+              ></small>
+              <small
+                class="form-text text-danger"
+                v-if="!v$.confirmPassword.sameAsPassword"
+                v-text="t$('global.messages.error.dontmatch')"
+              ></small>
+            </div>
+          </div>
         </div>
         <div>
           <button type="button" class="btn btn-secondary" @click="previousState()">
             <font-awesome-icon icon="ban"></font-awesome-icon>&nbsp;<span v-text="t$('entity.action.cancel')"></span>
           </button>
-          <button type="submit" :disabled="v$.userAccount.$invalid || isSaving" class="btn btn-primary">
+          <button type="submit" :disabled="v$.userAccount.$invalid || v$.confirmPassword.$invalid || isSaving" class="btn btn-primary">
             <font-awesome-icon icon="save"></font-awesome-icon>&nbsp;<span v-text="t$('entity.action.save')"></span>
           </button>
         </div>

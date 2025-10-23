@@ -3,9 +3,12 @@ import { Request } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoggingInterceptor } from '../../client/interceptors/logging.interceptor';
 import { Page, PageRequest } from '../../domain/base/pagination.entity';
+import { Authority } from '../../domain/authority.entity';
 import { UserDTO } from '../../service/dto/user.dto';
 import { HeaderUtil } from '../../client/header-util';
 import { AuthService } from '../../service/auth.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Controller('api')
 @UseInterceptors(LoggingInterceptor, ClassSerializerInterceptor)
@@ -13,7 +16,10 @@ import { AuthService } from '../../service/auth.service';
 export class PublicUserController {
   logger = new Logger('PublicUserController');
 
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    @InjectRepository(Authority) private authorityRepository: Repository<Authority>,
+  ) {}
 
   @Get('/users')
   @ApiOperation({ summary: 'Get the list of users' })
@@ -38,14 +44,13 @@ export class PublicUserController {
   @ApiResponse({
     status: 200,
     description: 'List all user roles',
-    type: 'string',
-    isArray: true,
+    type: String,
   })
-  getAuthorities(@Req() req: any): any {
-    const user: any = req.user;
-    if (!user) {
-      return [];
-    }
-    return user.authorities;
+  async getAuthorities(@Req() req: Request): Promise<String[]> {
+    const items: string[] = [];
+    const authorities = await this.authorityRepository.find();
+    authorities.forEach(authority => items.push(authority.name));
+
+    return items;
   }
 }

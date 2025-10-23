@@ -1,7 +1,7 @@
-import { type Ref, defineComponent, inject, ref } from 'vue';
+import { type Ref, defineComponent, inject, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useVuelidate } from '@vuelidate/core';
-import { email, maxLength, minLength, required } from '@vuelidate/validators';
+import { email, maxLength, minLength, required, sameAs } from '@vuelidate/validators';
 import { useRoute, useRouter } from 'vue-router';
 import UserManagementService from './user-management.service';
 import { type IUser, User } from '@/shared/model/user.model';
@@ -15,32 +15,47 @@ const loginValidator = (value: string) => {
   return /^[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$|^[_.@A-Za-z0-9-]+$/.test(value);
 };
 
-const validations: any = {
-  userAccount: {
-    login: {
-      required,
-      maxLength: maxLength(254),
-      pattern: loginValidator,
-    },
-    firstName: {
-      maxLength: maxLength(50),
-    },
-    lastName: {
-      maxLength: maxLength(50),
-    },
-    email: {
-      required,
-      email,
-      minLength: minLength(5),
-      maxLength: maxLength(50),
-    },
-  },
-};
-
 export default defineComponent({
   compatConfig: { MODE: 3 },
   name: 'JhiUserManagementEdit',
-  validations,
+  validations() {
+    return {
+      userAccount: {
+        login: {
+          required,
+          maxLength: maxLength(254),
+          pattern: loginValidator,
+        },
+        firstName: {
+          maxLength: maxLength(50),
+        },
+        lastName: {
+          maxLength: maxLength(50),
+        },
+        email: {
+          required,
+          email,
+          minLength: minLength(5),
+          maxLength: maxLength(50),
+        },
+        password: !this.userAccount.id
+          ? {
+              required,
+              minLength: minLength(4),
+              maxLength: maxLength(254),
+            }
+          : {},
+      },
+      confirmPassword: !this.userAccount.id
+        ? {
+            required,
+            minLength: minLength(4),
+            maxLength: maxLength(50),
+            sameAsPassword: sameAs(this.userAccount.password),
+          }
+        : {},
+    };
+  },
   setup() {
     const route = useRoute();
     const router = useRouter();
@@ -51,11 +66,12 @@ export default defineComponent({
 
     const userAccount: Ref<IUser> = ref({ ...new User(), authorities: [] });
     const isSaving: Ref<boolean> = ref(false);
+    const confirmPassword: Ref<any> = ref(null);
     const authorities: Ref<string[]> = ref([]);
 
     const initAuthorities = async () => {
       const response = await userManagementService.retrieveAuthorities();
-      authorities.value = response.data;
+      authorities.value = response;
     };
 
     const loadUser = async (userId: string) => {
@@ -63,17 +79,21 @@ export default defineComponent({
       userAccount.value = response.data;
     };
 
-    initAuthorities();
-    const userId = route.params?.userId;
-    if (userId) {
-      loadUser(userId);
-    }
+    onMounted(async () => {
+      const userId = route.params?.userId;
+      if (userId) {
+        await loadUser(String(userId));
+      }
+
+      await initAuthorities();
+    });
 
     return {
       alertService,
       userAccount,
       isSaving,
       authorities,
+      confirmPassword,
       userManagementService,
       previousState,
       v$: useVuelidate(),
