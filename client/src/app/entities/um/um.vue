@@ -3,10 +3,9 @@
     <h2 id="page-heading" data-cy="UmHeading">
       <span v-text="t$('businessApp.um.home.title')" id="um-heading"></span>
       <div class="d-flex justify-content-end">
-        <button class="btn btn-info mr-2" @click="handleSyncList" :disabled="isFetching">
-          <font-awesome-icon icon="sync" :spin="isFetching"></font-awesome-icon>
-          <span v-text="t$('businessApp.um.home.refreshListLabel')"></span>
-        </button>
+        <b-col>
+          <b-form-input class="mr-2" id="input-small" type="search" :style="{ width: 60 + 'ch' }" placeholder="Buscar"></b-form-input>
+        </b-col>
         <router-link :to="{ name: 'UmCreate' }" custom v-slot="{ navigate }">
           <button @click="navigate" id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary jh-create-entity create-um">
             <font-awesome-icon icon="plus"></font-awesome-icon>

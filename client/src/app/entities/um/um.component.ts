@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import UmService from './um.service';
 import { type IUm } from '@/shared/model/um.model';
 import { useAlertService } from '@/shared/alert/alert.service';
+import debounce from 'lodash/debounce';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -19,6 +20,7 @@ export default defineComponent({
     const propOrder = ref('id');
     const reverse = ref(false);
     const totalItems = ref(0);
+    const searchText = ref('');
 
     const ums: Ref<IUm[]> = ref([]);
 
@@ -110,6 +112,10 @@ export default defineComponent({
       await retrieveUms();
     });
 
+    const onInput = debounce(() => {
+      console.log(searchText.value); // Perform your action here
+    }, 500);
+
     return {
       ums,
       handleSyncList,
@@ -129,6 +135,8 @@ export default defineComponent({
       totalItems,
       changeOrder,
       t$,
+      searchText,
+      onInput,
     };
   },
 });
