@@ -1,0 +1,25 @@
+{
+  "businessApp": {
+    "um": {
+      "home": {
+        "title": "Unidades de medidas",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nueva Unidad de Medida",
+        "createOrEditLabel": "Crear o editar Unidad de Medida",
+        "notFound": "Ninguna Unidad de Medida encontrada"
+      },
+      "created": "Una nueva Unidad de Medida ha sido creada con el identificador { param }",
+      "updated": "Una Unidad de Medida ha sido actualizada con el identificador { param }",
+      "deleted": "Una Unidad de Medida ha sido eliminada con el identificador { param }",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar la Unidad de Medida { id }?"
+      },
+      "detail": {
+        "title": "Unidad de Medida"
+      },
+      "id": "ID",
+      "name": "Nombre",
+      "description": "Descripción"
+    }
+  }
+}

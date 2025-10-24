@@ -1,0 +1,25 @@
+{
+  "businessApp": {
+    "um": {
+      "home": {
+        "title": "Ums",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Um",
+        "createOrEditLabel": "Create or edit a Um",
+        "notFound": "No Ums found"
+      },
+      "created": "A new Um is created with identifier { param }",
+      "updated": "A Um is updated with identifier { param }",
+      "deleted": "A Um is deleted with identifier { param }",
+      "delete": {
+        "question": "Are you sure you want to delete Um { id }?"
+      },
+      "detail": {
+        "title": "Um"
+      },
+      "id": "ID",
+      "name": "Name",
+      "description": "Description"
+    }
+  }
+}

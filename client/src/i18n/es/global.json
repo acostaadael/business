@@ -8,7 +8,8 @@
       "entities": {
         "main": "Entidades",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
-        "period": "Periodos"
+        "period": "Periodos",
+        "um": "Unidades de Medidas"
       },
       "account": {
         "main": "Cuenta",
@@ -149,5 +150,5 @@
       "not.image": "Se esperaba que el fichero fuera una imagen pero se encontro \"{ fileType }\""
     }
   },
-  "footer": "Pie de página"
+  "footer": ""
 }

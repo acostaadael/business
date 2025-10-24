@@ -4,6 +4,7 @@ import { CreateTables1570200270081 } from './migrations/1570200270081-CreateTabl
 import { User } from './domain/user.entity';
 import { Authority } from './domain/authority.entity';
 import { Period } from './domain/period.entity';
+import { Um } from './domain/um.entity';
 // jhipster-needle-add-entity-to-ormconfig-imports - JHipster will add code here, do not remove
 
 function ormConfig(): TypeOrmModuleOptions {
@@ -64,6 +65,7 @@ function ormConfig(): TypeOrmModuleOptions {
       User,
       Authority,
       Period,
+      Um,
       // jhipster-needle-add-entity-to-ormconfig-entities - JHipster will add code here, do not remove
     ],
     migrations: [
