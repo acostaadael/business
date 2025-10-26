@@ -4,7 +4,15 @@
       <span v-text="t$('businessApp.um.home.title')" id="um-heading"></span>
       <div class="d-flex justify-content-end">
         <b-col>
-          <b-form-input class="mr-2" id="input-small" type="search" :style="{ width: 60 + 'ch' }" placeholder="Buscar"></b-form-input>
+          <b-form-input
+            class="mr-2"
+            id="input-small"
+            type="search"
+            v-model="searchText"
+            :style="{ width: 40 + 'ch' }"
+            placeholder="Buscar"
+            @input="onInput"
+          ></b-form-input>
         </b-col>
         <router-link :to="{ name: 'UmCreate' }" custom v-slot="{ navigate }">
           <button @click="navigate" id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary jh-create-entity create-um">

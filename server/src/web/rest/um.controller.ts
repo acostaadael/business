@@ -20,6 +20,7 @@ import { AuthGuard, RoleType, Roles, RolesGuard } from '../../security';
 import { HeaderUtil } from '../../client/header-util';
 import { Request } from '../../client/request';
 import { LoggingInterceptor } from '../../client/interceptors/logging.interceptor';
+import { Like } from 'typeorm';
 
 @Controller('api/ums')
 @UseGuards(AuthGuard, RolesGuard)
@@ -40,11 +41,23 @@ export class UmController {
   })
   async getAll(@Req() req: Request): Promise<UmDTO[]> {
     const pageRequest: PageRequest = new PageRequest(req.query.page, req.query.size, req.query.sort ?? 'id,ASC');
-    const [results, count] = await this.umService.findAndCount({
-      skip: +pageRequest.page * pageRequest.size,
-      take: +pageRequest.size,
-      order: pageRequest.sort.asOrder(),
-    });
+    const options = req.query.globalSearch
+      ? {
+          skip: +pageRequest.page * pageRequest.size,
+          take: +pageRequest.size,
+          where: {
+            name: Like(`%${req.query.globalSearch}%`),
+          },
+          order: pageRequest.sort.asOrder(),
+        }
+      : {
+          skip: +pageRequest.page * pageRequest.size,
+          take: +pageRequest.size,
+          order: pageRequest.sort.asOrder(),
+        };
+    console.log(options);
+
+    const [results, count] = await this.umService.findAndCount(options);
     HeaderUtil.addPaginationHeaders(req.res, new Page(results, count, pageRequest));
     return results;
   }

@@ -41,11 +41,19 @@ export default defineComponent({
     const retrieveUms = async () => {
       isFetching.value = true;
       try {
-        const paginationQuery = {
-          page: page.value - 1,
-          size: itemsPerPage.value,
-          sort: sort(),
-        };
+        const paginationQuery =
+          searchText.value == ''
+            ? {
+                page: page.value - 1,
+                size: itemsPerPage.value,
+                sort: sort(),
+              }
+            : {
+                page: page.value - 1,
+                size: itemsPerPage.value,
+                globalSearch: searchText.value,
+                sort: sort(),
+              };
         const res = await umService().retrieve(paginationQuery);
         totalItems.value = Number(res.headers['x-total-count']);
         queryCount.value = totalItems.value;
@@ -112,8 +120,9 @@ export default defineComponent({
       await retrieveUms();
     });
 
-    const onInput = debounce(() => {
-      console.log(searchText.value); // Perform your action here
+    const onInput = debounce(async () => {
+      await retrieveUms();
+      // Perform your action here
     }, 500);
 
     return {
