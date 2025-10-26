@@ -45,9 +45,7 @@ export class UmController {
       ? {
           skip: +pageRequest.page * pageRequest.size,
           take: +pageRequest.size,
-          where: {
-            name: Like(`%${req.query.globalSearch}%`),
-          },
+          where: [{ name: Like(`%${req.query.globalSearch}%`) }, { description: Like(`%${req.query.globalSearch}%`) }],
           order: pageRequest.sort.asOrder(),
         }
       : {
