@@ -1,0 +1,25 @@
+{
+  "businessApp": {
+    "area": {
+      "home": {
+        "title": "Áreas del producto",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nueva Área",
+        "createOrEditLabel": "Crear o editar Área",
+        "notFound": "Ninguna Área fue encontrada"
+      },
+      "created": "Una nueva Área ha sido creada con el identificador { param }",
+      "updated": "Un Área ha sido actualizada con el identificador { param }",
+      "deleted": "Un Área ha sido eliminada con el identificador { param }",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar el Área { id }?"
+      },
+      "detail": {
+        "title": "Área"
+      },
+      "id": "ID",
+      "name": "Nombre",
+      "description": "Descripción"
+    }
+  }
+}

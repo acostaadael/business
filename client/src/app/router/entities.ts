@@ -7,6 +7,9 @@ const PeriodUpdate = () => import('@/entities/period/period-update.vue');
 const Um = () => import('@/entities/um/um.vue');
 const UmUpdate = () => import('@/entities/um/um-update.vue');
 
+const Area = () => import('@/entities/area/area.vue');
+const AreaUpdate = () => import('@/entities/area/area-update.vue');
+
 // jhipster-needle-add-entity-to-router-import - JHipster will import entities to the router here
 
 export default {
@@ -41,6 +44,24 @@ export default {
       path: 'um/:umId/edit',
       name: 'UmEdit',
       component: UmUpdate,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'area',
+      name: 'Area',
+      component: Area,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'area/new',
+      name: 'AreaCreate',
+      component: AreaUpdate,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'area/:areaId/edit',
+      name: 'AreaEdit',
+      component: AreaUpdate,
       meta: { authorities: [Authority.USER] },
     },
     // jhipster-needle-add-entity-to-router - JHipster will add entities to the router here

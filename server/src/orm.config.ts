@@ -5,6 +5,7 @@ import { User } from './domain/user.entity';
 import { Authority } from './domain/authority.entity';
 import { Period } from './domain/period.entity';
 import { Um } from './domain/um.entity';
+import { Area } from './domain/area.entity';
 // jhipster-needle-add-entity-to-ormconfig-imports - JHipster will add code here, do not remove
 
 function ormConfig(): TypeOrmModuleOptions {
@@ -66,6 +67,7 @@ function ormConfig(): TypeOrmModuleOptions {
       Authority,
       Period,
       Um,
+      Area,
       // jhipster-needle-add-entity-to-ormconfig-entities - JHipster will add code here, do not remove
     ],
     migrations: [
