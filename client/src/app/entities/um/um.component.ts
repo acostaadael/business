@@ -65,10 +65,6 @@ export default defineComponent({
       }
     };
 
-    const handleSyncList = () => {
-      retrieveUms();
-    };
-
     onMounted(async () => {
       await retrieveUms();
     });
@@ -127,7 +123,6 @@ export default defineComponent({
 
     return {
       ums,
-      handleSyncList,
       isFetching,
       retrieveUms,
       clear,

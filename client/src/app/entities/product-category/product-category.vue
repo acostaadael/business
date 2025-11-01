@@ -3,10 +3,17 @@
     <h2 id="page-heading" data-cy="ProductCategoryHeading">
       <span v-text="t$('businessApp.productCategory.home.title')" id="product-category-heading"></span>
       <div class="d-flex justify-content-end">
-        <button class="btn btn-info mr-2" @click="handleSyncList" :disabled="isFetching">
-          <font-awesome-icon icon="sync" :spin="isFetching"></font-awesome-icon>
-          <span v-text="t$('businessApp.productCategory.home.refreshListLabel')"></span>
-        </button>
+        <b-col>
+          <b-form-input
+            class="mr-2"
+            id="input-small"
+            type="search"
+            v-model="searchText"
+            :style="{ width: 40 + 'ch' }"
+            placeholder="Buscar"
+            @input="onInput"
+          ></b-form-input>
+        </b-col>
         <router-link :to="{ name: 'ProductCategoryCreate' }" custom v-slot="{ navigate }">
           <button
             @click="navigate"
