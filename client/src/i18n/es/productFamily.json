@@ -1,0 +1,26 @@
+{
+  "businessApp": {
+    "productFamily": {
+      "home": {
+        "title": "Familias de productos",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nueva Familia",
+        "createOrEditLabel": "Crear o editar Familia",
+        "notFound": "Ninguna Familia encontrada"
+      },
+      "created": "Una nueva Familia ha sido creada con el identificador { param }",
+      "updated": "Una Familia ha sido actualizada con el identificador { param }",
+      "deleted": "Una Familia ha sido eliminada con el identificador { param }",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar la Familia { id }?"
+      },
+      "detail": {
+        "title": "Familia de producto"
+      },
+      "id": "ID",
+      "name": "Nombre",
+      "description": "Descripción",
+      "productCategory": "Categoria"
+    }
+  }
+}

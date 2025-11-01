@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from './base/base.entity';
 
-import { ProductFamily } from './product-family.entity';
+import { ProductCategory } from './product-category.entity';
 
 /**
- * A ProductCategory.
+ * A ProductFamily.
  */
-@Entity('product_category')
-export class ProductCategory extends BaseEntity {
+@Entity('product_family')
+export class ProductFamily extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number;
 
@@ -18,8 +18,8 @@ export class ProductCategory extends BaseEntity {
   @Column({ name: 'description', nullable: true })
   description?: string;
 
-  @OneToMany(type => ProductFamily, other => other.productCategory)
-  productFamilies?: ProductFamily[];
+  @ManyToOne(type => ProductCategory)
+  productCategory?: ProductCategory;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
 }

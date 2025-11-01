@@ -11,7 +11,8 @@
         "period": "Periodos",
         "um": "Unidades de Medidas",
         "area": "Áreas del producto",
-        "productCategory": "Categorias de productos"
+        "productCategory": "Categorias de productos",
+        "productFamily": "Familias de productos"
       },
       "account": {
         "main": "Cuenta",

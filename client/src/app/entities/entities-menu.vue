@@ -16,6 +16,10 @@
       <font-awesome-icon icon="asterisk" />
       <span v-text="t$('global.menu.entities.productCategory')"></span>
     </b-dropdown-item>
+    <b-dropdown-item to="/product-family">
+      <font-awesome-icon icon="asterisk" />
+      <span v-text="t$('global.menu.entities.productFamily')"></span>
+    </b-dropdown-item>
     <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
   </div>
 </template>

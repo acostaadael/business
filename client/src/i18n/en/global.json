@@ -11,7 +11,8 @@
         "period": "Period",
         "um": "Um",
         "area": "Area",
-        "productCategory": "Product Category"
+        "productCategory": "Product Category",
+        "productFamily": "Product Family"
       },
       "account": {
         "main": "Account",

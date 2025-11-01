@@ -14,6 +14,10 @@ const ProductCategory = () => import('@/entities/product-category/product-catego
 const ProductCategoryUpdate = () => import('@/entities/product-category/product-category-update.vue');
 const ProductCategoryDetails = () => import('@/entities/product-category/product-category-details.vue');
 
+const ProductFamily = () => import('@/entities/product-family/product-family.vue');
+const ProductFamilyUpdate = () => import('@/entities/product-family/product-family-update.vue');
+const ProductFamilyDetails = () => import('@/entities/product-family/product-family-details.vue');
+
 // jhipster-needle-add-entity-to-router-import - JHipster will import entities to the router here
 
 export default {
@@ -90,6 +94,30 @@ export default {
       path: 'product-category/:productCategoryId/view',
       name: 'ProductCategoryView',
       component: ProductCategoryDetails,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'product-family',
+      name: 'ProductFamily',
+      component: ProductFamily,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'product-family/new',
+      name: 'ProductFamilyCreate',
+      component: ProductFamilyUpdate,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'product-family/:productFamilyId/edit',
+      name: 'ProductFamilyEdit',
+      component: ProductFamilyUpdate,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'product-family/:productFamilyId/view',
+      name: 'ProductFamilyView',
+      component: ProductFamilyDetails,
       meta: { authorities: [Authority.USER] },
     },
     // jhipster-needle-add-entity-to-router - JHipster will add entities to the router here

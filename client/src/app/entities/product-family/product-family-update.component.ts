@@ -3,20 +3,26 @@ import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { useVuelidate } from '@vuelidate/core';
 
-import ProductCategoryService from './product-category.service';
+import ProductFamilyService from './product-family.service';
 import { useValidation } from '@/shared/composables';
 import { useAlertService } from '@/shared/alert/alert.service';
 
-import { type IProductCategory, ProductCategory } from '@/shared/model/product-category.model';
+import ProductCategoryService from '@/entities/product-category/product-category.service';
+import { type IProductCategory } from '@/shared/model/product-category.model';
+import { type IProductFamily, ProductFamily } from '@/shared/model/product-family.model';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
-  name: 'ProductCategoryUpdate',
+  name: 'ProductFamilyUpdate',
   setup() {
-    const productCategoryService = inject('productCategoryService', () => new ProductCategoryService());
+    const productFamilyService = inject('productFamilyService', () => new ProductFamilyService());
     const alertService = inject('alertService', () => useAlertService(), true);
 
-    const productCategory: Ref<IProductCategory> = ref(new ProductCategory());
+    const productFamily: Ref<IProductFamily> = ref(new ProductFamily());
+
+    const productCategoryService = inject('productCategoryService', () => new ProductCategoryService());
+
+    const productCategories: Ref<IProductCategory[]> = ref([]);
     const isSaving = ref(false);
     const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
 
@@ -25,20 +31,26 @@ export default defineComponent({
 
     const previousState = () => router.go(-1);
 
-    const retrieveProductCategory = async productCategoryId => {
+    const retrieveProductFamily = async productFamilyId => {
       try {
-        const res = await productCategoryService().find(productCategoryId);
-        productCategory.value = res;
+        const res = await productFamilyService().find(productFamilyId);
+        productFamily.value = res;
       } catch (error) {
         alertService.showHttpError(error.response);
       }
     };
 
-    if (route.params?.productCategoryId) {
-      retrieveProductCategory(route.params.productCategoryId);
+    if (route.params?.productFamilyId) {
+      retrieveProductFamily(route.params.productFamilyId);
     }
 
-    const initRelationships = () => {};
+    const initRelationships = () => {
+      productCategoryService()
+        .retrieve()
+        .then(res => {
+          productCategories.value = res.data;
+        });
+    };
 
     initRelationships();
 
@@ -49,18 +61,19 @@ export default defineComponent({
         required: validations.required(t$('entity.validation.required').toString()),
       },
       description: {},
-      productFamilies: {},
+      productCategory: {},
     };
-    const v$ = useVuelidate(validationRules, productCategory as any);
+    const v$ = useVuelidate(validationRules, productFamily as any);
     v$.value.$validate();
 
     return {
-      productCategoryService,
+      productFamilyService,
       alertService,
-      productCategory,
+      productFamily,
       previousState,
       isSaving,
       currentLanguage,
+      productCategories,
       v$,
       t$,
     };
@@ -69,25 +82,25 @@ export default defineComponent({
   methods: {
     save(): void {
       this.isSaving = true;
-      if (this.productCategory.id) {
-        this.productCategoryService()
-          .update(this.productCategory)
+      if (this.productFamily.id) {
+        this.productFamilyService()
+          .update(this.productFamily)
           .then(param => {
             this.isSaving = false;
             this.previousState();
-            this.alertService.showInfo(this.t$('businessApp.productCategory.updated', { param: param.id }));
+            this.alertService.showInfo(this.t$('businessApp.productFamily.updated', { param: param.id }));
           })
           .catch(error => {
             this.isSaving = false;
             this.alertService.showHttpError(error.response);
           });
       } else {
-        this.productCategoryService()
-          .create(this.productCategory)
+        this.productFamilyService()
+          .create(this.productFamily)
           .then(param => {
             this.isSaving = false;
             this.previousState();
-            this.alertService.showSuccess(this.t$('businessApp.productCategory.created', { param: param.id }).toString());
+            this.alertService.showSuccess(this.t$('businessApp.productFamily.created', { param: param.id }).toString());
           })
           .catch(error => {
             this.isSaving = false;

@@ -3,12 +3,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 import { BaseDTO } from './base.dto';
 
-import { ProductFamilyDTO } from './product-family.dto';
+import { ProductCategoryDTO } from './product-category.dto';
 
 /**
- * A ProductCategoryDTO object.
+ * A ProductFamilyDTO object.
  */
-export class ProductCategoryDTO extends BaseDTO {
+export class ProductFamilyDTO extends BaseDTO {
   id?: number;
 
   @IsNotEmpty()
@@ -18,8 +18,8 @@ export class ProductCategoryDTO extends BaseDTO {
   @ApiProperty({ description: 'description field', required: false })
   description?: string;
 
-  @ApiProperty({ type: () => ProductFamilyDTO, isArray: true, description: 'productFamilies relationship' })
-  productFamilies?: ProductFamilyDTO[];
+  @ApiProperty({ type: () => ProductCategoryDTO, description: 'productCategory relationship' })
+  productCategory?: ProductCategoryDTO;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
 }
