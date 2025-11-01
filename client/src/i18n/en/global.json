@@ -10,7 +10,8 @@
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
         "period": "Period",
         "um": "Um",
-        "area": "Area"
+        "area": "Area",
+        "productCategory": "Product Category"
       },
       "account": {
         "main": "Account",

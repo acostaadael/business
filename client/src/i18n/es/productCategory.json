@@ -1,0 +1,25 @@
+{
+  "businessApp": {
+    "productCategory": {
+      "home": {
+        "title": "Categorias de productos",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nueva Categoria",
+        "createOrEditLabel": "Crear o editar Categoria",
+        "notFound": "Ninguna Categoria encontrada"
+      },
+      "created": "Una nueva Categoria ha sido creada con el identificador { param }",
+      "updated": "Una Categoria ha sido actualizada con el identificador { param }",
+      "deleted": "Una Categoria ha sido eliminada con el identificador { param }",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar la Categorio { id }?"
+      },
+      "detail": {
+        "title": "Categoria del producto"
+      },
+      "id": "ID",
+      "name": "Nombre",
+      "description": "Descripción"
+    }
+  }
+}

@@ -3,6 +3,7 @@ import { defineComponent, provide } from 'vue';
 import PeriodService from './period/period.service';
 import UmService from './um/um.service';
 import AreaService from './area/area.service';
+import ProductCategoryService from './product-category/product-category.service';
 import UserService from '@/entities/user/user.service';
 // jhipster-needle-add-entity-service-to-entities-component-import - JHipster will import entities services here
 
@@ -14,6 +15,7 @@ export default defineComponent({
     provide('periodService', () => new PeriodService());
     provide('umService', () => new UmService());
     provide('areaService', () => new AreaService());
+    provide('productCategoryService', () => new ProductCategoryService());
     // jhipster-needle-add-entity-service-to-entities-component - JHipster will import entities services here
   },
 });
