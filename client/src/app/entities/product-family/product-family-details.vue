@@ -24,7 +24,7 @@
           <dd>
             <div v-if="productFamily.productCategory">
               <router-link :to="{ name: 'ProductCategoryView', params: { productCategoryId: productFamily.productCategory.id } }">{{
-                productFamily.productCategory.id
+                productFamily.productCategory.name
               }}</router-link>
             </div>
           </dd>
