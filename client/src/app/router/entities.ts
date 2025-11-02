@@ -18,6 +18,10 @@ const ProductFamily = () => import('@/entities/product-family/product-family.vue
 const ProductFamilyUpdate = () => import('@/entities/product-family/product-family-update.vue');
 const ProductFamilyDetails = () => import('@/entities/product-family/product-family-details.vue');
 
+const ProductLine = () => import('@/entities/product-line/product-line.vue');
+const ProductLineUpdate = () => import('@/entities/product-line/product-line-update.vue');
+const ProductLineDetails = () => import('@/entities/product-line/product-line-details.vue');
+
 // jhipster-needle-add-entity-to-router-import - JHipster will import entities to the router here
 
 export default {
@@ -118,6 +122,30 @@ export default {
       path: 'product-family/:productFamilyId/view',
       name: 'ProductFamilyView',
       component: ProductFamilyDetails,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'product-line',
+      name: 'ProductLine',
+      component: ProductLine,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'product-line/new',
+      name: 'ProductLineCreate',
+      component: ProductLineUpdate,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'product-line/:productLineId/edit',
+      name: 'ProductLineEdit',
+      component: ProductLineUpdate,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'product-line/:productLineId/view',
+      name: 'ProductLineView',
+      component: ProductLineDetails,
       meta: { authorities: [Authority.USER] },
     },
     // jhipster-needle-add-entity-to-router - JHipster will add entities to the router here

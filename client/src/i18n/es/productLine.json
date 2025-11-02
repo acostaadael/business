@@ -1,0 +1,26 @@
+{
+  "businessApp": {
+    "productLine": {
+      "home": {
+        "title": "Lineas de productos",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nueva Linea",
+        "createOrEditLabel": "Crear o editar Linea",
+        "notFound": "Ninguna Linea encontrada"
+      },
+      "created": "Una nueva Linea ha sido creada con el identificador { param }",
+      "updated": "Una Linea ha sido actualizada con el identificador { param }",
+      "deleted": "Una Linea ha sido eliminada con el identificador { param }",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar la Linea { id }?"
+      },
+      "detail": {
+        "title": "Linea de producto"
+      },
+      "id": "ID",
+      "name": "Nombre",
+      "description": "Descripción",
+      "productFamily": "Familia"
+    }
+  }
+}

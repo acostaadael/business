@@ -12,7 +12,8 @@
         "um": "Um",
         "area": "Area",
         "productCategory": "Product Category",
-        "productFamily": "Product Family"
+        "productFamily": "Product Family",
+        "productLine": "Product Line"
       },
       "account": {
         "main": "Account",

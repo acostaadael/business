@@ -5,6 +5,7 @@ import UmService from './um/um.service';
 import AreaService from './area/area.service';
 import ProductCategoryService from './product-category/product-category.service';
 import ProductFamilyService from './product-family/product-family.service';
+import ProductLineService from './product-line/product-line.service';
 import UserService from '@/entities/user/user.service';
 // jhipster-needle-add-entity-service-to-entities-component-import - JHipster will import entities services here
 
@@ -18,6 +19,7 @@ export default defineComponent({
     provide('areaService', () => new AreaService());
     provide('productCategoryService', () => new ProductCategoryService());
     provide('productFamilyService', () => new ProductFamilyService());
+    provide('productLineService', () => new ProductLineService());
     // jhipster-needle-add-entity-service-to-entities-component - JHipster will import entities services here
   },
 });

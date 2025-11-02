@@ -12,7 +12,8 @@
         "um": "Unidades de Medidas",
         "area": "Áreas del producto",
         "productCategory": "Categorias de productos",
-        "productFamily": "Familias de productos"
+        "productFamily": "Familias de productos",
+        "productLine": "Lineas de productos"
       },
       "account": {
         "main": "Cuenta",

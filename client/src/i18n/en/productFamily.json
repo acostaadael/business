@@ -20,7 +20,8 @@
       "id": "ID",
       "name": "Name",
       "description": "Description",
-      "productCategory": "Product Category"
+      "productCategory": "Product Category",
+      "productLine": "Product Line"
     }
   }
 }
