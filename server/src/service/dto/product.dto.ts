@@ -12,7 +12,6 @@ import { ProductLineDTO } from './product-line.dto';
 export class ProductDTO extends BaseDTO {
   id?: number;
 
-  @IsNotEmpty()
   @ApiProperty({ description: 'code field' })
   code: string;
 

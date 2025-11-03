@@ -10,6 +10,7 @@ import { ProductCategory } from './domain/product-category.entity';
 import { ProductFamily } from './domain/product-family.entity';
 import { ProductLine } from './domain/product-line.entity';
 import { Product } from './domain/product.entity';
+import { ProductSubscriber } from './domain/subscribers/product.suscriber';
 // jhipster-needle-add-entity-to-ormconfig-imports - JHipster will add code here, do not remove
 
 function ormConfig(): TypeOrmModuleOptions {
@@ -85,6 +86,7 @@ function ormConfig(): TypeOrmModuleOptions {
     ],
     autoLoadEntities: true,
     ...ormconfig,
+    subscribers: [ProductSubscriber],
   };
 }
 
