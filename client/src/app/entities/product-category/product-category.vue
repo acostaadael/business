@@ -3,17 +3,16 @@
     <h2 id="page-heading" data-cy="ProductCategoryHeading">
       <span v-text="t$('businessApp.productCategory.home.title')" id="product-category-heading"></span>
       <div class="d-flex justify-content-end">
-        <b-col>
-          <b-form-input
-            class="mr-2"
-            id="input-small"
-            type="search"
-            v-model="searchText"
-            :style="{ width: 40 + 'ch' }"
-            placeholder="Buscar"
-            @input="onInput"
-          ></b-form-input>
-        </b-col>
+        <b-form-input
+          class="mr-2"
+          id="input-small"
+          type="search"
+          v-model="searchText"
+          :style="{ width: 40 + 'ch' }"
+          placeholder="Buscar"
+          @input="onInput"
+        ></b-form-input>
+
         <router-link :to="{ name: 'ProductCategoryCreate' }" custom v-slot="{ navigate }">
           <button
             @click="navigate"

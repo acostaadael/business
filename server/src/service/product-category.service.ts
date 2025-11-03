@@ -14,6 +14,7 @@ export class ProductCategoryService {
   async findById(id: number): Promise<ProductCategoryDTO | undefined> {
     const result = await this.productCategoryRepository.findOne({
       where: { id },
+      relations: ['productFamilies'],
     });
     return ProductCategoryMapper.fromEntityToDTO(result);
   }
@@ -55,8 +56,12 @@ export class ProductCategoryService {
   }
 
   async deleteById(id: number): Promise<void | undefined> {
-    await this.productCategoryRepository.delete(id);
     const entityFind = await this.findById(id);
+    if (entityFind.productFamilies.length > 0) {
+      throw new HttpException('No se puede eliminar, está asociada a familias de productos!', HttpStatus.BAD_REQUEST);
+    }
+
+    await this.productCategoryRepository.delete(id);
     if (entityFind) {
       throw new HttpException('Error, entity not deleted!', HttpStatus.NOT_FOUND);
     }
