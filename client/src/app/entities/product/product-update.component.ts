@@ -67,10 +67,12 @@ export default defineComponent({
 
     const { t: t$ } = useI18n();
     const validations = useValidation();
-    const validationRules = {
-      code: {
-        required: validations.required(t$('entity.validation.required').toString()),
-      },
+    const validationRules = computed(() => ({
+      code: product.value?.hasCode
+        ? {
+            required: validations.required(t$('entity.validation.required').toString()),
+          }
+        : {},
       name: {
         required: validations.required(t$('entity.validation.required').toString()),
       },
@@ -88,7 +90,7 @@ export default defineComponent({
       productLine: {
         required: validations.required(t$('entity.validation.required').toString()),
       },
-    };
+    }));
     const v$ = useVuelidate(validationRules, product as any);
     v$.value.$validate();
 
