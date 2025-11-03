@@ -13,7 +13,8 @@
         "area": "Area",
         "productCategory": "Product Category",
         "productFamily": "Product Family",
-        "productLine": "Product Line"
+        "productLine": "Product Line",
+        "product": "Product"
       },
       "account": {
         "main": "Account",

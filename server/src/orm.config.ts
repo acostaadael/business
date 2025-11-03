@@ -9,6 +9,7 @@ import { Area } from './domain/area.entity';
 import { ProductCategory } from './domain/product-category.entity';
 import { ProductFamily } from './domain/product-family.entity';
 import { ProductLine } from './domain/product-line.entity';
+import { Product } from './domain/product.entity';
 // jhipster-needle-add-entity-to-ormconfig-imports - JHipster will add code here, do not remove
 
 function ormConfig(): TypeOrmModuleOptions {
@@ -74,6 +75,7 @@ function ormConfig(): TypeOrmModuleOptions {
       ProductCategory,
       ProductFamily,
       ProductLine,
+      Product,
       // jhipster-needle-add-entity-to-ormconfig-entities - JHipster will add code here, do not remove
     ],
     migrations: [

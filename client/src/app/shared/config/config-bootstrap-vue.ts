@@ -10,6 +10,7 @@ import {
   BFormDatepicker,
   BFormGroup,
   BFormInput,
+  BFormTextarea,
   BInputGroup,
   BInputGroupPrepend,
   BLink,
@@ -25,6 +26,10 @@ import {
   BProgressBar,
   ToastPlugin,
   VBModal,
+  BContainer,
+  BCol,
+  BRow,
+  BFormRow,
 } from 'bootstrap-vue';
 
 export function initBootstrapVue(vue) {
@@ -55,4 +60,9 @@ export function initBootstrapVue(vue) {
   vue.component('b-form-datepicker', BFormDatepicker);
   vue.component('b-input-group', BInputGroup);
   vue.component('b-input-group-prepend', BInputGroupPrepend);
+  vue.component('b-container', BContainer);
+  vue.component('b-col', BCol);
+  vue.component('b-row', BRow);
+  vue.component('b-form-row', BFormRow);
+  vue.component('b-form-textarea', BFormTextarea);
 }
