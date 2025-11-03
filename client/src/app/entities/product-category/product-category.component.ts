@@ -88,6 +88,7 @@ export default defineComponent({
         closeDialog();
       } catch (error) {
         alertService.showHttpError(error.response);
+        closeDialog();
       }
     };
 
