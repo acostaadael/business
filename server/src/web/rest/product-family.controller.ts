@@ -20,6 +20,7 @@ import { AuthGuard, RoleType, Roles, RolesGuard } from '../../security';
 import { HeaderUtil } from '../../client/header-util';
 import { Request } from '../../client/request';
 import { LoggingInterceptor } from '../../client/interceptors/logging.interceptor';
+import { ILike } from 'typeorm';
 
 @Controller('api/product-families')
 @UseGuards(AuthGuard, RolesGuard)
@@ -40,11 +41,25 @@ export class ProductFamilyController {
   })
   async getAll(@Req() req: Request): Promise<ProductFamilyDTO[]> {
     const pageRequest: PageRequest = new PageRequest(req.query.page, req.query.size, req.query.sort ?? 'id,ASC');
-    const [results, count] = await this.productFamilyService.findAndCount({
-      skip: +pageRequest.page * pageRequest.size,
-      take: +pageRequest.size,
-      order: pageRequest.sort.asOrder(),
-    });
+
+    const options = req.query.globalSearch
+      ? {
+          skip: +pageRequest.page * pageRequest.size,
+          take: +pageRequest.size,
+          where: [
+            { name: ILike(`%${req.query.globalSearch}%`) },
+            { description: ILike(`%${req.query.globalSearch}%`) },
+            { productCategory: { name: ILike(`%${req.query.globalSearch}%`) } },
+          ],
+          order: pageRequest.sort.asOrder(),
+        }
+      : {
+          skip: +pageRequest.page * pageRequest.size,
+          take: +pageRequest.size,
+          order: pageRequest.sort.asOrder(),
+        };
+
+    const [results, count] = await this.productFamilyService.findAndCount(options);
     HeaderUtil.addPaginationHeaders(req.res, new Page(results, count, pageRequest));
     return results;
   }

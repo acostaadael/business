@@ -9,10 +9,9 @@
           type="search"
           v-model="searchText"
           :style="{ width: 40 + 'ch' }"
-          placeholder="Buscar"
+          :placeholder="t$('entity.action.search')"
           @input="onInput"
         ></b-form-input>
-
         <router-link :to="{ name: 'ProductCategoryCreate' }" custom v-slot="{ navigate }">
           <button
             @click="navigate"

@@ -3,10 +3,15 @@
     <h2 id="page-heading" data-cy="ProductFamilyHeading">
       <span v-text="t$('businessApp.productFamily.home.title')" id="product-family-heading"></span>
       <div class="d-flex justify-content-end">
-        <button class="btn btn-info mr-2" @click="handleSyncList" :disabled="isFetching">
-          <font-awesome-icon icon="sync" :spin="isFetching"></font-awesome-icon>
-          <span v-text="t$('businessApp.productFamily.home.refreshListLabel')"></span>
-        </button>
+        <b-form-input
+          class="mr-2"
+          id="input-small"
+          type="search"
+          v-model="searchText"
+          :style="{ width: 40 + 'ch' }"
+          :placeholder="t$('entity.action.search')"
+          @input="onInput"
+        ></b-form-input>
         <router-link :to="{ name: 'ProductFamilyCreate' }" custom v-slot="{ navigate }">
           <button
             @click="navigate"

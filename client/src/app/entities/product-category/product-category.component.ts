@@ -14,7 +14,7 @@ export default defineComponent({
     const productCategoryService = inject('productCategoryService', () => new ProductCategoryService());
     const alertService = inject('alertService', () => useAlertService(), true);
 
-    const itemsPerPage = ref(20);
+    const itemsPerPage = ref(10);
     const queryCount: Ref<number> = ref(null);
     const page: Ref<number> = ref(1);
     const propOrder = ref('id');
