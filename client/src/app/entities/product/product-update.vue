@@ -12,7 +12,7 @@
             <label for="id" v-text="t$('global.field.id')"></label>
             <input type="text" class="form-control" id="id" name="id" v-model="product.id" readonly />
           </div>
-          <b-form-row>
+          <b-form-row v-if="!product.id">
             <b-col>
               <div class="form-group">
                 <label class="form-control-label" v-text="t$('businessApp.product.hasCode')" for="product-hasCode"></label>
