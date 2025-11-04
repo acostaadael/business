@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import ProductLineService from './product-line.service';
 import { type IProductLine } from '@/shared/model/product-line.model';
 import { useAlertService } from '@/shared/alert/alert.service';
+import { debounce } from 'lodash';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -19,6 +20,7 @@ export default defineComponent({
     const propOrder = ref('id');
     const reverse = ref(false);
     const totalItems = ref(0);
+    const searchText = ref('');
 
     const productLines: Ref<IProductLine[]> = ref([]);
 
@@ -39,11 +41,19 @@ export default defineComponent({
     const retrieveProductLines = async () => {
       isFetching.value = true;
       try {
-        const paginationQuery = {
-          page: page.value - 1,
-          size: itemsPerPage.value,
-          sort: sort(),
-        };
+        const paginationQuery =
+          searchText.value == ''
+            ? {
+                page: page.value - 1,
+                size: itemsPerPage.value,
+                sort: sort(),
+              }
+            : {
+                page: page.value - 1,
+                size: itemsPerPage.value,
+                globalSearch: searchText.value,
+                sort: sort(),
+              };
         const res = await productLineService().retrieve(paginationQuery);
         totalItems.value = Number(res.headers['x-total-count']);
         queryCount.value = totalItems.value;
@@ -82,6 +92,7 @@ export default defineComponent({
         closeDialog();
       } catch (error) {
         alertService.showHttpError(error.response);
+        closeDialog();
       }
     };
 
@@ -110,6 +121,11 @@ export default defineComponent({
       await retrieveProductLines();
     });
 
+    const onInput = debounce(async () => {
+      await retrieveProductLines();
+      // Perform your action here
+    }, 500);
+
     return {
       productLines,
       handleSyncList,
@@ -129,6 +145,8 @@ export default defineComponent({
       totalItems,
       changeOrder,
       t$,
+      searchText,
+      onInput,
     };
   },
 });

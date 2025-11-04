@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from './base/base.entity';
 
 import { ProductFamily } from './product-family.entity';
+import { Product } from './product.entity';
 
 /**
  * A ProductLine.
@@ -20,6 +21,9 @@ export class ProductLine extends BaseEntity {
 
   @ManyToOne(type => ProductFamily)
   productFamily?: ProductFamily;
+
+  @OneToMany(type => Product, other => other.productLine)
+  products?: Product[];
 
   // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
 }

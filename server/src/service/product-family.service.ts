@@ -7,6 +7,7 @@ import { ProductFamilyMapper } from '../service/mapper/product-family.mapper';
 
 const relations = {
   productCategory: true,
+  productLines: true,
 } as const;
 
 @Injectable()
@@ -60,8 +61,12 @@ export class ProductFamilyService {
   }
 
   async deleteById(id: number): Promise<void | undefined> {
-    await this.productFamilyRepository.delete(id);
     const entityFind = await this.findById(id);
+    if (entityFind.productLines.length > 0) {
+      throw new HttpException('No se puede eliminar, está asociada a lineas de productos!', HttpStatus.BAD_REQUEST);
+    }
+
+    await this.productFamilyRepository.delete(id);
     if (entityFind) {
       throw new HttpException('Error, entity not deleted!', HttpStatus.NOT_FOUND);
     }
