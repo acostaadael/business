@@ -1,9 +1,5 @@
 <template>
   <div>
-    <b-dropdown-item to="/period">
-      <font-awesome-icon icon="asterisk" />
-      <span v-text="t$('global.menu.entities.period')"></span>
-    </b-dropdown-item>
     <b-dropdown-item to="/um">
       <font-awesome-icon icon="asterisk" />
       <span v-text="t$('global.menu.entities.um')"></span>

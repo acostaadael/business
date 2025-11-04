@@ -49,6 +49,10 @@
               <span class="no-bold" v-text="t$('global.menu.admin.main')"></span>
             </span>
           </template>
+          <b-dropdown-item to="/period">
+            <font-awesome-icon icon="asterisk" />
+            <span v-text="t$('global.menu.entities.period')"></span>
+          </b-dropdown-item>
           <b-dropdown-item to="/admin/user-management" active-class="active">
             <font-awesome-icon icon="users" />
             <span v-text="t$('global.menu.admin.userManagement')"></span>

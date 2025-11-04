@@ -36,7 +36,7 @@ export default {
       path: 'period',
       name: 'Period',
       component: Period,
-      meta: { authorities: [Authority.USER] },
+      meta: { authorities: [Authority.ADMIN] },
     },
     {
       path: 'period/new',

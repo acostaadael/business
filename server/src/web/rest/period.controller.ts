@@ -32,7 +32,7 @@ export class PeriodController {
   constructor(private readonly periodService: PeriodService) {}
 
   @Get('/')
-  @Roles(RoleType.USER)
+  @Roles(RoleType.ADMIN)
   @ApiResponse({
     status: 200,
     description: 'List all records',
@@ -72,7 +72,7 @@ export class PeriodController {
   }
 
   @PostMethod('/')
-  @Roles(RoleType.USER)
+  @Roles(RoleType.ADMIN)
   @ApiOperation({ summary: 'Create period' })
   @ApiResponse({
     status: 201,
@@ -87,7 +87,7 @@ export class PeriodController {
   }
 
   @Put('/')
-  @Roles(RoleType.USER)
+  @Roles(RoleType.ADMIN)
   @ApiOperation({ summary: 'Update period' })
   @ApiResponse({
     status: 200,
@@ -100,7 +100,7 @@ export class PeriodController {
   }
 
   @Put('/:id')
-  @Roles(RoleType.USER)
+  @Roles(RoleType.ADMIN)
   @ApiOperation({ summary: 'Update period with id' })
   @ApiResponse({
     status: 200,
@@ -113,7 +113,7 @@ export class PeriodController {
   }
 
   @Delete('/:id')
-  @Roles(RoleType.USER)
+  @Roles(RoleType.ADMIN)
   @ApiOperation({ summary: 'Delete period' })
   @ApiResponse({
     status: 204,
