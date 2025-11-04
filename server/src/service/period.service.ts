@@ -103,5 +103,11 @@ export class PeriodService {
       if (periodDTO.month < lastPeriod.month || periodDTO.month - 1 !== lastPeriod.month)
         throw new HttpException(`No se puede crear un periodo con mes: ${periodDTO.month} !`, HttpStatus.BAD_REQUEST);
     }
+
+    const date = new Date();
+    const month = date.getMonth() + 1;
+    if (periodDTO.month !== month) {
+      throw new HttpException(`No se puede crear un periodo con mes: ${periodDTO.month} !`, HttpStatus.BAD_REQUEST);
+    }
   }
 }
