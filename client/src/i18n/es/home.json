@@ -5,6 +5,9 @@
     "logged": {
       "message": "Está conectado como \"{ username }\"."
     },
+    "openPeriod": {
+      "message": "Periodo abierto, mes: { month }, año: { year }"
+    },
     "question": "Si tiene preguntas sobre JHipster:",
     "link": {
       "homepage": "Página de inicio de JHipster",

@@ -10,6 +10,9 @@
         <div class="alert alert-success" v-if="authenticated">
           <span v-if="username" v-text="t$('home.logged.message', { username: username })"></span>
         </div>
+        <div class="alert alert-success" v-if="ifOpenPeriod">
+          <span v-text="t$('home.openPeriod.message', { month: ifOpenPeriod?.month, year: ifOpenPeriod?.year })"></span>
+        </div>
       </div>
     </div>
   </div>

@@ -4,6 +4,8 @@ import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import type AccountService from '../account.service';
 import type LoginService from '@/account/login.service';
+import PeriodService from '@/entities/period/period.service';
+import { usePeriodStore } from '@/store';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -19,6 +21,8 @@ export default defineComponent({
 
     const accountService = inject<AccountService>('accountService');
     const loginService = inject<LoginService>('loginService');
+    const periodStore = usePeriodStore();
+    const periodService = inject('periodService', () => new PeriodService());
 
     const doLogin = async () => {
       const data = { username: login.value, password: password.value, rememberMe: rememberMe.value };
@@ -37,6 +41,10 @@ export default defineComponent({
         }
 
         authenticationError.value = false;
+        const res = await periodService().findOpen();
+        if (res) {
+          periodStore.setPeriod(res);
+        }
         loginService.hideLogin();
         await accountService.retrieveAccount();
         if (route.path === '/forbidden') {

@@ -71,6 +71,17 @@ export class PeriodController {
     return await this.periodService.findLastClosed();
   }
 
+  @Get('/open')
+  @Roles(RoleType.USER)
+  @ApiResponse({
+    status: 200,
+    description: 'The found record',
+    type: PeriodDTO,
+  })
+  async getOpen(): Promise<PeriodDTO> {
+    return await this.periodService.findOpen();
+  }
+
   @PostMethod('/')
   @Roles(RoleType.ADMIN)
   @ApiOperation({ summary: 'Create period' })

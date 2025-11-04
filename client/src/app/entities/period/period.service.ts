@@ -33,6 +33,19 @@ export default class PeriodService {
     });
   }
 
+  public findOpen(): Promise<IPeriod> {
+    return new Promise<IPeriod>((resolve, reject) => {
+      axios
+        .get(`${baseApiUrl}/open`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
   public retrieve(paginationQuery?: any): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       axios

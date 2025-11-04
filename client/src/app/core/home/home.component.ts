@@ -1,7 +1,8 @@
-import { type ComputedRef, defineComponent, inject } from 'vue';
+import { computed, type ComputedRef, defineComponent, inject, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import type LoginService from '@/account/login.service';
+import { usePeriodStore } from '@/store';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -10,6 +11,8 @@ export default defineComponent({
 
     const authenticated = inject<ComputedRef<boolean>>('authenticated');
     const username = inject<ComputedRef<string>>('currentUsername');
+    const periodStore = usePeriodStore();
+    const ifOpenPeriod = computed(() => periodStore.period);
 
     const openLogin = () => {
       loginService.openLogin();
@@ -17,6 +20,7 @@ export default defineComponent({
 
     return {
       authenticated,
+      ifOpenPeriod,
       username,
       openLogin,
       t$: useI18n().t,

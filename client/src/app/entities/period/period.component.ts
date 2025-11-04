@@ -1,4 +1,4 @@
-import { type Ref, defineComponent, inject, onMounted, ref, watch } from 'vue';
+import { type Ref, computed, defineComponent, inject, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import PeriodService from './period.service';
@@ -16,6 +16,7 @@ export default defineComponent({
     const alertService = inject('alertService', () => useAlertService(), true);
 
     const periodStore = usePeriodStore();
+    const ifOpenPeriod = computed(() => periodStore.period);
     const itemsPerPage = ref(12);
     const queryCount: Ref<number> = ref(null);
     const page: Ref<number> = ref(1);
@@ -138,7 +139,7 @@ export default defineComponent({
       queryCount,
       page,
       propOrder,
-      periodStore,
+      ifOpenPeriod,
       reverse,
       totalItems,
       PeriodStatus,
