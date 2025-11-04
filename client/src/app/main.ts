@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.common with an alias.
 import Vue, { computed, createApp, onMounted, provide, watch } from 'vue';
 import { createPinia, storeToRefs } from 'pinia';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import { useI18n } from 'vue-i18n';
 
 import App from './app.vue';
@@ -20,7 +21,7 @@ import '../content/scss/vendor.scss';
 import TranslationService from '@/locale/translation.service';
 
 const pinia = createPinia();
-
+pinia.use(piniaPluginPersistedstate);
 // jhipster-needle-add-entity-service-to-main-import - JHipster will import entities services here
 
 initBootstrapVue(Vue);

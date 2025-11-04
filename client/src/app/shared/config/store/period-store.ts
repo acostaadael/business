@@ -22,4 +22,5 @@ export const usePeriodStore = defineStore('periodStore', {
       this.period = null;
     },
   },
+  persist: true,
 });
