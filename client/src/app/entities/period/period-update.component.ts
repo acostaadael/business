@@ -1,4 +1,4 @@
-import { type Ref, computed, defineComponent, inject, ref } from 'vue';
+import { type Ref, computed, defineComponent, inject, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { useVuelidate } from '@vuelidate/core';
@@ -9,7 +9,6 @@ import { useAlertService } from '@/shared/alert/alert.service';
 
 import { type IPeriod, Period } from '@/shared/model/period.model';
 import { PeriodStatus } from '@/shared/model/enumerations/period-status.model';
-import type { minValue } from '@vuelidate/validators';
 import { usePeriodStore } from '@/store';
 
 export default defineComponent({
@@ -39,12 +38,20 @@ export default defineComponent({
         alertService.showHttpError(error.response);
       }
     };
+    const initMonth = async () => {
+      try {
+        const res = await periodService().findLastClosed();
+        if (res.month) {
+          period.value.month = res.month == 12 ? 1 : res.month + 1;
+        }
+      } catch (error) {
+        alertService.showHttpError(error.response);
+      }
+    };
 
     if (route.params?.periodId) {
       retrievePeriod(route.params.periodId);
     }
-    const date = new Date();
-    const year = date.getFullYear();
 
     const { t: t$ } = useI18n();
     const validations = useValidation();
@@ -61,6 +68,10 @@ export default defineComponent({
     };
     const v$ = useVuelidate(validationRules, period as any);
     v$.value.$validate();
+
+    onMounted(async () => {
+      await initMonth();
+    });
 
     return {
       periodService,

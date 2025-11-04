@@ -96,5 +96,12 @@ export class PeriodService {
     if (existsPeriod) {
       throw new HttpException(`Ya existe un periodo del mes: ${periodDTO.month}, año: ${periodDTO.year} !`, HttpStatus.BAD_REQUEST);
     }
+
+    //Obtener ultimo periodo cerrado
+    const lastPeriod = await this.findLastClosed();
+    if (lastPeriod && lastPeriod.year == periodDTO.year) {
+      if (periodDTO.month < lastPeriod.month || periodDTO.month - 1 !== lastPeriod.month)
+        throw new HttpException(`No se puede crear un periodo con mes: ${periodDTO.month} !`, HttpStatus.BAD_REQUEST);
+    }
   }
 }

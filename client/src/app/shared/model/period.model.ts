@@ -15,7 +15,7 @@ export class Period implements IPeriod {
   ) {
     const date = new Date();
 
-    this.month = date.getMonth();
+    this.month = date.getMonth() + 1;
     this.year = date.getFullYear();
     this.status = PeriodStatus.OPEN;
   }

@@ -16,7 +16,7 @@ export default defineComponent({
     const alertService = inject('alertService', () => useAlertService(), true);
 
     const periodStore = usePeriodStore();
-    const itemsPerPage = ref(20);
+    const itemsPerPage = ref(12);
     const queryCount: Ref<number> = ref(null);
     const page: Ref<number> = ref(1);
     const propOrder = ref('id');
