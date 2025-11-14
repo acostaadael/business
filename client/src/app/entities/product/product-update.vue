@@ -1,3 +1,5 @@
+<!-- eslint-disable prettier/prettier -->
+<!-- eslint-disable prettier/prettier -->
 <template>
   <div class="row justify-content-center">
     <div class="col-8">
@@ -123,16 +125,28 @@
             <b-col>
               <div class="form-group">
                 <label class="form-control-label" v-text="t$('businessApp.product.um')" for="product-um"></label>
-                <select class="form-control" id="product-um" data-cy="um" name="um" v-model="product.um" required>
-                  <option v-if="!product.um" :value="null" selected></option>
-                  <option
-                    :value="product.um && umOption.id === product.um.id ? product.um : umOption"
-                    v-for="umOption in ums"
-                    :key="umOption.id"
+                <b-form-input
+                  id="product-um"
+                  type="search"
+                  v-model="searchUm"
+                  :placeholder="t$('entity.action.search')"
+                  @input="filterUms"
+                  @keydown.down.prevent="moveDown"
+                  @keydown.up.prevent="moveUp"
+                  @keydown.enter.prevent="selectUmItem"
+                  required
+                ></b-form-input>
+                <div v-if="ums.length && showUmResults" class="autocomplete-results">
+                  <div
+                    v-for="(item, index) in ums"
+                    :key="item"
+                    class="autocomplete-item"
+                    :class="{ 'bg-light': index === activeUmIndex }"
+                    @click="selectUmItem(item)"
                   >
-                    {{ umOption.name }}
-                  </option>
-                </select>
+                    {{ item.name }}
+                  </div>
+                </div>
                 <div v-if="v$.um.$anyDirty && v$.um.$invalid">
                   <small class="form-text text-danger" v-for="error of v$.um.$errors" :key="error.$uid">{{ error.$message }}</small>
                 </div>
@@ -188,3 +202,23 @@
   </div>
 </template>
 <script lang="ts" src="./product-update.component.ts"></script>
+<style scoped>
+/* Optional: make dropdown appear nicely */
+.autocomplete-results {
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.autocomplete-item {
+  padding: 0.5rem;
+  cursor: pointer;
+}
+.autocomplete-item:hover {
+  background-color: #f8f9fa;
+}
+</style>

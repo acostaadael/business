@@ -61,7 +61,9 @@ export default defineComponent({
         required: validations.required(t$('entity.validation.required').toString()),
       },
       description: {},
-      productFamily: {},
+      productFamily: {
+        required: validations.required(t$('entity.validation.required').toString()),
+      },
     };
     const v$ = useVuelidate(validationRules, productLine as any);
     v$.value.$validate();

@@ -1,3 +1,4 @@
+<!-- eslint-disable prettier/prettier -->
 <template>
   <div class="row justify-content-center">
     <div class="col-8">
@@ -48,6 +49,7 @@
               data-cy="productFamily"
               name="productFamily"
               v-model="productLine.productFamily"
+              required
             >
               <option :value="null"></option>
               <option
@@ -62,6 +64,9 @@
                 {{ productFamilyOption.name }}
               </option>
             </select>
+            <div v-if="v$.productFamily.$anyDirty && v$.productFamily.$invalid">
+              <small class="form-text text-danger" v-for="error of v$.productFamily.$errors" :key="error.$uid">{{ error.$message }}</small>
+            </div>
           </div>
         </div>
         <div>

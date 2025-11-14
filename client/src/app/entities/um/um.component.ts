@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { type Ref, defineComponent, inject, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
