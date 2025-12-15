@@ -32,10 +32,6 @@ export default defineComponent({
     const productLines: Ref<IProductLine[]> = ref([]);
     const isSaving = ref(false);
     const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
-    const searchUm = ref('');
-    const showUmResults = ref(false);
-    const activeUmIndex = ref(-1);
-
     const route = useRoute();
     const router = useRouter();
 
@@ -55,11 +51,11 @@ export default defineComponent({
     }
 
     const initRelationships = () => {
-      /* umService()
+      umService()
         .retrieve()
         .then(res => {
           ums.value = res.data;
-        });*/
+        });
       productLineService()
         .retrieve()
         .then(res => {
@@ -98,44 +94,6 @@ export default defineComponent({
     const v$ = useVuelidate(validationRules, product as any);
     v$.value.$validate();
 
-    const filterUms = async () => {
-      try {
-        const paginationQuery = {
-          page: 0,
-          size: 12,
-          globalSearch: searchUm.value,
-        };
-        const res = await umService().retrieve(paginationQuery);
-        ums.value = res.data;
-        if (res.data.length > 0) {
-          showUmResults.value = true;
-        }
-      } catch (err) {
-        alertService.showHttpError(err.response);
-      }
-    };
-
-    const selectUmItem = () => {
-      if (activeUmIndex.value >= 0 && activeUmIndex.value < ums.value.length) {
-        const item = ums.value[activeUmIndex.value];
-        product.value.um = item;
-        searchUm.value = item.name;
-        showUmResults.value = false;
-      }
-    };
-
-    const moveUp = () => {
-      if (activeUmIndex.value > 0) {
-        activeUmIndex.value--;
-      }
-    };
-
-    const moveDown = () => {
-      if (activeUmIndex.value < ums.value.length - 1) {
-        activeUmIndex.value++;
-      }
-    };
-
     return {
       productService,
       alertService,
@@ -147,13 +105,6 @@ export default defineComponent({
       productLines,
       v$,
       t$,
-      searchUm,
-      filterUms,
-      showUmResults,
-      selectUmItem,
-      activeUmIndex,
-      moveUp,
-      moveDown,
     };
   },
   created(): void {},

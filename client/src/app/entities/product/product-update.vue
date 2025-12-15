@@ -125,28 +125,16 @@
             <b-col>
               <div class="form-group">
                 <label class="form-control-label" v-text="t$('businessApp.product.um')" for="product-um"></label>
-                <b-form-input
-                  id="product-um"
-                  type="search"
-                  v-model="searchUm"
-                  :placeholder="t$('entity.action.search')"
-                  @input="filterUms"
-                  @keydown.down.prevent="moveDown"
-                  @keydown.up.prevent="moveUp"
-                  @keydown.enter.prevent="selectUmItem"
-                  required
-                ></b-form-input>
-                <div v-if="ums.length && showUmResults" class="autocomplete-results">
-                  <div
-                    v-for="(item, index) in ums"
-                    :key="item"
-                    class="autocomplete-item"
-                    :class="{ 'bg-light': index === activeUmIndex }"
-                    @click="selectUmItem(item)"
+                <select class="form-control" id="product-um" data-cy="um" name="um" v-model="product.um" required>
+                  <option v-if="!product.um" :value="null" selected></option>
+                  <option
+                    :value="product.um && umOption.id === product.um.id ? product.um : umOption"
+                    v-for="umOption in ums"
+                    :key="umOption.id"
                   >
-                    {{ item.name }}
-                  </div>
-                </div>
+                    {{ umOption.name }}
+                  </option>
+                </select>
                 <div v-if="v$.um.$anyDirty && v$.um.$invalid">
                   <small class="form-text text-danger" v-for="error of v$.um.$errors" :key="error.$uid">{{ error.$message }}</small>
                 </div>
