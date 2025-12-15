@@ -47,7 +47,7 @@
           </dt>
           <dd>
             <div v-if="product.um">
-              <router-link :to="{ name: 'UmView', params: { umId: product.um.id } }">{{ product.um.id }}</router-link>
+              <span>{{ product.um.name }}</span>
             </div>
           </dd>
           <dt>
@@ -55,9 +55,7 @@
           </dt>
           <dd>
             <div v-if="product.productLine">
-              <router-link :to="{ name: 'ProductLineView', params: { productLineId: product.productLine.id } }">{{
-                product.productLine.id
-              }}</router-link>
+              <span>{{ product.productLine.name }}</span>
             </div>
           </dd>
         </dl>
