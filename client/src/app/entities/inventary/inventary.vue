@@ -3,6 +3,15 @@
     <h2 id="page-heading" data-cy="InventaryHeading">
       <span v-text="t$('businessApp.inventary.home.title')" id="inventary-heading"></span>
       <div class="d-flex justify-content-end">
+        <b-form-input
+          class="mr-2"
+          id="input-small"
+          type="search"
+          v-model="searchText"
+          :style="{ width: 40 + 'ch' }"
+          :placeholder="t$('entity.action.search')"
+          @input="onInput"
+        ></b-form-input>
         <button class="btn btn-info mr-2" @click="handleSyncList" :disabled="isFetching">
           <font-awesome-icon icon="sync" :spin="isFetching"></font-awesome-icon>
           <span v-text="t$('businessApp.inventary.home.refreshListLabel')"></span>

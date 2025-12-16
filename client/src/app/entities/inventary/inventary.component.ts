@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import InventaryService from './inventary.service';
 import { type IInventary } from '@/shared/model/inventary.model';
 import { useAlertService } from '@/shared/alert/alert.service';
+import { debounce } from 'lodash';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -19,6 +20,7 @@ export default defineComponent({
     const propOrder = ref('id');
     const reverse = ref(false);
     const totalItems = ref(0);
+    const searchText = ref('');
 
     const inventaries: Ref<IInventary[]> = ref([]);
 
@@ -39,11 +41,19 @@ export default defineComponent({
     const retrieveInventarys = async () => {
       isFetching.value = true;
       try {
-        const paginationQuery = {
-          page: page.value - 1,
-          size: itemsPerPage.value,
-          sort: sort(),
-        };
+        const paginationQuery =
+          searchText.value == ''
+            ? {
+                page: page.value - 1,
+                size: itemsPerPage.value,
+                sort: sort(),
+              }
+            : {
+                page: page.value - 1,
+                size: itemsPerPage.value,
+                globalSearch: searchText.value,
+                sort: sort(),
+              };
         const res = await inventaryService().retrieve(paginationQuery);
         totalItems.value = Number(res.headers['x-total-count']);
         queryCount.value = totalItems.value;
@@ -88,6 +98,11 @@ export default defineComponent({
       await retrieveInventarys();
     });
 
+    const onInput = debounce(async () => {
+      await retrieveInventarys();
+      // Perform your action here
+    }, 500);
+
     return {
       inventaries,
       handleSyncList,
@@ -102,6 +117,8 @@ export default defineComponent({
       totalItems,
       changeOrder,
       t$,
+      searchText,
+      onInput,
     };
   },
 });
