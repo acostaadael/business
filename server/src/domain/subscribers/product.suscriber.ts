@@ -20,8 +20,8 @@ export class ProductSubscriber implements EntitySubscriberInterface<Product> {
     const queryRunner = event.manager.queryRunner;
 
     if (!event.entity.hasCode && queryRunner) {
-      const result = await queryRunner.query(`SELECT nextval('product_id_seq')`);
-      const nextValue = result[0]?.nextval;
+      const result = await queryRunner.query(`SELECT id FROM product ORDER BY id DESC LIMIT 1`);
+      const nextValue = result.length > 0 ? result[0]?.id : 1;
       event.entity.code = (1000000000000 + nextValue).toString();
     }
   }

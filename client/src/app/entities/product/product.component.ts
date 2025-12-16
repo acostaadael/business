@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import ProductService from './product.service';
 import { type IProduct } from '@/shared/model/product.model';
 import { useAlertService } from '@/shared/alert/alert.service';
+import { debounce } from 'lodash';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -19,6 +20,7 @@ export default defineComponent({
     const propOrder = ref('id');
     const reverse = ref(false);
     const totalItems = ref(0);
+    const searchText = ref('');
 
     const products: Ref<IProduct[]> = ref([]);
 
@@ -39,11 +41,19 @@ export default defineComponent({
     const retrieveProducts = async () => {
       isFetching.value = true;
       try {
-        const paginationQuery = {
-          page: page.value - 1,
-          size: itemsPerPage.value,
-          sort: sort(),
-        };
+        const paginationQuery =
+          searchText.value == ''
+            ? {
+                page: page.value - 1,
+                size: itemsPerPage.value,
+                sort: sort(),
+              }
+            : {
+                page: page.value - 1,
+                size: itemsPerPage.value,
+                globalSearch: searchText.value,
+                sort: sort(),
+              };
         const res = await productService().retrieve(paginationQuery);
         totalItems.value = Number(res.headers['x-total-count']);
         queryCount.value = totalItems.value;
@@ -110,6 +120,11 @@ export default defineComponent({
       await retrieveProducts();
     });
 
+    const onInput = debounce(async () => {
+      await retrieveProducts();
+      // Perform your action here
+    }, 500);
+
     return {
       products,
       handleSyncList,
@@ -129,6 +144,8 @@ export default defineComponent({
       totalItems,
       changeOrder,
       t$,
+      searchText,
+      onInput,
     };
   },
 });
