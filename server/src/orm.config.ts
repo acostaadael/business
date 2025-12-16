@@ -52,7 +52,7 @@ function ormConfig(): TypeOrmModuleOptions {
       username: 'postgres',
       password: 'postgres',
       logging: false,
-      synchronize: true,
+      //synchronize: true,
     };
   } else {
     ormconfig = {
