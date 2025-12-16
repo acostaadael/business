@@ -51,13 +51,18 @@ export default defineComponent({
     }
 
     const initRelationships = () => {
+      const paginationQuery = {
+        page: 0,
+        size: 100,
+      };
+
       umService()
-        .retrieve()
+        .retrieve(paginationQuery)
         .then(res => {
           ums.value = res.data;
         });
       productLineService()
-        .retrieve()
+        .retrieve(paginationQuery)
         .then(res => {
           productLines.value = res.data;
         });

@@ -11,6 +11,7 @@ import { ProductFamily } from './domain/product-family.entity';
 import { ProductLine } from './domain/product-line.entity';
 import { Product } from './domain/product.entity';
 import { ProductSubscriber } from './domain/subscribers/product.suscriber';
+import { Inventary } from './domain/inventary.entity';
 // jhipster-needle-add-entity-to-ormconfig-imports - JHipster will add code here, do not remove
 
 function ormConfig(): TypeOrmModuleOptions {
@@ -77,6 +78,7 @@ function ormConfig(): TypeOrmModuleOptions {
       ProductFamily,
       ProductLine,
       Product,
+      Inventary,
       // jhipster-needle-add-entity-to-ormconfig-entities - JHipster will add code here, do not remove
     ],
     migrations: [

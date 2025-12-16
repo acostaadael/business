@@ -14,7 +14,8 @@
         "productCategory": "Product Category",
         "productFamily": "Product Family",
         "productLine": "Product Line",
-        "product": "Product"
+        "product": "Product",
+        "inventary": "Inventary"
       },
       "account": {
         "main": "Account",

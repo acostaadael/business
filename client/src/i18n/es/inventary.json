@@ -1,0 +1,26 @@
+{
+  "businessApp": {
+    "inventary": {
+      "home": {
+        "title": "Inventarios",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Inventary",
+        "createOrEditLabel": "Crear o editar Inventary",
+        "notFound": "Ningún Inventario encontrado"
+      },
+      "created": "Un nuevo Inventary ha sido creado con el identificador { param }",
+      "updated": "Un Inventary ha sido actualizado con el identificador { param }",
+      "deleted": "Un Inventary ha sido eliminado con el identificador { param }",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Inventary { id }?"
+      },
+      "detail": {
+        "title": "Inventary"
+      },
+      "id": "ID",
+      "count": "Cantidad",
+      "product": "Producto",
+      "ProductFamily": "Familia Producto"
+    }
+  }
+}

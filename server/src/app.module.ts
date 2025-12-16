@@ -11,6 +11,7 @@ import { ProductCategoryModule } from './module/product-category.module';
 import { ProductFamilyModule } from './module/product-family.module';
 import { ProductLineModule } from './module/product-line.module';
 import { ProductModule } from './module/product.module';
+import { InventaryModule } from './module/inventary.module';
 // jhipster-needle-add-entity-module-to-main-import - JHipster will import entity modules here, do not remove
 // jhipster-needle-add-controller-module-to-main-import - JHipster will import controller modules here, do not remove
 // jhipster-needle-add-service-module-to-main-import - JHipster will import service modules here, do not remove
@@ -29,6 +30,7 @@ import { ProductModule } from './module/product.module';
     ProductFamilyModule,
     ProductLineModule,
     ProductModule,
+    InventaryModule,
     // jhipster-needle-add-entity-module-to-main - JHipster will add entity modules here, do not remove
   ],
   controllers: [

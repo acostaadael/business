@@ -1,0 +1,26 @@
+{
+  "businessApp": {
+    "inventary": {
+      "home": {
+        "title": "Inventaries",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Inventary",
+        "createOrEditLabel": "Create or edit a Inventary",
+        "notFound": "No Inventaries found"
+      },
+      "created": "A new Inventary is created with identifier { param }",
+      "updated": "A Inventary is updated with identifier { param }",
+      "deleted": "A Inventary is deleted with identifier { param }",
+      "delete": {
+        "question": "Are you sure you want to delete Inventary { id }?"
+      },
+      "detail": {
+        "title": "Inventary"
+      },
+      "id": "ID",
+      "count": "Count",
+      "product": "Product",
+      "ProductFamily": "ProductFamily"
+    }
+  }
+}

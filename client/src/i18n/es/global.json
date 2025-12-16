@@ -14,7 +14,8 @@
         "productCategory": "Categorias de productos",
         "productFamily": "Familias de productos",
         "productLine": "Lineas de productos",
-        "product": "Productos"
+        "product": "Productos",
+        "inventary": "Inventarios"
       },
       "account": {
         "main": "Cuenta",
