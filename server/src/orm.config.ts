@@ -12,6 +12,7 @@ import { ProductLine } from './domain/product-line.entity';
 import { Product } from './domain/product.entity';
 import { ProductSubscriber } from './domain/subscribers/product.suscriber';
 import { Inventary } from './domain/inventary.entity';
+import { Entry } from './domain/entry.entity';
 // jhipster-needle-add-entity-to-ormconfig-imports - JHipster will add code here, do not remove
 
 function ormConfig(): TypeOrmModuleOptions {
@@ -52,7 +53,7 @@ function ormConfig(): TypeOrmModuleOptions {
       username: 'postgres',
       password: 'postgres',
       logging: false,
-      //synchronize: true,
+      synchronize: true,
     };
   } else {
     ormconfig = {
@@ -79,6 +80,7 @@ function ormConfig(): TypeOrmModuleOptions {
       ProductLine,
       Product,
       Inventary,
+      Entry,
       // jhipster-needle-add-entity-to-ormconfig-entities - JHipster will add code here, do not remove
     ],
     migrations: [

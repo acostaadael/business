@@ -34,6 +34,10 @@
               <span v-text="t$('businessApp.inventary.product')"></span>
               <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'product.name'"></jhi-sort-indicator>
             </th>
+            <th scope="row" @click="changeOrder('area.name')">
+              <span v-text="t$('businessApp.inventary.area')"></span>
+              <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'area.name'"></jhi-sort-indicator>
+            </th>
             <th scope="row">
               <span v-text="t$('businessApp.inventary.count')"></span>
             </th>
@@ -49,6 +53,11 @@
                 <router-link :to="{ name: 'ProductView', params: { productId: inventary.product.id } }">{{
                   inventary.product.name
                 }}</router-link>
+              </div>
+            </td>
+            <td>
+              <div v-if="inventary.area">
+                {{ inventary.area.name }}
               </div>
             </td>
             <td>{{ inventary.count }}</td>

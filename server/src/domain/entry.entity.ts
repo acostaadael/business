@@ -2,24 +2,32 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from './base/base.entity';
 
-import { Product } from './product.entity';
 import { Area } from './area.entity';
+import { Product } from './product.entity';
+import { Period } from './period.entity';
 
 /**
- * A Inventary.
+ * A Entry.
  */
-@Entity('inventary')
-export class Inventary extends BaseEntity {
+@Entity('entry')
+export class Entry extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number;
+
+  @Column({ type: 'integer', name: 'day' })
+  day: number;
 
   @Column({ type: 'decimal', name: 'count', precision: 10, scale: 2, default: 0 })
   count: number;
 
+  @ManyToOne(type => Area)
+  area?: Area;
+
   @ManyToOne(type => Product)
   product?: Product;
 
-  @ManyToOne(type => Area)
-  area?: Area;
+  @ManyToOne(type => Period)
+  period?: Period;
+
   // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
 }

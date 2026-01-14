@@ -7,6 +7,7 @@ import { InventaryMapper } from '../service/mapper/inventary.mapper';
 
 const relations = {
   product: true,
+  area: true,
 } as const;
 
 @Injectable()
