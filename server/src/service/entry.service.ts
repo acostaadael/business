@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { ConsoleLogger, HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { Entry } from '../domain/entry.entity';
@@ -6,6 +6,7 @@ import { EntryDTO } from '../service/dto/entry.dto';
 import { EntryMapper } from '../service/mapper/entry.mapper';
 import { PeriodService } from './period.service';
 import { InventaryService } from './inventary.service';
+import { InventaryDTO } from './dto/inventary.dto';
 
 const relations = {
   area: true,
@@ -60,9 +61,7 @@ export class EntryService {
       }
       const result = await this.entryRepository.save(entity);
 
-      const exitsInventary = await this.inventaryService.findByFields({
-        where: { product: { id: result.product.id }, area: { id: result.area.id } },
-      });
+      await this.updateInventary(result);
 
       return EntryMapper.fromEntityToDTO(result);
     }
@@ -83,6 +82,32 @@ export class EntryService {
     const entityFind = await this.findById(id);
     if (entityFind) {
       throw new HttpException('Error, entity not deleted!', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async updateInventary(entry: Entry): Promise<InventaryDTO> {
+    const exitsInventary = await this.inventaryService.findByFields({
+      relations: { product: true, area: true },
+      where: { product: { id: entry.product.id }, area: { id: entry.area.id } },
+    });
+
+    //Si existe inventario actualizar la cantidad
+    if (exitsInventary) {
+      console.log(exitsInventary);
+      exitsInventary.count = Number(exitsInventary.count) + Number(entry.count);
+      exitsInventary.lastModifiedBy = entry.lastModifiedBy;
+      const result = await this.inventaryService.save(exitsInventary);
+      return result;
+    } else {
+      //Sino crear un inventario nuevo
+      let inventary = new InventaryDTO();
+      inventary.product = entry.product;
+      inventary.area = entry.area;
+      inventary.count = entry.count;
+      inventary.createdBy = entry.createdBy;
+      inventary.lastModifiedBy = entry.lastModifiedBy;
+      const result = await this.inventaryService.save(inventary);
+      return result;
     }
   }
 }
