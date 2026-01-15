@@ -7,6 +7,8 @@ import { EntryMapper } from '../service/mapper/entry.mapper';
 import { PeriodService } from './period.service';
 import { InventaryService } from './inventary.service';
 import { InventaryDTO } from './dto/inventary.dto';
+import { EntryRepository } from '../repository/entry.repository';
+import { EntryQueryDTO } from './dto/entry.query.dto';
 
 const relations = {
   area: true,
@@ -19,7 +21,7 @@ export class EntryService {
   logger = new Logger('EntryService');
 
   constructor(
-    @InjectRepository(Entry) private entryRepository: Repository<Entry>,
+    private readonly entryRepository: EntryRepository,
     private periodService: PeriodService,
     private inventaryService: InventaryService,
   ) {}
@@ -37,8 +39,8 @@ export class EntryService {
     return EntryMapper.fromEntityToDTO(result);
   }
 
-  async findAndCount(options: FindManyOptions<EntryDTO>): Promise<[EntryDTO[], number]> {
-    const resultList = await this.entryRepository.findAndCount({ ...options, relations });
+  async findAndCount(query: EntryQueryDTO): Promise<[EntryDTO[], number]> {
+    const resultList = await this.entryRepository.findAllFilter(query);
     const entryDTO: EntryDTO[] = [];
     if (resultList && resultList[0]) {
       resultList[0].forEach(entry => entryDTO.push(EntryMapper.fromEntityToDTO(entry)));
