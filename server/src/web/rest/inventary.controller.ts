@@ -20,7 +20,8 @@ import { AuthGuard, RoleType, Roles, RolesGuard } from '../../security';
 import { HeaderUtil } from '../../client/header-util';
 import { Request } from '../../client/request';
 import { LoggingInterceptor } from '../../client/interceptors/logging.interceptor';
-import { ILike } from 'typeorm';
+import { CompanyService } from '../../service/company.service';
+import { InventaryQueryDTO } from '../../service/dto/inventary.query.dto';
 
 @Controller('api/inventaries')
 @UseGuards(AuthGuard, RolesGuard)
@@ -30,7 +31,10 @@ import { ILike } from 'typeorm';
 export class InventaryController {
   logger = new Logger('InventaryController');
 
-  constructor(private readonly inventaryService: InventaryService) {}
+  constructor(
+    private readonly inventaryService: InventaryService,
+    private readonly companyService: CompanyService,
+  ) {}
 
   @Get('/')
   @Roles(RoleType.USER)
@@ -42,20 +46,14 @@ export class InventaryController {
   async getAll(@Req() req: Request): Promise<InventaryDTO[]> {
     const pageRequest: PageRequest = new PageRequest(req.query.page, req.query.size, req.query.sort ?? 'id,ASC');
 
-    const options = req.query.globalSearch
-      ? {
-          skip: +pageRequest.page * pageRequest.size,
-          take: +pageRequest.size,
-          where: [{ product: { name: ILike(`%${req.query.globalSearch}%`) } }, { area: { name: ILike(`%${req.query.globalSearch}%`) } }],
-          order: pageRequest.sort.asOrder(),
-        }
-      : {
-          skip: +pageRequest.page * pageRequest.size,
-          take: +pageRequest.size,
-          order: pageRequest.sort.asOrder(),
-        };
+    const currentCompany = await this.companyService.findActive();
 
-    const [results, count] = await this.inventaryService.findAndCount(options);
+    const inventaryQuery = new InventaryQueryDTO();
+    inventaryQuery.pageRequest = pageRequest;
+    inventaryQuery.companyId = currentCompany.id;
+    inventaryQuery.globalFilter = req.query.globalSearch ? req.query.globalSearch.toString() : null;
+
+    const [results, count] = await this.inventaryService.findAndCount(inventaryQuery);
     HeaderUtil.addPaginationHeaders(req.res, new Page(results, count, pageRequest));
     return results;
   }

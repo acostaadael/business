@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
-import { Inventary } from '../domain/inventary.entity';
+import { FindOneOptions } from 'typeorm';
 import { InventaryDTO } from '../service/dto/inventary.dto';
 import { InventaryMapper } from '../service/mapper/inventary.mapper';
+import { InventaryRepository } from '../repository/inventary.repository';
+import { InventaryQueryDTO } from './dto/inventary.query.dto';
 
 const relations = {
   product: true,
@@ -14,7 +14,7 @@ const relations = {
 export class InventaryService {
   logger = new Logger('InventaryService');
 
-  constructor(@InjectRepository(Inventary) private inventaryRepository: Repository<Inventary>) {}
+  constructor(private readonly inventaryRepository: InventaryRepository) {}
 
   async findById(id: number): Promise<InventaryDTO | undefined> {
     const result = await this.inventaryRepository.findOne({
@@ -29,8 +29,8 @@ export class InventaryService {
     return InventaryMapper.fromEntityToDTO(result);
   }
 
-  async findAndCount(options: FindManyOptions<InventaryDTO>): Promise<[InventaryDTO[], number]> {
-    const resultList = await this.inventaryRepository.findAndCount({ ...options, relations });
+  async findAndCount(query: InventaryQueryDTO): Promise<[InventaryDTO[], number]> {
+    const resultList = await this.inventaryRepository.findAllFilter(query);
     const inventaryDTO: InventaryDTO[] = [];
     if (resultList && resultList[0]) {
       resultList[0].forEach(inventary => inventaryDTO.push(InventaryMapper.fromEntityToDTO(inventary)));
