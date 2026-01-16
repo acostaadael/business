@@ -1,0 +1,25 @@
+{
+  "businessApp": {
+    "company": {
+      "home": {
+        "title": "Compañias",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nueva Compañia",
+        "createOrEditLabel": "Crear o editar Compañia",
+        "notFound": "Ninguna Compañia encontrada"
+      },
+      "created": "Una nueva Compañia ha sido creada con el identificador { param }",
+      "updated": "Una Compañia ha sido actualizada con el identificador { param }",
+      "deleted": "Un Compañia ha sido eliminada con el identificador { param }",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar la Compañia { id }?"
+      },
+      "detail": {
+        "title": "Compañia"
+      },
+      "id": "ID",
+      "name": "Nombre",
+      "active": "Activa"
+    }
+  }
+}

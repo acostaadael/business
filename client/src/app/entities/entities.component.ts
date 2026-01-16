@@ -9,6 +9,7 @@ import ProductLineService from './product-line/product-line.service';
 import ProductService from './product/product.service';
 import InventaryService from './inventary/inventary.service';
 import EntryService from './entry/entry.service';
+import CompanyService from './company/company.service';
 import UserService from '@/entities/user/user.service';
 // jhipster-needle-add-entity-service-to-entities-component-import - JHipster will import entities services here
 
@@ -26,6 +27,7 @@ export default defineComponent({
     provide('productService', () => new ProductService());
     provide('inventaryService', () => new InventaryService());
     provide('entryService', () => new EntryService());
+    provide('companyService', () => new CompanyService());
     // jhipster-needle-add-entity-service-to-entities-component - JHipster will import entities services here
   },
 });

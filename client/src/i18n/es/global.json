@@ -16,7 +16,8 @@
         "productLine": "Lineas de productos",
         "product": "Productos",
         "inventary": "Inventarios",
-        "entry": "Entradas"
+        "entry": "Entradas",
+        "company": "Compañias"
       },
       "account": {
         "main": "Cuenta",

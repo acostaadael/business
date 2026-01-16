@@ -16,7 +16,8 @@
         "productLine": "Product Line",
         "product": "Product",
         "inventary": "Inventary",
-        "entry": "Entry"
+        "entry": "Entry",
+        "company": "Company"
       },
       "account": {
         "main": "Account",

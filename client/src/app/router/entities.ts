@@ -31,6 +31,10 @@ const Inventary = () => import('@/entities/inventary/inventary.vue');
 const Entry = () => import('@/entities/entry/entry.vue');
 const EntryUpdate = () => import('@/entities/entry/entry-update.vue');
 
+const Company = () => import('@/entities/company/company.vue');
+const CompanyUpdate = () => import('@/entities/company/company-update.vue');
+const CompanyDetails = () => import('@/entities/company/company-details.vue');
+
 // jhipster-needle-add-entity-to-router-import - JHipster will import entities to the router here
 
 export default {
@@ -41,7 +45,7 @@ export default {
       path: 'period',
       name: 'Period',
       component: Period,
-      meta: { authorities: [Authority.ADMIN] },
+      meta: { authorities: [Authority.USER] },
     },
     {
       path: 'period/new',
@@ -197,6 +201,30 @@ export default {
       path: 'entry/new',
       name: 'EntryCreate',
       component: EntryUpdate,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'company',
+      name: 'Company',
+      component: Company,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'company/new',
+      name: 'CompanyCreate',
+      component: CompanyUpdate,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'company/:companyId/edit',
+      name: 'CompanyEdit',
+      component: CompanyUpdate,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'company/:companyId/view',
+      name: 'CompanyView',
+      component: CompanyDetails,
       meta: { authorities: [Authority.USER] },
     },
     // jhipster-needle-add-entity-to-router - JHipster will add entities to the router here
