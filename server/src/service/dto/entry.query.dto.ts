@@ -9,6 +9,9 @@ export class EntryQueryDTO {
   @IsNotEmpty()
   periodId: number;
 
+  @IsNotEmpty()
+  companyId: number;
+
   globalFilter?: string;
 
   @IsNotEmpty()

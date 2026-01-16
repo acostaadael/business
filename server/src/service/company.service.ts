@@ -18,6 +18,13 @@ export class CompanyService {
     return CompanyMapper.fromEntityToDTO(result);
   }
 
+  async findActive(): Promise<CompanyDTO | undefined> {
+    const result = await this.companyRepository.findOne({
+      where: { active: true },
+    });
+    return CompanyMapper.fromEntityToDTO(result);
+  }
+
   async findByFields(options: FindOneOptions<CompanyDTO>): Promise<CompanyDTO | undefined> {
     const result = await this.companyRepository.findOne(options);
     return CompanyMapper.fromEntityToDTO(result);
@@ -41,6 +48,7 @@ export class CompanyService {
       }
       entity.lastModifiedBy = creator;
     }
+    await this.validate(companyDTO);
     const result = await this.companyRepository.save(entity);
     return CompanyMapper.fromEntityToDTO(result);
   }
@@ -50,6 +58,7 @@ export class CompanyService {
     if (updater) {
       entity.lastModifiedBy = updater;
     }
+    await this.validate(companyDTO);
     const result = await this.companyRepository.save(entity);
     return CompanyMapper.fromEntityToDTO(result);
   }
@@ -59,6 +68,16 @@ export class CompanyService {
     const entityFind = await this.findById(id);
     if (entityFind) {
       throw new HttpException('Error, entity not deleted!', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async validate(companyDTO: CompanyDTO): Promise<void | undefined> {
+    const company = await this.companyRepository.findOne({
+      where: { active: true },
+    });
+
+    if (company?.id != companyDTO.id && companyDTO.active) {
+      throw new HttpException('Ya existe una compañia activa!', HttpStatus.BAD_REQUEST);
     }
   }
 }

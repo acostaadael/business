@@ -5,6 +5,7 @@ import { BaseEntity } from './base/base.entity';
 import { Area } from './area.entity';
 import { Product } from './product.entity';
 import { Period } from './period.entity';
+import { Company } from './company.entity';
 
 /**
  * A Entry.
@@ -28,6 +29,9 @@ export class Entry extends BaseEntity {
 
   @ManyToOne(type => Period)
   period?: Period;
+
+  @ManyToOne(type => Company)
+  company?: Company;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
 }

@@ -4,6 +4,7 @@ import { BaseEntity } from './base/base.entity';
 
 import { Product } from './product.entity';
 import { Area } from './area.entity';
+import { Company } from './company.entity';
 
 /**
  * A Inventary.
@@ -21,5 +22,8 @@ export class Inventary extends BaseEntity {
 
   @ManyToOne(type => Area)
   area?: Area;
+
+  @ManyToOne(type => Company)
+  company?: Company;
   // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
 }

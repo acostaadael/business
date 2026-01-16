@@ -6,9 +6,10 @@ import { EntryService } from '../service/entry.service';
 import { PeriodModule } from './period.module';
 import { InventaryModule } from './inventary.module';
 import { EntryRepository } from '../repository/entry.repository';
+import { CompanyModule } from './company.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Entry, EntryRepository]), PeriodModule, InventaryModule],
+  imports: [TypeOrmModule.forFeature([Entry, EntryRepository]), PeriodModule, InventaryModule, CompanyModule],
   controllers: [EntryController],
   providers: [EntryService, EntryRepository],
   exports: [EntryService, EntryRepository],

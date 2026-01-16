@@ -17,9 +17,11 @@ export class EntryRepository extends Repository<Entry> {
     const q = this.createQueryBuilder('entry')
       .innerJoinAndSelect('entry.period', 'period')
       .innerJoinAndSelect('entry.product', 'product')
+      .innerJoinAndSelect('entry.company', 'company')
       .innerJoinAndSelect('product.um', 'um')
       .innerJoinAndSelect('entry.area', 'area')
-      .where('period.id = :periodId', { periodId: query.periodId });
+      .where('period.id = :periodId', { periodId: query.periodId })
+      .andWhere('company.id = :companyId', { companyId: query.companyId });
 
     if (query.globalFilter) {
       q.andWhere(

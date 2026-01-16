@@ -1,6 +1,5 @@
-import { ConsoleLogger, HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { FindOneOptions } from 'typeorm';
 import { Entry } from '../domain/entry.entity';
 import { EntryDTO } from '../service/dto/entry.dto';
 import { EntryMapper } from '../service/mapper/entry.mapper';
@@ -9,10 +8,12 @@ import { InventaryService } from './inventary.service';
 import { InventaryDTO } from './dto/inventary.dto';
 import { EntryRepository } from '../repository/entry.repository';
 import { EntryQueryDTO } from './dto/entry.query.dto';
+import { CompanyService } from './company.service';
 
 const relations = {
   area: true,
   period: true,
+  company: true,
   product: { um: true },
 } as const;
 
@@ -23,6 +24,7 @@ export class EntryService {
   constructor(
     private readonly entryRepository: EntryRepository,
     private periodService: PeriodService,
+    private companyService: CompanyService,
     private inventaryService: InventaryService,
   ) {}
 
@@ -51,9 +53,11 @@ export class EntryService {
 
   async save(entryDTO: EntryDTO, creator?: string): Promise<EntryDTO | undefined> {
     const openPeriod = await this.periodService.findOpen();
+    const currentCompany = await this.companyService.findActive();
 
-    if (openPeriod) {
+    if (openPeriod && currentCompany) {
       entryDTO.period = openPeriod;
+      entryDTO.company = currentCompany;
       const entity = EntryMapper.fromDTOtoEntity(entryDTO);
       if (creator) {
         if (!entity.createdBy) {
@@ -89,8 +93,12 @@ export class EntryService {
 
   async updateInventary(entry: Entry): Promise<InventaryDTO> {
     const exitsInventary = await this.inventaryService.findByFields({
-      relations: { product: true, area: true },
-      where: { product: { id: entry.product.id }, area: { id: entry.area.id } },
+      relations: { product: true, area: true, company: true },
+      where: {
+        product: { id: entry.product.id },
+        area: { id: entry.area.id },
+        company: { id: entry.company.id },
+      },
     });
 
     //Si existe inventario actualizar la cantidad
@@ -106,6 +114,7 @@ export class EntryService {
       inventary.product = entry.product;
       inventary.area = entry.area;
       inventary.count = entry.count;
+      inventary.company = entry.company;
       inventary.createdBy = entry.createdBy;
       inventary.lastModifiedBy = entry.lastModifiedBy;
       const result = await this.inventaryService.save(inventary);

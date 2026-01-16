@@ -6,6 +6,7 @@ import { BaseDTO } from './base.dto';
 import { AreaDTO } from './area.dto';
 import { ProductDTO } from './product.dto';
 import { PeriodDTO } from './period.dto';
+import { CompanyDTO } from './company.dto';
 
 /**
  * A EntryDTO object.
@@ -29,6 +30,9 @@ export class EntryDTO extends BaseDTO {
 
   @ApiProperty({ type: () => PeriodDTO, description: 'period relationship' })
   period?: PeriodDTO;
+
+  @ApiProperty({ type: () => CompanyDTO, description: 'company relationship' })
+  company?: CompanyDTO;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
 }

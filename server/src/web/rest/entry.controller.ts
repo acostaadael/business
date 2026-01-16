@@ -22,6 +22,7 @@ import { Request } from '../../client/request';
 import { LoggingInterceptor } from '../../client/interceptors/logging.interceptor';
 import { PeriodService } from '../../service/period.service';
 import { EntryQueryDTO } from '../../service/dto/entry.query.dto';
+import { CompanyService } from '../../service/company.service';
 
 @Controller('api/entries')
 @UseGuards(AuthGuard, RolesGuard)
@@ -34,6 +35,7 @@ export class EntryController {
   constructor(
     private readonly entryService: EntryService,
     private readonly periodService: PeriodService,
+    private readonly companyService: CompanyService,
   ) {}
 
   @Get('/')
@@ -47,10 +49,12 @@ export class EntryController {
     const pageRequest: PageRequest = new PageRequest(req.query.page, req.query.size, req.query.sort ?? 'id,ASC');
 
     const openPeriod = await this.periodService.findOpen();
+    const currentCompany = await this.companyService.findActive();
 
     const entryQuery = new EntryQueryDTO();
     entryQuery.periodId = openPeriod.id;
     entryQuery.pageRequest = pageRequest;
+    entryQuery.companyId = currentCompany.id;
     entryQuery.globalFilter = req.query.globalSearch ? req.query.globalSearch.toString() : null;
 
     const [results, count] = await this.entryService.findAndCount(entryQuery);

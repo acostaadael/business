@@ -110,6 +110,17 @@ export default defineComponent({
       await retrieveCompanys();
     });
 
+    const changeStatus = async (entity: ICompany, status: boolean) => {
+      entity.active = status;
+      try {
+        await companyService().update(entity);
+        await retrieveCompanys();
+      } catch (error: any) {
+        alertService.showHttpError(error.response);
+        await retrieveCompanys();
+      }
+    };
+
     return {
       companies,
       handleSyncList,
@@ -129,6 +140,7 @@ export default defineComponent({
       totalItems,
       changeOrder,
       t$,
+      changeStatus,
     };
   },
 });

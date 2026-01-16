@@ -19,7 +19,9 @@
       },
       "id": "ID",
       "name": "Nombre",
-      "active": "Activa"
+      "active": "Activa",
+      "activated": "Activada",
+      "deactivated": "Desactivada"
     }
   }
 }

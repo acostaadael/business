@@ -36,10 +36,7 @@
               <span v-text="t$('businessApp.company.name')"></span>
               <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'name'"></jhi-sort-indicator>
             </th>
-            <th scope="row" @click="changeOrder('active')">
-              <span v-text="t$('businessApp.company.active')"></span>
-              <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'active'"></jhi-sort-indicator>
-            </th>
+            <th scope="col"></th>
             <th scope="row"></th>
           </tr>
         </thead>
@@ -49,7 +46,20 @@
               <router-link :to="{ name: 'CompanyView', params: { companyId: company.id } }">{{ company.id }}</router-link>
             </td>
             <td>{{ company.name }}</td>
-            <td>{{ company.active }}</td>
+            <td>
+              <button
+                class="btn btn-danger btn-sm deactivated"
+                @click="changeStatus(company, true)"
+                v-if="!company.active"
+                v-text="t$('businessApp.company.deactivated')"
+              ></button>
+              <button
+                class="btn btn-success btn-sm"
+                @click="changeStatus(company, false)"
+                v-if="company.active"
+                v-text="t$('businessApp.company.activated')"
+              ></button>
+            </td>
             <td class="text-right">
               <div class="btn-group">
                 <router-link :to="{ name: 'CompanyView', params: { companyId: company.id } }" custom v-slot="{ navigate }">
