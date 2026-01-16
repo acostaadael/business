@@ -17,7 +17,8 @@
         "product": "Productos",
         "inventary": "Inventarios",
         "entry": "Entradas",
-        "company": "Compañias"
+        "company": "Compañias",
+        "inventoryMovement": "Movimientos de inventarios"
       },
       "account": {
         "main": "Cuenta",
@@ -134,7 +135,8 @@
       "number": "Este campo debe ser un número.",
       "datetimelocal": "Este campo debe ser una fecha y hora.",
       "minValue": "Este campo puede tener un valor mínimo de { min }",
-      "maxValue": "Este campo puede tener un valor máximo de { max }"
+      "maxValue": "Este campo puede tener un valor máximo de { max }",
+      "differentFrom": "Este campo debe ser distinto a { value }"
     },
     "filters": {
       "set": "Following filters are set",

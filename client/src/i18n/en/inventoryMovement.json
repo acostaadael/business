@@ -1,0 +1,30 @@
+{
+  "businessApp": {
+    "inventoryMovement": {
+      "home": {
+        "title": "Inventory Movements",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Inventory Movement",
+        "createOrEditLabel": "Create or edit a Inventory Movement",
+        "notFound": "No Inventory Movements found"
+      },
+      "created": "A new Inventory Movement is created with identifier { param }",
+      "updated": "A Inventory Movement is updated with identifier { param }",
+      "deleted": "A Inventory Movement is deleted with identifier { param }",
+      "delete": {
+        "question": "Are you sure you want to delete Inventory Movement { id }?"
+      },
+      "detail": {
+        "title": "Inventory Movement"
+      },
+      "id": "ID",
+      "day": "Day",
+      "count": "Count",
+      "period": "Period",
+      "company": "Company",
+      "product": "Product",
+      "source": "Source",
+      "target": "Target"
+    }
+  }
+}

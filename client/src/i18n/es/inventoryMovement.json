@@ -1,0 +1,30 @@
+{
+  "businessApp": {
+    "inventoryMovement": {
+      "home": {
+        "title": "Movimientos de inventarios",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Movimiento",
+        "createOrEditLabel": "Crear o editar Movimiento",
+        "notFound": "Ningún Movimiento encontrado"
+      },
+      "created": "Un nuevo Movimiento ha sido creado con el identificador { param }",
+      "updated": "Un Movimiento ha sido actualizado con el identificador { param }",
+      "deleted": "Un Movimiento ha sido eliminado con el identificador { param }",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar el Movimiento { id }?"
+      },
+      "detail": {
+        "title": "Movimiento de Inventario"
+      },
+      "id": "ID",
+      "day": "Dia",
+      "count": "Cantidad",
+      "period": "Periodo",
+      "company": "Compañia",
+      "product": "Producto",
+      "source": "Fuente",
+      "target": "Destino"
+    }
+  }
+}
