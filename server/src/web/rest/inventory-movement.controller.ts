@@ -20,6 +20,9 @@ import { AuthGuard, RoleType, Roles, RolesGuard } from '../../security';
 import { HeaderUtil } from '../../client/header-util';
 import { Request } from '../../client/request';
 import { LoggingInterceptor } from '../../client/interceptors/logging.interceptor';
+import { PeriodService } from '../../service/period.service';
+import { CompanyService } from '../../service/company.service';
+import { InventoryMovementQueryDTO } from '../../service/dto/inventory-movement.query.dto';
 
 @Controller('api/inventory-movements')
 @UseGuards(AuthGuard, RolesGuard)
@@ -29,7 +32,11 @@ import { LoggingInterceptor } from '../../client/interceptors/logging.intercepto
 export class InventoryMovementController {
   logger = new Logger('InventoryMovementController');
 
-  constructor(private readonly inventoryMovementService: InventoryMovementService) {}
+  constructor(
+    private readonly inventoryMovementService: InventoryMovementService,
+    private readonly periodService: PeriodService,
+    private readonly companyService: CompanyService,
+  ) {}
 
   @Get('/')
   @Roles(RoleType.USER)
@@ -40,11 +47,17 @@ export class InventoryMovementController {
   })
   async getAll(@Req() req: Request): Promise<InventoryMovementDTO[]> {
     const pageRequest: PageRequest = new PageRequest(req.query.page, req.query.size, req.query.sort ?? 'id,ASC');
-    const [results, count] = await this.inventoryMovementService.findAndCount({
-      skip: +pageRequest.page * pageRequest.size,
-      take: +pageRequest.size,
-      order: pageRequest.sort.asOrder(),
-    });
+
+    const openPeriod = await this.periodService.findOpen();
+    const currentCompany = await this.companyService.findActive();
+
+    const entryQuery = new InventoryMovementQueryDTO();
+    entryQuery.periodId = openPeriod.id;
+    entryQuery.pageRequest = pageRequest;
+    entryQuery.companyId = currentCompany.id;
+    entryQuery.globalFilter = req.query.globalSearch ? req.query.globalSearch.toString() : null;
+
+    const [results, count] = await this.inventoryMovementService.findAndCount(entryQuery);
     HeaderUtil.addPaginationHeaders(req.res, new Page(results, count, pageRequest));
     return results;
   }

@@ -1,11 +1,12 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
-import { InventoryMovement } from '../domain/inventory-movement.entity';
+import { FindOneOptions } from 'typeorm';
 import { InventoryMovementDTO } from '../service/dto/inventory-movement.dto';
 import { InventoryMovementMapper } from '../service/mapper/inventory-movement.mapper';
-import { PeriodService } from './period.service';
-import { CompanyService } from './company.service';
+import { PeriodService } from '../service/period.service';
+import { CompanyService } from '../service/company.service';
+import { InventaryService } from '../service/inventary.service';
+import { InventoryMovementRepository } from '../repository/inventary.movement.repository';
+import { InventoryMovementQueryDTO } from '../service/dto/inventory-movement.query.dto';
 
 const relations = {
   period: true,
@@ -20,9 +21,10 @@ export class InventoryMovementService {
   logger = new Logger('InventoryMovementService');
 
   constructor(
-    @InjectRepository(InventoryMovement) private inventoryMovementRepository: Repository<InventoryMovement>,
+    private readonly inventoryMovementRepository: InventoryMovementRepository,
     private periodService: PeriodService,
     private companyService: CompanyService,
+    private inventaryService: InventaryService,
   ) {}
 
   async findById(id: number): Promise<InventoryMovementDTO | undefined> {
@@ -38,8 +40,8 @@ export class InventoryMovementService {
     return InventoryMovementMapper.fromEntityToDTO(result);
   }
 
-  async findAndCount(options: FindManyOptions<InventoryMovementDTO>): Promise<[InventoryMovementDTO[], number]> {
-    const resultList = await this.inventoryMovementRepository.findAndCount({ ...options, relations });
+  async findAndCount(query: InventoryMovementQueryDTO): Promise<[InventoryMovementDTO[], number]> {
+    const resultList = await this.inventoryMovementRepository.findAllFilter(query);
     const inventoryMovementDTO: InventoryMovementDTO[] = [];
     if (resultList && resultList[0]) {
       resultList[0].forEach(inventoryMovement => inventoryMovementDTO.push(InventoryMovementMapper.fromEntityToDTO(inventoryMovement)));
@@ -49,13 +51,13 @@ export class InventoryMovementService {
   }
 
   async save(inventoryMovementDTO: InventoryMovementDTO, creator?: string): Promise<InventoryMovementDTO | undefined> {
-    const entity = InventoryMovementMapper.fromDTOtoEntity(inventoryMovementDTO);
     const openPeriod = await this.periodService.findOpen();
     const currentCompany = await this.companyService.findActive();
 
     if (openPeriod && currentCompany) {
       inventoryMovementDTO.company = currentCompany;
       inventoryMovementDTO.period = openPeriod;
+      const entity = InventoryMovementMapper.fromDTOtoEntity(inventoryMovementDTO);
 
       if (creator) {
         if (!entity.createdBy) {
@@ -63,6 +65,7 @@ export class InventoryMovementService {
         }
         entity.lastModifiedBy = creator;
       }
+      await this.inventaryService.moveInventaries(inventoryMovementDTO);
       const result = await this.inventoryMovementRepository.save(entity);
 
       return InventoryMovementMapper.fromEntityToDTO(result);

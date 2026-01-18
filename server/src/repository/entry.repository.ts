@@ -28,7 +28,8 @@ export class EntryRepository extends Repository<Entry> {
         new Brackets(qb => {
           qb.where('product.name ilike :t', { t: `%${query.globalFilter}%` })
             .orWhere('um.name ilike :t', { t: `%${query.globalFilter}%` })
-            .orWhere('area.name ilike :t', { t: `%${query.globalFilter}%` });
+            .orWhere('area.name ilike :t', { t: `%${query.globalFilter}%` })
+            .orWhere('entry.day::TEXT ilike :t', { t: `%${query.globalFilter}%` });
         }),
       );
     }

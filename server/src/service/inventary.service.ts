@@ -3,7 +3,9 @@ import { FindOneOptions } from 'typeorm';
 import { InventaryDTO } from '../service/dto/inventary.dto';
 import { InventaryMapper } from '../service/mapper/inventary.mapper';
 import { InventaryRepository } from '../repository/inventary.repository';
-import { InventaryQueryDTO } from './dto/inventary.query.dto';
+import { InventaryQueryDTO } from '../service/dto/inventary.query.dto';
+import { EntryDTO } from '../service/dto/entry.dto';
+import { InventoryMovementDTO } from './dto/inventory-movement.dto';
 
 const relations = {
   product: true,
@@ -66,5 +68,66 @@ export class InventaryService {
     if (entityFind) {
       throw new HttpException('Error, entity not deleted!', HttpStatus.NOT_FOUND);
     }
+  }
+
+  async createOrUpdateInventaryFromEntry(entry: EntryDTO): Promise<InventaryDTO> {
+    const exitsInventary = await this.findByFields({
+      relations: { product: true, area: true, company: true },
+      where: {
+        product: { id: entry.product.id },
+        area: { id: entry.area.id },
+        company: { id: entry.company.id },
+      },
+    });
+
+    //Si existe inventario actualizar la cantidad
+    if (exitsInventary) {
+      exitsInventary.count = Number(exitsInventary.count) + Number(entry.count);
+      const result = await this.update(exitsInventary, entry.lastModifiedBy);
+      return result;
+    } else {
+      //Sino crear un inventario nuevo
+      const inventary = new InventaryDTO();
+      inventary.product = entry.product;
+      inventary.area = entry.area;
+      inventary.count = entry.count;
+      inventary.company = entry.company;
+      const result = await this.save(inventary, entry.createdBy);
+      return result;
+    }
+  }
+
+  async moveInventaries(movement: InventoryMovementDTO): Promise<InventaryDTO> {
+    const exitsInventary = await this.findByFields({
+      relations: { product: true, area: true, company: true },
+      where: {
+        product: { id: movement.product.id },
+        area: { id: movement.source.id },
+        company: { id: movement.company.id },
+      },
+    });
+    const movementCount = Number(movement.count);
+    const inventoryCount = Number(exitsInventary.count);
+
+    if (exitsInventary && movementCount <= inventoryCount) {
+      const restCount = inventoryCount - movementCount;
+
+      if (restCount == 0) {
+        await this.deleteById(exitsInventary.id);
+      } else {
+        exitsInventary.count = restCount;
+        await this.update(exitsInventary, movement.lastModifiedBy);
+      }
+
+      const entry = new EntryDTO();
+      entry.product = movement.product;
+      entry.area = movement.target;
+      entry.company = movement.company;
+      entry.count = movementCount;
+      entry.createdBy = movement.createdBy;
+      const inventary = await this.createOrUpdateInventaryFromEntry(entry);
+      return inventary;
+    }
+    throw new HttpException('No existe esta cantidad en inventario!', HttpStatus.BAD_REQUEST);
   }
 }

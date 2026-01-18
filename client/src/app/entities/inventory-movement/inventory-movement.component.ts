@@ -1,9 +1,11 @@
-import { type Ref, defineComponent, inject, onMounted, ref, watch } from 'vue';
+import { type Ref, computed, defineComponent, inject, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import InventoryMovementService from './inventory-movement.service';
 import { type IInventoryMovement } from '@/shared/model/inventory-movement.model';
 import { useAlertService } from '@/shared/alert/alert.service';
+import { usePeriodStore } from '@/store';
+import { debounce } from 'lodash';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -19,6 +21,10 @@ export default defineComponent({
     const propOrder = ref('id');
     const reverse = ref(false);
     const totalItems = ref(0);
+    const searchText = ref('');
+
+    const periodStore = usePeriodStore();
+    const openPeriod = computed(() => periodStore.period);
 
     const inventoryMovements: Ref<IInventoryMovement[]> = ref([]);
 
@@ -39,11 +45,19 @@ export default defineComponent({
     const retrieveInventoryMovements = async () => {
       isFetching.value = true;
       try {
-        const paginationQuery = {
-          page: page.value - 1,
-          size: itemsPerPage.value,
-          sort: sort(),
-        };
+        const paginationQuery =
+          searchText.value == ''
+            ? {
+                page: page.value - 1,
+                size: itemsPerPage.value,
+                sort: sort(),
+              }
+            : {
+                page: page.value - 1,
+                size: itemsPerPage.value,
+                globalSearch: searchText.value,
+                sort: sort(),
+              };
         const res = await inventoryMovementService().retrieve(paginationQuery);
         totalItems.value = Number(res.headers['x-total-count']);
         queryCount.value = totalItems.value;
@@ -110,6 +124,11 @@ export default defineComponent({
       await retrieveInventoryMovements();
     });
 
+    const onInput = debounce(async () => {
+      await retrieveInventoryMovements();
+      // Perform your action here
+    }, 500);
+
     return {
       inventoryMovements,
       handleSyncList,
@@ -129,6 +148,9 @@ export default defineComponent({
       totalItems,
       changeOrder,
       t$,
+      openPeriod,
+      searchText,
+      onInput,
     };
   },
 });

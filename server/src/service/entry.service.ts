@@ -1,14 +1,12 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { FindOneOptions } from 'typeorm';
-import { Entry } from '../domain/entry.entity';
 import { EntryDTO } from '../service/dto/entry.dto';
 import { EntryMapper } from '../service/mapper/entry.mapper';
-import { PeriodService } from './period.service';
-import { InventaryService } from './inventary.service';
-import { InventaryDTO } from './dto/inventary.dto';
+import { PeriodService } from '../service/period.service';
+import { InventaryService } from '../service/inventary.service';
 import { EntryRepository } from '../repository/entry.repository';
-import { EntryQueryDTO } from './dto/entry.query.dto';
-import { CompanyService } from './company.service';
+import { EntryQueryDTO } from '../service/dto/entry.query.dto';
+import { CompanyService } from '../service/company.service';
 
 const relations = {
   area: true,
@@ -67,7 +65,7 @@ export class EntryService {
       }
       const result = await this.entryRepository.save(entity);
 
-      await this.updateInventary(result);
+      await this.inventaryService.createOrUpdateInventaryFromEntry(entryDTO);
 
       return EntryMapper.fromEntityToDTO(result);
     }
@@ -88,37 +86,6 @@ export class EntryService {
     const entityFind = await this.findById(id);
     if (entityFind) {
       throw new HttpException('Error, entity not deleted!', HttpStatus.NOT_FOUND);
-    }
-  }
-
-  async updateInventary(entry: Entry): Promise<InventaryDTO> {
-    const exitsInventary = await this.inventaryService.findByFields({
-      relations: { product: true, area: true, company: true },
-      where: {
-        product: { id: entry.product.id },
-        area: { id: entry.area.id },
-        company: { id: entry.company.id },
-      },
-    });
-
-    //Si existe inventario actualizar la cantidad
-    if (exitsInventary) {
-      console.log(exitsInventary);
-      exitsInventary.count = Number(exitsInventary.count) + Number(entry.count);
-      exitsInventary.lastModifiedBy = entry.lastModifiedBy;
-      const result = await this.inventaryService.save(exitsInventary);
-      return result;
-    } else {
-      //Sino crear un inventario nuevo
-      let inventary = new InventaryDTO();
-      inventary.product = entry.product;
-      inventary.area = entry.area;
-      inventary.count = entry.count;
-      inventary.company = entry.company;
-      inventary.createdBy = entry.createdBy;
-      inventary.lastModifiedBy = entry.lastModifiedBy;
-      const result = await this.inventaryService.save(inventary);
-      return result;
     }
   }
 }

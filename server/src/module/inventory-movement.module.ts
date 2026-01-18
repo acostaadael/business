@@ -5,11 +5,13 @@ import { InventoryMovementController } from '../web/rest/inventory-movement.cont
 import { InventoryMovementService } from '../service/inventory-movement.service';
 import { CompanyModule } from './company.module';
 import { PeriodModule } from './period.module';
+import { InventaryModule } from './inventary.module';
+import { InventoryMovementRepository } from '../repository/inventary.movement.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([InventoryMovement]), CompanyModule, PeriodModule],
+  imports: [TypeOrmModule.forFeature([InventoryMovement, InventoryMovementRepository]), CompanyModule, PeriodModule, InventaryModule],
   controllers: [InventoryMovementController],
-  providers: [InventoryMovementService],
-  exports: [InventoryMovementService],
+  providers: [InventoryMovementService, InventoryMovementRepository],
+  exports: [InventoryMovementService, InventoryMovementRepository],
 })
 export class InventoryMovementModule {}
