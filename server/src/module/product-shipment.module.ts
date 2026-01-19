@@ -1,0 +1,16 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProductShipment } from '../domain/product-shipment.entity';
+import { ProductShipmentController } from '../web/rest/product-shipment.controller';
+import { ProductShipmentService } from '../service/product-shipment.service';
+import { CompanyModule } from './company.module';
+import { PeriodModule } from './period.module';
+import { InventaryModule } from './inventary.module';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([ProductShipment]), CompanyModule, PeriodModule, InventaryModule],
+  controllers: [ProductShipmentController],
+  providers: [ProductShipmentService],
+  exports: [ProductShipmentService],
+})
+export class ProductShipmentModule {}

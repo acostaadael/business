@@ -1,0 +1,10 @@
+{
+  "businessApp": {
+    "ExitType": {
+      "null": "",
+      "VENTA": "VENTA",
+      "PRODUCCION": "PRODUCCION",
+      "MERMA": "MERMA"
+    }
+  }
+}

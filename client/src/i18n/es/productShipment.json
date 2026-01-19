@@ -1,0 +1,29 @@
+{
+  "businessApp": {
+    "productShipment": {
+      "home": {
+        "title": "Salidas de productos",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nueva Salida",
+        "createOrEditLabel": "Crear o editar Salida",
+        "notFound": "Ninguna Salida encontrada"
+      },
+      "created": "Una nueva Salida ha sido creada con el identificador { param }",
+      "updated": "Una Salida ha sido actualizada con el identificador { param }",
+      "deleted": "Una Salida ha sido eliminada con el identificador { param }",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar la Salida { id }?"
+      },
+      "detail": {
+        "title": "Salida de Producto"
+      },
+      "id": "ID",
+      "day": "Dia",
+      "count": "Cantidad",
+      "type": "Tipo",
+      "product": "Producto",
+      "company": "Compañia",
+      "period": "Periodo"
+    }
+  }
+}

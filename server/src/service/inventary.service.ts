@@ -6,6 +6,7 @@ import { InventaryRepository } from '../repository/inventary.repository';
 import { InventaryQueryDTO } from '../service/dto/inventary.query.dto';
 import { EntryDTO } from '../service/dto/entry.dto';
 import { InventoryMovementDTO } from './dto/inventory-movement.dto';
+import { ProductShipmentDTO } from './dto/product-shipment.dto';
 
 const relations = {
   product: true,
@@ -106,28 +107,59 @@ export class InventaryService {
         company: { id: movement.company.id },
       },
     });
-    const movementCount = Number(movement.count);
-    const inventoryCount = Number(exitsInventary.count);
 
-    if (exitsInventary && movementCount <= inventoryCount) {
-      const restCount = inventoryCount - movementCount;
+    if (exitsInventary) {
+      const movementCount = Number(movement.count);
+      const inventoryCount = Number(exitsInventary.count);
+      if (movementCount <= inventoryCount) {
+        const restCount = inventoryCount - movementCount;
 
-      if (restCount == 0) {
-        await this.deleteById(exitsInventary.id);
-      } else {
-        exitsInventary.count = restCount;
-        await this.update(exitsInventary, movement.lastModifiedBy);
+        if (restCount == 0) {
+          await this.deleteById(exitsInventary.id);
+        } else {
+          exitsInventary.count = restCount;
+          await this.update(exitsInventary, movement.lastModifiedBy);
+        }
+
+        const entry = new EntryDTO();
+        entry.product = movement.product;
+        entry.area = movement.target;
+        entry.company = movement.company;
+        entry.count = movementCount;
+        entry.createdBy = movement.createdBy;
+        const inventary = await this.createOrUpdateInventaryFromEntry(entry);
+        return inventary;
       }
-
-      const entry = new EntryDTO();
-      entry.product = movement.product;
-      entry.area = movement.target;
-      entry.company = movement.company;
-      entry.count = movementCount;
-      entry.createdBy = movement.createdBy;
-      const inventary = await this.createOrUpdateInventaryFromEntry(entry);
-      return inventary;
+      throw new HttpException('La cantidad a mover supera lo que está en inventario!', HttpStatus.BAD_REQUEST);
     }
-    throw new HttpException('No existe esta cantidad en inventario!', HttpStatus.BAD_REQUEST);
+    throw new HttpException('No existe inventario de este producto!', HttpStatus.BAD_REQUEST);
+  }
+
+  async updateInventaryFromExitProduct(productShipment: ProductShipmentDTO): Promise<InventaryDTO | void> {
+    const exitsInventary = await this.findByFields({
+      relations: { product: true, area: true, company: true },
+      where: {
+        product: { id: productShipment.product.id },
+        area: { id: productShipment.area.id },
+        company: { id: productShipment.company.id },
+      },
+    });
+
+    if (exitsInventary) {
+      const movementCount = Number(productShipment.count);
+      const inventoryCount = Number(exitsInventary.count);
+      if (movementCount <= inventoryCount) {
+        const restCount = inventoryCount - movementCount;
+
+        if (restCount == 0) {
+          await this.deleteById(exitsInventary.id);
+        } else {
+          exitsInventary.count = restCount;
+          return await this.update(exitsInventary, productShipment.lastModifiedBy);
+        }
+      }
+      throw new HttpException('La cantidad a mover supera lo que está en inventario!', HttpStatus.BAD_REQUEST);
+    }
+    throw new HttpException('No existe inventario de este producto!', HttpStatus.BAD_REQUEST);
   }
 }

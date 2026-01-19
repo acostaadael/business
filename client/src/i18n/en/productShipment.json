@@ -1,0 +1,29 @@
+{
+  "businessApp": {
+    "productShipment": {
+      "home": {
+        "title": "Product Shipments",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Product Shipment",
+        "createOrEditLabel": "Create or edit a Product Shipment",
+        "notFound": "No Product Shipments found"
+      },
+      "created": "A new Product Shipment is created with identifier { param }",
+      "updated": "A Product Shipment is updated with identifier { param }",
+      "deleted": "A Product Shipment is deleted with identifier { param }",
+      "delete": {
+        "question": "Are you sure you want to delete Product Shipment { id }?"
+      },
+      "detail": {
+        "title": "Product Shipment"
+      },
+      "id": "ID",
+      "day": "Day",
+      "count": "Count",
+      "type": "Type",
+      "product": "Product",
+      "company": "Company",
+      "period": "Period"
+    }
+  }
+}

@@ -16,9 +16,10 @@
         "productLine": "Lineas de productos",
         "product": "Productos",
         "inventary": "Inventarios",
-        "entry": "Entradas",
+        "entry": "Entradas de productos",
         "company": "Compañias",
-        "inventoryMovement": "Movimientos de inventarios"
+        "inventoryMovement": "Movimientos de inventarios",
+        "productShipment": "Salidas de productos"
       },
       "account": {
         "main": "Cuenta",

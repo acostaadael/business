@@ -27,11 +27,12 @@
       "Inventary",
       "Entry",
       "Company",
-      "InventoryMovement"
+      "InventoryMovement",
+      "ProductShipment"
     ],
     "jhipsterVersion": "8.10.0",
     "languages": ["es", "en"],
-    "lastLiquibaseTimestamp": 1768582507000,
+    "lastLiquibaseTimestamp": 1768738751000,
     "microfrontend": null,
     "microfrontends": [],
     "nativeLanguage": "es",

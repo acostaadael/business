@@ -18,7 +18,8 @@
         "inventary": "Inventary",
         "entry": "Entry",
         "company": "Company",
-        "inventoryMovement": "Inventory Movement"
+        "inventoryMovement": "Inventory Movement",
+        "productShipment": "Product Shipment"
       },
       "account": {
         "main": "Account",

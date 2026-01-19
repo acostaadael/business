@@ -37,7 +37,9 @@ const CompanyDetails = () => import('@/entities/company/company-details.vue');
 
 const InventoryMovement = () => import('@/entities/inventory-movement/inventory-movement.vue');
 const InventoryMovementUpdate = () => import('@/entities/inventory-movement/inventory-movement-update.vue');
-const InventoryMovementDetails = () => import('@/entities/inventory-movement/inventory-movement-details.vue');
+
+const ProductShipment = () => import('@/entities/product-shipment/product-shipment.vue');
+const ProductShipmentUpdate = () => import('@/entities/product-shipment/product-shipment-update.vue');
 
 // jhipster-needle-add-entity-to-router-import - JHipster will import entities to the router here
 
@@ -244,15 +246,15 @@ export default {
       meta: { authorities: [Authority.USER] },
     },
     {
-      path: 'inventory-movement/:inventoryMovementId/edit',
-      name: 'InventoryMovementEdit',
-      component: InventoryMovementUpdate,
+      path: 'product-shipment',
+      name: 'ProductShipment',
+      component: ProductShipment,
       meta: { authorities: [Authority.USER] },
     },
     {
-      path: 'inventory-movement/:inventoryMovementId/view',
-      name: 'InventoryMovementView',
-      component: InventoryMovementDetails,
+      path: 'product-shipment/new',
+      name: 'ProductShipmentCreate',
+      component: ProductShipmentUpdate,
       meta: { authorities: [Authority.USER] },
     },
     // jhipster-needle-add-entity-to-router - JHipster will add entities to the router here
