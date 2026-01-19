@@ -12,9 +12,14 @@ import { type IArea } from '@/shared/model/area.model';
 import ProductService from '@/entities/product/product.service';
 import { type IProduct } from '@/shared/model/product.model';
 import { Entry, type IEntry } from '@/shared/model/entry.model';
+import Autocomplete from '@/components/forms/Autocomplete.vue';
+import type { AutocompleteItem } from '@/components/forms/Autocomplete.vue';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
+  components: {
+    Autocomplete,
+  },
   name: 'EntryUpdate',
   setup() {
     const entryService = inject('entryService', () => new EntryService());
@@ -28,7 +33,9 @@ export default defineComponent({
 
     const productService = inject('productService', () => new ProductService());
 
-    const products: Ref<IProduct[]> = ref([]);
+    const products: Ref<AutocompleteItem[]> = ref([]);
+    const productLoading = ref(false);
+
     const isSaving = ref(false);
     const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
 
@@ -49,6 +56,32 @@ export default defineComponent({
     if (route.params?.entryId) {
       retrieveEntry(route.params.entryId);
     }
+
+    const searchProducts = async (term: string) => {
+      if (term.length >= 2) {
+        productLoading.value = true;
+        try {
+          const paginationQuery = {
+            page: 0,
+            size: 20,
+            globalSearch: term,
+          };
+
+          const res = await productService().retrieve(paginationQuery);
+          products.value = res.data;
+        } catch (err) {
+          alertService.showHttpError(err.response);
+        } finally {
+          productLoading.value = false;
+        }
+      } else {
+        products.value = [];
+      }
+    };
+
+    const handleSelect = (item: IProduct) => {
+      entry.value.product = item;
+    };
 
     const initRelationships = () => {
       areaService()
@@ -94,6 +127,9 @@ export default defineComponent({
       currentLanguage,
       areas,
       products,
+      productLoading,
+      searchProducts,
+      handleSelect,
       v$,
       t$,
     };

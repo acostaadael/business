@@ -16,5 +16,8 @@ export class Entry implements IEntry {
     public count?: number,
     public area?: IArea,
     public product?: IProduct,
-  ) {}
+  ) {
+    const date = new Date();
+    this.day = date.getDate();
+  }
 }
