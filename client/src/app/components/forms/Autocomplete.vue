@@ -318,7 +318,6 @@ watch(filteredItems, () => {
 .autocomplete {
   position: relative;
   width: 100%;
-  max-width: 400px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
