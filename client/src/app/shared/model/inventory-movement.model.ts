@@ -24,5 +24,8 @@ export class InventoryMovement implements IInventoryMovement {
     public product?: IProduct,
     public source?: IArea,
     public target?: IArea,
-  ) {}
+  ) {
+    const date = new Date();
+    this.day = date.getDate();
+  }
 }

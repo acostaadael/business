@@ -8,56 +8,20 @@
           v-text="t$('businessApp.inventoryMovement.home.createOrEditLabel')"
         ></h2>
         <div>
-          <div class="form-group" v-if="inventoryMovement.id">
-            <label for="id" v-text="t$('global.field.id')"></label>
-            <input type="text" class="form-control" id="id" name="id" v-model="inventoryMovement.id" readonly />
-          </div>
-          <div class="form-group">
-            <label class="form-control-label" v-text="t$('businessApp.inventoryMovement.day')" for="inventory-movement-day"></label>
-            <input
-              type="number"
-              class="form-control"
-              name="day"
-              id="inventory-movement-day"
-              data-cy="day"
-              :class="{ valid: !v$.day.$invalid, invalid: v$.day.$invalid }"
-              v-model.number="v$.day.$model"
-              required
-            />
-            <div v-if="v$.day.$anyDirty && v$.day.$invalid">
-              <small class="form-text text-danger" v-for="error of v$.day.$errors" :key="error.$uid">{{ error.$message }}</small>
-            </div>
-          </div>
           <b-form-row>
             <b-col>
-              <div class="form-group">
-                <label
-                  class="form-control-label"
-                  v-text="t$('businessApp.inventoryMovement.product')"
-                  for="inventory-movement-product"
-                ></label>
-                <select
-                  class="form-control"
-                  id="inventory-movement-product"
-                  data-cy="product"
-                  name="product"
-                  v-model="inventoryMovement.product"
-                  required
-                >
-                  <option v-if="!inventoryMovement.product" :value="null" selected></option>
-                  <option
-                    :value="
-                      inventoryMovement.product && productOption.id === inventoryMovement.product.id
-                        ? inventoryMovement.product
-                        : productOption
-                    "
-                    v-for="productOption in products"
-                    :key="productOption.id"
-                  >
-                    {{ `${productOption.name} (${productOption.um?.name})` }}
-                  </option>
-                </select>
-              </div>
+              <label class="form-control-label" v-text="t$('businessApp.inventoryMovement.product')" for="product"></label>
+              <Autocomplete
+                id="product"
+                v-model="inventoryMovement.product"
+                :items="products"
+                placeholder="Buscar productos..."
+                item-text="name"
+                :loading="productLoading"
+                :min-chars="2"
+                @search="searchProducts"
+                @select="handleSelect"
+              />
               <div v-if="v$.product.$anyDirty && v$.product.$invalid">
                 <small class="form-text text-danger" v-for="error of v$.product.$errors" :key="error.$uid">{{ error.$message }}</small>
               </div>
@@ -148,6 +112,26 @@
                   v-if="inventoryMovement.target && v$.target.distinct"
                   v-text="t$('entity.validation.differentFrom', { value: inventoryMovement.source?.name })"
                 ></small>
+              </div>
+            </b-col>
+          </b-form-row>
+          <b-form-row>
+            <b-col cols="6">
+              <div class="form-group">
+                <label class="form-control-label" v-text="t$('businessApp.inventoryMovement.day')" for="inventory-movement-day"></label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="day"
+                  id="inventory-movement-day"
+                  data-cy="day"
+                  :class="{ valid: !v$.day.$invalid, invalid: v$.day.$invalid }"
+                  v-model.number="v$.day.$model"
+                  required
+                />
+                <div v-if="v$.day.$anyDirty && v$.day.$invalid">
+                  <small class="form-text text-danger" v-for="error of v$.day.$errors" :key="error.$uid">{{ error.$message }}</small>
+                </div>
               </div>
             </b-col>
           </b-form-row>

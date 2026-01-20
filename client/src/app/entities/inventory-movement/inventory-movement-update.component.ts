@@ -16,9 +16,14 @@ import { type IProduct } from '@/shared/model/product.model';
 import AreaService from '@/entities/area/area.service';
 import { type IArea } from '@/shared/model/area.model';
 import { type IInventoryMovement, InventoryMovement } from '@/shared/model/inventory-movement.model';
+import Autocomplete from '@/components/forms/Autocomplete.vue';
+import type { AutocompleteItem } from '@/components/forms/Autocomplete.vue';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
+  components: {
+    Autocomplete,
+  },
   name: 'InventoryMovementUpdate',
   setup() {
     const inventoryMovementService = inject('inventoryMovementService', () => new InventoryMovementService());
@@ -36,7 +41,8 @@ export default defineComponent({
 
     const productService = inject('productService', () => new ProductService());
 
-    const products: Ref<IProduct[]> = ref([]);
+    const products: Ref<AutocompleteItem[]> = ref([]);
+    const productLoading = ref(false);
 
     const areaService = inject('areaService', () => new AreaService());
 
@@ -61,6 +67,36 @@ export default defineComponent({
     if (route.params?.inventoryMovementId) {
       retrieveInventoryMovement(route.params.inventoryMovementId);
     }
+
+    const searchProducts = async (term: string) => {
+      if (term.length >= 2) {
+        productLoading.value = true;
+        try {
+          const paginationQuery = {
+            page: 0,
+            size: 20,
+            globalSearch: term,
+          };
+
+          const res = await productService().retrieve(paginationQuery);
+          res.data.map((item: IProduct) => {
+            item.name = `${item.name} (${item.um?.name})`;
+          });
+
+          products.value = res.data;
+        } catch (err) {
+          alertService.showHttpError(err.response);
+        } finally {
+          productLoading.value = false;
+        }
+      } else {
+        products.value = [];
+      }
+    };
+
+    const handleSelect = (item: IProduct) => {
+      inventoryMovement.value.product = item;
+    };
 
     const initRelationships = () => {
       periodService()
@@ -123,6 +159,9 @@ export default defineComponent({
       periods,
       companies,
       products,
+      productLoading,
+      searchProducts,
+      handleSelect,
       areas,
       v$,
       t$,

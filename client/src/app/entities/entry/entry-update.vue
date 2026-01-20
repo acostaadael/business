@@ -22,8 +22,7 @@ import { debounce } from 'lodash';
                 :min-chars="2"
                 @search="searchProducts"
                 @select="handleSelect"
-              >
-              </Autocomplete>
+              />
               <div v-if="v$.product.$anyDirty && v$.product.$invalid">
                 <small class="form-text text-danger" v-for="error of v$.product.$errors" :key="error.$uid">{{ error.$message }}</small>
               </div>
