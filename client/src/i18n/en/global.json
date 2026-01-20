@@ -8,18 +8,19 @@
       "entities": {
         "main": "Entities",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
-        "period": "Period",
         "um": "Um",
-        "area": "Area",
         "productCategory": "Product Category",
         "productFamily": "Product Family",
         "productLine": "Product Line",
         "product": "Product",
-        "inventary": "Inventary",
+        "area": "Area"
+      },
+      "economy": {
+        "period": "Period",
         "entry": "Entry",
-        "company": "Company",
+        "productShipment": "Product Shipment",
         "inventoryMovement": "Inventory Movement",
-        "productShipment": "Product Shipment"
+        "inventary": "Inventary"
       },
       "account": {
         "main": "Account",
@@ -33,6 +34,7 @@
       "admin": {
         "main": "Administration",
         "userManagement": "User management",
+        "company": "Company",
         "tracker": "User tracker",
         "metrics": "Metrics",
         "health": "Health",

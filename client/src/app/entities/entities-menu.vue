@@ -4,10 +4,6 @@
       <font-awesome-icon icon="asterisk" />
       <span v-text="t$('global.menu.entities.um')"></span>
     </b-dropdown-item>
-    <b-dropdown-item to="/area">
-      <font-awesome-icon icon="asterisk" />
-      <span v-text="t$('global.menu.entities.area')"></span>
-    </b-dropdown-item>
     <b-dropdown-item to="/product-category">
       <font-awesome-icon icon="asterisk" />
       <span v-text="t$('global.menu.entities.productCategory')"></span>
@@ -24,25 +20,9 @@
       <font-awesome-icon icon="asterisk" />
       <span v-text="t$('global.menu.entities.product')"></span>
     </b-dropdown-item>
-    <b-dropdown-item to="/inventary">
+    <b-dropdown-item to="/area">
       <font-awesome-icon icon="asterisk" />
-      <span v-text="t$('global.menu.entities.inventary')"></span>
-    </b-dropdown-item>
-    <b-dropdown-item to="/entry">
-      <font-awesome-icon icon="asterisk" />
-      <span v-text="t$('global.menu.entities.entry')"></span>
-    </b-dropdown-item>
-    <b-dropdown-item to="/company">
-      <font-awesome-icon icon="asterisk" />
-      <span v-text="t$('global.menu.entities.company')"></span>
-    </b-dropdown-item>
-    <b-dropdown-item to="/inventory-movement">
-      <font-awesome-icon icon="asterisk" />
-      <span v-text="t$('global.menu.entities.inventoryMovement')"></span>
-    </b-dropdown-item>
-    <b-dropdown-item to="/product-shipment">
-      <font-awesome-icon icon="asterisk" />
-      <span v-text="t$('global.menu.entities.productShipment')"></span>
+      <span v-text="t$('global.menu.entities.area')"></span>
     </b-dropdown-item>
     <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
   </div>

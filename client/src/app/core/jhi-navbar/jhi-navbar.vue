@@ -36,6 +36,22 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown
           right
+          id="economy-menu"
+          v-if="hasAnyAuthority('ROLE_ADMIN') && authenticated"
+          active-class="active"
+          class="pointer"
+          data-cy="economy"
+        >
+          <template #button-content>
+            <span class="navbar-dropdown-menu">
+              <font-awesome-icon icon="th-list" />
+              <span class="no-bold" v-text="t$('global.menu.economy.main')"></span>
+            </span>
+          </template>
+          <economy-menu></economy-menu>
+        </b-nav-item-dropdown>
+        <b-nav-item-dropdown
+          right
           id="admin-menu"
           v-if="hasAnyAuthority('ROLE_ADMIN') && authenticated"
           :class="{ 'router-link-active': subIsActive('/admin') }"
@@ -49,9 +65,9 @@
               <span class="no-bold" v-text="t$('global.menu.admin.main')"></span>
             </span>
           </template>
-          <b-dropdown-item to="/period">
+          <b-dropdown-item to="/company">
             <font-awesome-icon icon="asterisk" />
-            <span v-text="t$('global.menu.entities.period')"></span>
+            <span v-text="t$('global.menu.admin.company')"></span>
           </b-dropdown-item>
           <b-dropdown-item to="/admin/user-management" active-class="active">
             <font-awesome-icon icon="users" />
