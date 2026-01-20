@@ -68,6 +68,10 @@ export default defineComponent({
           };
 
           const res = await productService().retrieve(paginationQuery);
+          res.data.map((item: IProduct) => {
+            item.name = `${item.name} (${item.um?.name})`;
+          });
+
           products.value = res.data;
         } catch (err) {
           alertService.showHttpError(err.response);

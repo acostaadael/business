@@ -23,11 +23,6 @@ import { debounce } from 'lodash';
                 @search="searchProducts"
                 @select="handleSelect"
               >
-                <template #item="{ item }">
-                  <div class="product-item">
-                    <strong>{{ `${item.name} (${item.um?.name})` }}</strong>
-                  </div>
-                </template>
               </Autocomplete>
               <div v-if="v$.product.$anyDirty && v$.product.$invalid">
                 <small class="form-text text-danger" v-for="error of v$.product.$errors" :key="error.$uid">{{ error.$message }}</small>
