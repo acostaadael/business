@@ -37,10 +37,6 @@
       <table class="table table-striped" aria-describedby="inventoryMovements">
         <thead>
           <tr>
-            <th scope="row" @click="changeOrder('id')">
-              <span v-text="t$('global.field.id')"></span>
-              <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'id'"></jhi-sort-indicator>
-            </th>
             <th scope="row" @click="changeOrder('product.id')">
               <span v-text="t$('businessApp.inventoryMovement.product')"></span>
               <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'product.id'"></jhi-sort-indicator>
@@ -66,12 +62,9 @@
         <tbody>
           <tr v-for="inventoryMovement in inventoryMovements" :key="inventoryMovement.id" data-cy="entityTable">
             <td>
-              {{ inventoryMovement.id }}
-            </td>
-            <td>
               <div v-if="inventoryMovement.product">
                 <router-link :to="{ name: 'ProductView', params: { productId: inventoryMovement.product.id } }">{{
-                  inventoryMovement.product.name
+                  `${inventoryMovement.product.name} (${inventoryMovement.product?.um?.name})`
                 }}</router-link>
               </div>
             </td>

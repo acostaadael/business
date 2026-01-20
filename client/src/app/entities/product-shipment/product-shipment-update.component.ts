@@ -13,9 +13,16 @@ import CompanyService from '@/entities/company/company.service';
 import { type ICompany } from '@/shared/model/company.model';
 import { type IProductShipment, ProductShipment } from '@/shared/model/product-shipment.model';
 import { ExitType } from '@/shared/model/enumerations/exit-type.model';
+import Autocomplete from '@/components/forms/Autocomplete.vue';
+import type { AutocompleteItem } from '@/components/forms/Autocomplete.vue';
+import AreaService from '../area/area.service';
+import type { IArea } from '@/shared/model/area.model';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
+  components: {
+    Autocomplete,
+  },
   name: 'ProductShipmentUpdate',
   setup() {
     const productShipmentService = inject('productShipmentService', () => new ProductShipmentService());
@@ -25,7 +32,12 @@ export default defineComponent({
 
     const productService = inject('productService', () => new ProductService());
 
-    const products: Ref<IProduct[]> = ref([]);
+    const products: Ref<AutocompleteItem[]> = ref([]);
+    const productLoading = ref(false);
+
+    const areaService = inject('areaService', () => new AreaService());
+
+    const areas: Ref<IArea[]> = ref([]);
 
     const companyService = inject('companyService', () => new CompanyService());
 
@@ -54,21 +66,51 @@ export default defineComponent({
       retrieveProductShipment(route.params.productShipmentId);
     }
 
+    const searchProducts = async (term: string) => {
+      if (term.length >= 2) {
+        productLoading.value = true;
+        try {
+          const paginationQuery = {
+            page: 0,
+            size: 20,
+            globalSearch: term,
+          };
+
+          const res = await productService().retrieve(paginationQuery);
+          res.data.map((item: IProduct) => {
+            item.name = `${item.name} (${item.um?.name})`;
+          });
+
+          products.value = res.data;
+        } catch (err) {
+          alertService.showHttpError(err.response);
+        } finally {
+          productLoading.value = false;
+        }
+      } else {
+        products.value = [];
+      }
+    };
+
+    const handleSelect = (item: IProduct) => {
+      productShipment.value.product = item;
+    };
+
     const initRelationships = () => {
       productService()
         .retrieve()
         .then(res => {
           products.value = res.data;
         });
-      companyService()
-        .retrieve()
-        .then(res => {
-          companies.value = res.data;
-        });
       productShipmentService()
         .retrieve()
         .then(res => {
           productShipments.value = res.data;
+        });
+      areaService()
+        .retrieve()
+        .then(res => {
+          areas.value = res.data;
         });
     };
 
@@ -90,7 +132,7 @@ export default defineComponent({
       product: {
         required: validations.required(t$('entity.validation.required').toString()),
       },
-      company: {
+      area: {
         required: validations.required(t$('entity.validation.required').toString()),
       },
       period: {},
@@ -108,7 +150,11 @@ export default defineComponent({
       currentLanguage,
       products,
       companies,
+      areas,
       productShipments,
+      productLoading,
+      searchProducts,
+      handleSelect,
       v$,
       t$,
     };

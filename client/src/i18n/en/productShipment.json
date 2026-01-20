@@ -23,7 +23,8 @@
       "type": "Type",
       "product": "Product",
       "company": "Company",
-      "period": "Period"
+      "period": "Period",
+      "area": "Area"
     }
   }
 }
