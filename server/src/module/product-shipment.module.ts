@@ -6,11 +6,12 @@ import { ProductShipmentService } from '../service/product-shipment.service';
 import { CompanyModule } from './company.module';
 import { PeriodModule } from './period.module';
 import { InventaryModule } from './inventary.module';
+import { ProductShipmentRepository } from '../repository/inventary.shipment.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProductShipment]), CompanyModule, PeriodModule, InventaryModule],
+  imports: [TypeOrmModule.forFeature([ProductShipment, ProductShipmentRepository]), CompanyModule, PeriodModule, InventaryModule],
   controllers: [ProductShipmentController],
-  providers: [ProductShipmentService],
-  exports: [ProductShipmentService],
+  providers: [ProductShipmentService, ProductShipmentRepository],
+  exports: [ProductShipmentService, ProductShipmentRepository],
 })
 export class ProductShipmentModule {}

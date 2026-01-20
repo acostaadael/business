@@ -40,9 +40,8 @@
               <span v-text="t$('businessApp.productShipment.product')"></span>
               <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'product.id'"></jhi-sort-indicator>
             </th>
-            <th scope="row" @click="changeOrder('count')">
+            <th scope="row">
               <span v-text="t$('businessApp.productShipment.count')"></span>
-              <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'count'"></jhi-sort-indicator>
             </th>
             <th scope="row" @click="changeOrder('day')">
               <span v-text="t$('businessApp.productShipment.day')"></span>
@@ -68,7 +67,6 @@
             <td v-text="t$('businessApp.ExitType.' + productShipment.type)"></td>
           </tr>
         </tbody>
-        <span ref="infiniteScrollEl"></span>
       </table>
     </div>
     <b-modal ref="removeEntity" id="removeEntity">
@@ -96,6 +94,14 @@
         </div>
       </template>
     </b-modal>
+    <div v-show="productShipments && productShipments.length > 0">
+      <div class="row justify-content-center">
+        <jhi-item-count :page="page" :total="queryCount" :itemsPerPage="itemsPerPage"></jhi-item-count>
+      </div>
+      <div class="row justify-content-center">
+        <b-pagination size="md" :total-rows="totalItems" v-model="page" :per-page="itemsPerPage"></b-pagination>
+      </div>
+    </div>
   </div>
 </template>
 

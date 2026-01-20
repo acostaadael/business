@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
-import { ProductShipment } from '../domain/product-shipment.entity';
+import { FindOneOptions } from 'typeorm';
 import { ProductShipmentDTO } from '../service/dto/product-shipment.dto';
 import { ProductShipmentMapper } from '../service/mapper/product-shipment.mapper';
 import { PeriodService } from '../service/period.service';
 import { CompanyService } from '../service/company.service';
 import { InventaryService } from '../service/inventary.service';
+import { InventoryMovementQueryDTO } from './dto/inventory-movement.query.dto';
+import { ProductShipmentRepository } from '../repository/inventary.shipment.repository';
 
 const relations = {
   product: true,
@@ -19,7 +19,7 @@ export class ProductShipmentService {
   logger = new Logger('ProductShipmentService');
 
   constructor(
-    @InjectRepository(ProductShipment) private productShipmentRepository: Repository<ProductShipment>,
+    private readonly productShipmentRepository: ProductShipmentRepository,
     private periodService: PeriodService,
     private companyService: CompanyService,
     private inventaryService: InventaryService,
@@ -38,8 +38,8 @@ export class ProductShipmentService {
     return ProductShipmentMapper.fromEntityToDTO(result);
   }
 
-  async findAndCount(options: FindManyOptions<ProductShipmentDTO>): Promise<[ProductShipmentDTO[], number]> {
-    const resultList = await this.productShipmentRepository.findAndCount({ ...options, relations });
+  async findAndCount(query: InventoryMovementQueryDTO): Promise<[ProductShipmentDTO[], number]> {
+    const resultList = await this.productShipmentRepository.findAllFilter(query);
     const productShipmentDTO: ProductShipmentDTO[] = [];
     if (resultList && resultList[0]) {
       resultList[0].forEach(productShipment => productShipmentDTO.push(ProductShipmentMapper.fromEntityToDTO(productShipment)));
