@@ -44,7 +44,7 @@
         >
           <template #button-content>
             <span class="navbar-dropdown-menu">
-              <font-awesome-icon icon="th-list" />
+              <font-awesome-icon icon="fa-coins" />
               <span class="no-bold" v-text="t$('global.menu.economy.main')"></span>
             </span>
           </template>
