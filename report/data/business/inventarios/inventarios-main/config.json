@@ -1,0 +1,40 @@
+{
+  "phantom": {
+    "waitForJS": true
+  },
+  "recipe": "chrome-pdf",
+  "engine": "handlebars",
+  "scripts": [
+    {
+      "shortid": "Np_35yriJ"
+    }
+  ],
+  "name": "inventarios-main",
+  "chrome": {
+    "printBackground": true,
+    "marginTop": "4cm",
+    "marginRight": "1.5cm",
+    "marginBottom": "1.5cm",
+    "marginLeft": "1.5cm",
+    "waitForJS": false
+  },
+  "pdfOperations": [
+    {
+      "type": "merge",
+      "templateShortid": "SJVbqZr9f",
+      "renderForEveryPage": false,
+      "mergeWholeDocument": true
+    }
+  ],
+  "inheritedReadPermissions": [],
+  "inheritedEditPermissions": [],
+  "creationDate": {
+    "$$date": 1771433528483
+  },
+  "modificationDate": {
+    "$$date": 1771446810419
+  },
+  "shortid": "bBaW0xb",
+  "_id": "tBmfbJ9ph87Q1TQp",
+  "$entitySet": "templates"
+}
