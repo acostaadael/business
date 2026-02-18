@@ -6,7 +6,8 @@
   "license": "UNLICENSED",
   "workspaces": [
     "server",
-    "client"
+    "client",
+    "report"
   ],
   "scripts": {
     "app:up": "docker compose -f docker/app.yml up --wait",
@@ -24,8 +25,9 @@
     "prettier:check": "prettier --check \"{,src/**/,.blueprint/**/}*.{md,json,yml,js,cjs,mjs,ts,cts,mts,html,vue,css,scss}\"",
     "prettier:format": "prettier --write \"{,src/**/,.blueprint/**/}*.{md,json,yml,js,cjs,mjs,ts,cts,mts,html,vue,css,scss}\"",
     "services:up": "docker compose -f docker/services.yml up --wait",
-    "start": "concurrently -k -s first -n application,client -c red,green npm:start:server npm:start:client",
+    "start": "concurrently -k -s first -n application,client -c red,green npm:start:server npm:start:report npm:start:client",
     "start:client": "npm run start -w client",
+    "start:report": "npm run start -w report",
     "start:server": "npm run start -w server",
     "test": "echo \"INFO: no client test found\"",
     "test:client": "npm test -w client",
