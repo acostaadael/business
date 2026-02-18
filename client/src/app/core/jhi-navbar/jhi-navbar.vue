@@ -52,6 +52,22 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown
           right
+          id="report-menu"
+          v-if="hasAnyAuthority('ROLE_ADMIN') && authenticated"
+          active-class="active"
+          class="pointer"
+          data-cy="economy"
+        >
+          <template #button-content>
+            <span class="navbar-dropdown-menu">
+              <font-awesome-icon icon="fa-file-alt" />
+              <span class="no-bold" v-text="t$('global.menu.report.main')"></span>
+            </span>
+          </template>
+          <report-menu></report-menu>
+        </b-nav-item-dropdown>
+        <b-nav-item-dropdown
+          right
           id="admin-menu"
           v-if="hasAnyAuthority('ROLE_ADMIN') && authenticated"
           :class="{ 'router-link-active': subIsActive('/admin') }"

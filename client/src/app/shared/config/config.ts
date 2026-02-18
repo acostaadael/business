@@ -43,6 +43,7 @@ import { faCoins } from '@fortawesome/free-solid-svg-icons/faCoins';
 import { faCalendar } from '@fortawesome/free-solid-svg-icons/faCalendar';
 import { faBox } from '@fortawesome/free-solid-svg-icons/faBox';
 import { faStore } from '@fortawesome/free-solid-svg-icons/faStore';
+import { faFileAlt } from '@fortawesome/free-solid-svg-icons/faFileAlt';
 
 const datetimeFormats: IntlDateTimeFormats = {
   es: {
@@ -143,6 +144,7 @@ export function initFortAwesome(vue) {
     faCalendar,
     faBox,
     faStore,
+    faFileAlt,
   );
 }
 export function initI18N(opts: any = {}) {

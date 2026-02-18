@@ -22,6 +22,10 @@
         "inventoryMovement": "Inventory Movement",
         "inventary": "Inventary"
       },
+      "report": {
+        "main": "Reports",
+        "inventary": "Inventary Report"
+      },
       "account": {
         "main": "Account",
         "settings": "Settings",

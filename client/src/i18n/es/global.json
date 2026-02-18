@@ -23,6 +23,10 @@
         "inventoryMovement": "Movimientos de inventarios",
         "inventary": "Inventarios"
       },
+      "report": {
+        "main": "Reportes",
+        "inventary": "Reporte de Inventarios"
+      },
       "account": {
         "main": "Cuenta",
         "settings": "Ajustes",

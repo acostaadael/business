@@ -6,6 +6,7 @@ import type AccountService from '@/account/account.service';
 import languages from '@/shared/config/languages';
 import EntitiesMenu from '@/entities/entities-menu.vue';
 import EconomyMenu from '@/entities/economy-menu.vue';
+import ReportMenu from '@/entities/report-menu.vue';
 
 import { useStore } from '@/store';
 
@@ -15,6 +16,7 @@ export default defineComponent({
   components: {
     'entities-menu': EntitiesMenu,
     'economy-menu': EconomyMenu,
+    'report-menu': ReportMenu,
   },
   setup() {
     const loginService = inject<LoginService>('loginService');
