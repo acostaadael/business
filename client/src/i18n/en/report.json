@@ -1,0 +1,13 @@
+{
+  "businessApp": {
+    "report": {
+      "params": {
+        "main": "Report Params",
+        "period": "Period"
+      },
+      "actions": {
+        "generate": "Generate"
+      }
+    }
+  }
+}

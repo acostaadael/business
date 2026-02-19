@@ -1,0 +1,17 @@
+{
+  "name": "entradas-main",
+  "engine": "handlebars",
+  "recipe": "chrome-pdf",
+  "shortid": "2rgTiWRld",
+  "chrome": {
+    "printBackground": true
+  },
+  "creationDate": {
+    "$$date": 1771518413761
+  },
+  "modificationDate": {
+    "$$date": 1771519571124
+  },
+  "_id": "f84vAUlNCaTebZXC",
+  "$entitySet": "templates"
+}
