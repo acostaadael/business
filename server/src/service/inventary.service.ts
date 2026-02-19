@@ -153,6 +153,7 @@ export class InventaryService {
 
         if (restCount == 0) {
           await this.deleteById(exitsInventary.id);
+          return;
         } else {
           exitsInventary.count = restCount;
           return await this.update(exitsInventary, productShipment.lastModifiedBy);
