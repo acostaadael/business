@@ -4,15 +4,15 @@
       <font-awesome-icon icon="fa-calendar" />
       <span v-text="t$('global.menu.economy.period')"></span>
     </b-dropdown-item>
-    <b-dropdown-item to="/entry">
+    <b-dropdown-item to="/entry" v-if="ifOpenPeriod">
       <font-awesome-icon icon="fa-box" />
       <span v-text="t$('global.menu.economy.entry')"></span>
     </b-dropdown-item>
-    <b-dropdown-item to="/product-shipment">
+    <b-dropdown-item to="/product-shipment" v-if="ifOpenPeriod">
       <font-awesome-icon icon="fa-box" />
       <span v-text="t$('global.menu.economy.productShipment')"></span>
     </b-dropdown-item>
-    <b-dropdown-item to="/inventory-movement">
+    <b-dropdown-item to="/inventory-movement" v-if="ifOpenPeriod">
       <font-awesome-icon icon="fa-store" />
       <span v-text="t$('global.menu.economy.inventoryMovement')"></span>
     </b-dropdown-item>

@@ -1,5 +1,6 @@
 import { type Ref, computed, defineComponent, inject, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 import EntryService from './entry.service';
 import { type IEntry } from '@/shared/model/entry.model';
@@ -17,6 +18,9 @@ export default defineComponent({
     const alertService = inject('alertService', () => useAlertService(), true);
 
     const { formatDateShort: formatDate } = useDateFormat();
+
+    const router = useRouter();
+    const previousState = () => router.go(-1);
 
     const itemsPerPage = ref(20);
     const queryCount: Ref<number> = ref(null);
@@ -46,6 +50,8 @@ export default defineComponent({
     };
 
     const retrieveEntrys = async () => {
+      if (!openPeriod.value) previousState();
+
       isFetching.value = true;
       try {
         const paginationQuery =

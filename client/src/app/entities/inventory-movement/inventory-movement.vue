@@ -2,7 +2,7 @@
   <div>
     <h2 id="page-heading" data-cy="InventoryMovementHeading">
       <span
-        v-text="`${t$('businessApp.inventoryMovement.home.title')} del mes: ${openPeriod.month}, año: ${openPeriod.year}`"
+        v-text="`${t$('businessApp.inventoryMovement.home.title')} del mes: ${openPeriod?.month}, año: ${openPeriod?.year}`"
         id="inventory-movement-heading"
       ></span>
 

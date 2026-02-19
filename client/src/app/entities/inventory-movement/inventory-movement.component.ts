@@ -1,5 +1,6 @@
 import { type Ref, computed, defineComponent, inject, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 import InventoryMovementService from './inventory-movement.service';
 import { type IInventoryMovement } from '@/shared/model/inventory-movement.model';
@@ -23,6 +24,9 @@ export default defineComponent({
     const totalItems = ref(0);
     const searchText = ref('');
 
+    const router = useRouter();
+    const previousState = () => router.go(-1);
+
     const periodStore = usePeriodStore();
     const openPeriod = computed(() => periodStore.period);
 
@@ -43,6 +47,7 @@ export default defineComponent({
     };
 
     const retrieveInventoryMovements = async () => {
+      if (!openPeriod.value) previousState();
       isFetching.value = true;
       try {
         const paginationQuery =

@@ -2,7 +2,7 @@
   <div>
     <h2 id="page-heading" data-cy="EntryHeading">
       <span
-        v-text="`${t$('businessApp.entry.home.title')} del mes: ${openPeriod.month}, año: ${openPeriod.year}`"
+        v-text="`${t$('businessApp.entry.home.title')} del mes: ${openPeriod?.month}, año: ${openPeriod?.year}`"
         id="entry-heading"
       ></span>
       <div class="d-flex justify-content-end">

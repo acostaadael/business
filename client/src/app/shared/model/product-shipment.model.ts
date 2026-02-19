@@ -3,6 +3,7 @@ import { type ICompany } from '@/shared/model/company.model';
 
 import { type ExitType } from '@/shared/model/enumerations/exit-type.model';
 import type { IArea } from './area.model';
+import type { IPeriod } from '@/shared/model/period.model.ts';
 export interface IProductShipment {
   id?: number;
   day?: number;
@@ -10,7 +11,7 @@ export interface IProductShipment {
   type?: keyof typeof ExitType;
   product?: IProduct;
   company?: ICompany;
-  period?: IProductShipment | null;
+  period?: IPeriod | null;
   area?: IArea;
 }
 
@@ -22,7 +23,7 @@ export class ProductShipment implements IProductShipment {
     public type?: keyof typeof ExitType,
     public product?: IProduct,
     public company?: ICompany,
-    public period?: IProductShipment | null,
+    public period?: IPeriod | null,
     public area?: IArea,
   ) {
     const date = new Date();
