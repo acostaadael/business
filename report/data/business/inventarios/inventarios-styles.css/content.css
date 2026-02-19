@@ -1,64 +1,101 @@
-.inventario-box {
-  max-width: 800px;
-  margin: auto;
-  padding: 30px;
-  border: 1px solid #eee;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-  font-size: 16px;
-  line-height: 24px;
-  font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-  color: #555;
+/* Reset & base – suitable for PDF */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-.inventario-box table {
+
+body {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  background: white;
+  line-height: 1.3;
+  color: #1e2b3c;
+  margin: 0;
+  padding: 0;
+}
+
+/* Page settings for Chrome PDF export */
+@page {
+  size: A4 landscape; /* forces landscape */
+  margin: 1.2cm 0.8cm; /* adjust as needed */
+}
+
+/* Report title */
+.report-title {
+  font-size: 18pt;
+  font-weight: 600;
+  margin: 0.3cm 0 0.5cm 0;
+  color: #0b3b5a;
+  text-align: center;
+}
+
+/* Optional meta line */
+.report-meta {
+  font-size: 9pt;
+  color: #4a627a;
+  margin-bottom: 0.6cm;
+  border-bottom: 1px solid #cbd5e1;
+  padding-bottom: 0.3cm;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Table container – ensures no overflow clipping */
+.table-container {
   width: 100%;
-  line-height: inherit;
-  text-align: left;
+  overflow: visible; /* important for PDF – no scroll, just full width */
 }
-.inventario-box table td {
-  padding: 5px;
+
+/* Wide table with many columns */
+.wide-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8pt; /* small enough for many columns */
+  table-layout: auto; /* let columns adjust; can be 'fixed' for precise control */
+  word-break: break-word; /* allow text to wrap within cells */
+}
+
+/* Table header – repeated on every page */
+.wide-table thead tr {
+  background-color: #e2eef9;
+}
+
+.wide-table th {
+  padding: 6pt 4pt;
+  font-weight: 600;
+  text-align: left;
+  border: 1px solid #9bb7d4;
+  vertical-align: bottom;
+  background-color: #e2eef9; /* ensures header background on all pages */
+}
+
+.wide-table td {
+  padding: 5pt 4pt;
+  border: 1px solid #cbd5e1;
   vertical-align: top;
 }
-.inventario-box table tr td:nth-child(2) {
-  text-align: left;
+
+/* Optional zebra striping for readability */
+.wide-table tbody tr:nth-child(even) {
+  background-color: #f8fbfe;
 }
-.inventario-box table tr.top table td {
-  padding-bottom: 20px;
+
+/* Footer / page numbers – can be added via jsreport's page callback */
+.report-footer {
+  font-size: 8pt;
+  text-align: center;
+  color: #556c83;
+  margin-top: 0.5cm;
+  border-top: 1px dashed #a0b8cf;
+  padding-top: 0.3cm;
 }
-.inventario-box table tr.top table td.title {
-  font-size: 45px;
-  line-height: 45px;
-  color: #333;
+
+/* ensure page breaks don't cut rows awkwardly */
+tr {
+  page-break-inside: avoid;
 }
-.inventario-box table tr.information table td {
-  padding-bottom: 40px;
-}
-.inventario-box table tr.heading td {
-  background: #eee;
-  border-bottom: 1px solid #ddd;
-  font-weight: bold;
-}
-.inventario-box table tr.details td {
-  padding-bottom: 20px;
-}
-.inventario-box table tr.item td {
-  border-bottom: 1px solid #eee;
-}
-.inventario-box table tr.item.last td {
-  border-bottom: none;
-}
-.inventario-box table tr.total td:nth-child(2) {
-  border-top: 2px solid #eee;
-  font-weight: bold;
-}
-@media only screen and (max-width: 600px) {
-  .inventario-box table tr.top table td {
-    width: 100%;
-    display: block;
-    text-align: center;
-  }
-  .inventario-box table tr.information table td {
-    width: 100%;
-    display: block;
-    text-align: center;
-  }
+
+/* Optional: if you want to force a page break before a section */
+.page-break-before {
+  page-break-before: always;
 }

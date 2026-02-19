@@ -1,55 +1,39 @@
 <html>
   <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventarios</title>
     <style>
             {{asset "inventarios-styles.css" "utf8"}}
-        </style>
+    </style>
   </head>
   <body>   
-        <div class="inventario-box">
-            <table cellpadding="0" cellspacing="0">
-                <tr class="top">
-                    <td colspan="2">
-                        <table>
-                            <tr>
-                                <td class="title">
-                                    <span>Listado de inventarios</span>
-                                </td>                                
-                            </tr>
-                        </table>
-                    </td>
-                </tr>                
-                <tr class="heading">
-                    <td>
-                        Producto
-                    </td>
-                    <td>
-                        UM
-                    </td>
-                    <td>
-                        Cantidad
-                    </td>
-                    <td>
-                        Area
-                    </td>
-                </tr>
-                {{#each items}}
-                <tr class="item">
-                    <td>
-                        {{product.name}}
-                    </td>
-                    <td>
-                        {{product.um.name}}
-                    </td>
-                    <td>
-                        {{count}}
-                    </td>
-                    <td>
-                        {{area.name}}
-                    </td>
-                </tr>
-                {{/each}}                
-            </table>
-        </div>
-  </body>
+    <h1 class="report-title">Listado de inventarios</h1>   
+
+  <!-- ============================================= -->
+  <!-- TABLE WITH MANY COLUMNS (Handlebars loop)     -->
+  <!-- ============================================= -->
+  <div class="table-container">
+    <table class="wide-table">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Unidad de Medida</th>
+          <th>Cantidad</th>
+          <th>Area</th>          
+        </tr>
+      </thead>
+      <tbody>
+        {{#each items}}
+        <tr>
+          <td>{{product.name}}</td>
+          <td>{{product.um.name}}</td>
+          <td>{{count}}</td>
+          <td>{{area.name}}</td>         
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div> 
+</body>
 </html>
