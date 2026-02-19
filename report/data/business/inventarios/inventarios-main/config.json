@@ -4,11 +4,7 @@
   },
   "recipe": "chrome-pdf",
   "engine": "handlebars",
-  "scripts": [
-    {
-      "shortid": "Np_35yriJ"
-    }
-  ],
+  "scripts": [],
   "name": "inventarios-main",
   "chrome": {
     "printBackground": true,
@@ -32,7 +28,7 @@
     "$$date": 1771433528483
   },
   "modificationDate": {
-    "$$date": 1771446810419
+    "$$date": 1771453062446
   },
   "shortid": "bBaW0xb",
   "_id": "tBmfbJ9ph87Q1TQp",
