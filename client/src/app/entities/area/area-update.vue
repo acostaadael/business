@@ -40,6 +40,25 @@
               v-model="v$.description.$model"
             />
           </div>
+          <div class="form-group">
+            <label class="form-control-label" v-text="t$('businessApp.area.type')" for="area-type"></label>
+            <select
+              class="form-control"
+              name="type"
+              :class="{ valid: !v$.type.$invalid, invalid: v$.type.$invalid }"
+              v-model="v$.type.$model"
+              id="area-type"
+              data-cy="type"
+              required
+            >
+              <option v-for="areaType in areaTypeValues" :key="areaType" :value="areaType">
+                {{ areaType }}
+              </option>
+            </select>
+            <div v-if="v$.type.$anyDirty && v$.type.$invalid">
+              <small class="form-text text-danger" v-for="error of v$.type.$errors" :key="error.$uid">{{ error.$message }}</small>
+            </div>
+          </div>
         </div>
         <div>
           <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" @click="previousState()">

@@ -6,6 +6,7 @@ import { useVuelidate } from '@vuelidate/core';
 import AreaService from './area.service';
 import { useValidation } from '@/shared/composables';
 import { useAlertService } from '@/shared/alert/alert.service';
+import { AreaType } from '@/shared/model/enumerations/area-type.model.ts';
 
 import { Area, type IArea } from '@/shared/model/area.model';
 
@@ -19,6 +20,7 @@ export default defineComponent({
     const area: Ref<IArea> = ref(new Area());
     const isSaving = ref(false);
     const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
+    const areaTypeValues: Ref<string[]> = ref(Object.keys(AreaType));
 
     const route = useRoute();
     const router = useRouter();
@@ -44,6 +46,9 @@ export default defineComponent({
       name: {
         required: validations.required(t$('entity.validation.required').toString()),
       },
+      type: {
+        required: validations.required(t$('entity.validation.required').toString()),
+      },
       description: {},
     };
     const v$ = useVuelidate(validationRules, area as any);
@@ -56,6 +61,7 @@ export default defineComponent({
       previousState,
       isSaving,
       currentLanguage,
+      areaTypeValues,
       v$,
       t$,
     };
