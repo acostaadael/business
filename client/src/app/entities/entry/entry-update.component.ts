@@ -14,6 +14,7 @@ import { type IProduct } from '@/shared/model/product.model';
 import { Entry, type IEntry } from '@/shared/model/entry.model';
 import Autocomplete from '@/components/forms/Autocomplete.vue';
 import type { AutocompleteItem } from '@/components/forms/Autocomplete.vue';
+import { AreaType } from '@/shared/model/enumerations/area-type.model.ts';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -89,7 +90,7 @@ export default defineComponent({
 
     const initRelationships = () => {
       areaService()
-        .retrieve()
+        .retrieve(AreaType.ALMACEN)
         .then(res => {
           areas.value = res.data;
         });

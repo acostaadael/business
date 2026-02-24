@@ -20,6 +20,7 @@ import { AuthGuard, RoleType, Roles, RolesGuard } from '../../security';
 import { HeaderUtil } from '../../client/header-util';
 import { Request } from '../../client/request';
 import { LoggingInterceptor } from '../../client/interceptors/logging.interceptor';
+import { AreaType } from '../../domain/enumeration/area-type';
 
 @Controller('api/areas')
 @UseGuards(AuthGuard, RolesGuard)
@@ -40,11 +41,15 @@ export class AreaController {
   })
   async getAll(@Req() req: Request): Promise<AreaDTO[]> {
     const pageRequest: PageRequest = new PageRequest(req.query.page, req.query.size, req.query.sort ?? 'id,ASC');
-    const [results, count] = await this.areaService.findAndCount({
+
+    const options = {
       skip: +pageRequest.page * pageRequest.size,
       take: +pageRequest.size,
       order: pageRequest.sort.asOrder(),
-    });
+      ...(req.query.type && { where: { type: req.query.type as AreaType } }),
+    };
+
+    const [results, count] = await this.areaService.findAndCount(options);
     HeaderUtil.addPaginationHeaders(req.res, new Page(results, count, pageRequest));
     return results;
   }

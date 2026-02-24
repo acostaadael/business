@@ -18,10 +18,11 @@ export default class AreaService {
     });
   }
 
-  public retrieve(): Promise<any> {
+  public retrieve(type?: any): Promise<any> {
+    const params = type ? `?type=${type}` : '';
     return new Promise<any>((resolve, reject) => {
       axios
-        .get(baseApiUrl)
+        .get(`${baseApiUrl}${params}`)
         .then(res => {
           resolve(res);
         })
