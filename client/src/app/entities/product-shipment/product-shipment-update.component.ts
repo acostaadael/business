@@ -17,6 +17,7 @@ import Autocomplete from '@/components/forms/Autocomplete.vue';
 import type { AutocompleteItem } from '@/components/forms/Autocomplete.vue';
 import AreaService from '../area/area.service';
 import type { IArea } from '@/shared/model/area.model';
+import type { AreaType } from '@/shared/model/enumerations/area-type.model.ts';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -107,11 +108,15 @@ export default defineComponent({
         .then(res => {
           productShipments.value = res.data;
         });
-      areaService()
-        .retrieve()
-        .then(res => {
-          areas.value = res.data;
-        });
+    };
+
+    const loadAreas = async () => {
+      try {
+        const res = await areaService().retrieve(productShipment.value.type);
+        areas.value = res.data;
+      } catch (e) {
+        console.log(e);
+      }
     };
 
     initRelationships();
@@ -155,6 +160,7 @@ export default defineComponent({
       productLoading,
       searchProducts,
       handleSelect,
+      loadAreas,
       v$,
       t$,
     };

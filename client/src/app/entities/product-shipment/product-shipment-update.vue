@@ -56,6 +56,7 @@
                   v-model="v$.type.$model"
                   id="product-shipment-type"
                   data-cy="type"
+                  @change="loadAreas"
                   required
                 >
                   <option
@@ -75,14 +76,22 @@
             <b-col>
               <div class="form-group">
                 <label class="form-control-label" v-text="t$('businessApp.productShipment.area')" for="productShipment-area"></label>
-                <select class="form-control" id="productShipment-area" data-cy="area" name="area" v-model="productShipment.area" required>
+                <select
+                  class="form-control"
+                  id="productShipment-area"
+                  data-cy="area"
+                  name="area"
+                  v-model="productShipment.area"
+                  :disabled="!productShipment.type"
+                  required
+                >
                   <option v-if="!productShipment.area" :value="null" selected></option>
                   <option
                     :value="productShipment.area && areaOption.id === productShipment.area.id ? productShipment.area : areaOption"
                     v-for="areaOption in areas"
                     :key="areaOption.id"
                   >
-                    {{ areaOption.name }}
+                    {{ `${areaOption.name} (${areaOption.type})` }}
                   </option>
                 </select>
               </div>
