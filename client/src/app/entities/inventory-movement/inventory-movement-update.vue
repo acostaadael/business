@@ -69,7 +69,7 @@
                     v-for="areaOption in areas"
                     :key="areaOption.id"
                   >
-                    {{ areaOption.name }}
+                    {{ `${areaOption.name} (${areaOption.type})` }}
                   </option>
                 </select>
               </div>
@@ -101,7 +101,7 @@
                     v-for="areaOption in areas"
                     :key="areaOption.id"
                   >
-                    {{ areaOption.name }}
+                    {{ `${areaOption.name} (${areaOption.type})` }}
                   </option>
                 </select>
               </div>
