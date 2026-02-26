@@ -3,9 +3,10 @@
     <div class="report-header">
       <h2 v-if="title" class="report-title">{{ title }}</h2>
       <div class="export-options">
-        <button @click="exportToCSV">Export CSV</button>
-        <button @click="exportToJSON">Export JSON</button>
-        <button @click="exportToPDF">Export PDF</button>
+        <b-dropdown id="dropdown-1" :text="t$('entity.action.export.main')" class="m-md-2">
+          <b-dropdown-item @click="exportToPDF">{{ t$('entity.action.export.format.pdf') }}</b-dropdown-item>
+          <b-dropdown-item @click="exportToExcel">{{ t$('entity.action.export.format.excel') }}</b-dropdown-item>
+        </b-dropdown>
       </div>
     </div>
 
@@ -24,6 +25,17 @@
           </td>
         </tr>
       </tbody>
+      <tfoot v-if="totalColumns.length > 0">
+        <tr>
+          <td v-for="(column, index) in columns" :key="column.key">
+            <template v-if="index === 0">{{ totalLabel }}</template>
+            <template v-else-if="totalColumns.includes(column.key)">
+              {{ totals[column.key] }}
+            </template>
+            <template v-else></template>
+          </td>
+        </tr>
+      </tfoot>
     </table>
   </div>
 </template>
@@ -31,6 +43,10 @@
 <script setup lang="ts">
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import * as XLSX from 'xlsx';
+import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
+const { t: t$ } = useI18n();
 
 // Define column structure
 interface Column {
@@ -45,7 +61,27 @@ const props = defineProps<{
   data: any[];
   columns: Column[];
   filename?: string;
+  totalColumns?: string[]; // keys of columns to total
+  totalLabel?: string;
 }>();
+
+// Default values
+const totalColumns = props.totalColumns || [];
+const totalLabel = props.totalLabel || 'Total';
+
+// Compute totals for specified columns
+const totals = computed(() => {
+  const result: Record<string, string> = {};
+  totalColumns.forEach(key => {
+    const sum = props.data.reduce((acc, row) => {
+      const val = row[key];
+      const num = typeof val === 'number' ? val : parseFloat(val);
+      return acc + (isNaN(num) ? 0 : num);
+    }, 0);
+    result[key] = `${sum} $`;
+  });
+  return result;
+});
 
 // Escape CSV fields (commas, quotes, newlines)
 const escapeCSV = (field: any): string => {
@@ -94,6 +130,20 @@ const exportToPDF = (): void => {
   const headers = props.columns.map(col => col.label);
   const rows = props.data.map(row => props.columns.map(col => String(col.render ? col.render(row) : row[col.key])));
 
+  // Add totals row if totalColumns is not empty
+  if (totalColumns.length > 0) {
+    const totalsRow = props.columns.map((col, index) => {
+      if (index === 0) {
+        return totalLabel;
+      } else if (totalColumns.includes(col.key)) {
+        return String(totals.value[col.key]);
+      } else {
+        return '';
+      }
+    });
+    rows.push(totalsRow);
+  }
+
   // Start position
   let finalY = 10;
 
@@ -114,6 +164,36 @@ const exportToPDF = (): void => {
   });
 
   doc.save(`${props.filename || 'report'}.pdf`);
+};
+
+// Export as Excel (XLSX)
+const exportToExcel = (): void => {
+  // Prepare data for worksheet: headers + rows
+  const headers = props.columns.map(col => col.label);
+  const rows = props.data.map(row => props.columns.map(col => (col.render ? col.render(row) : row[col.key])));
+  const worksheetData: any[] = [headers, ...rows];
+
+  // Add totals row if totalColumns is not empty
+  if (totalColumns.length > 0) {
+    const totalsRow = props.columns.map((col, index) => {
+      if (index === 0) {
+        return totalLabel;
+      } else if (totalColumns.includes(col.key)) {
+        return totals.value[col.key];
+      } else {
+        return ''; // empty for non-total columns
+      }
+    });
+    worksheetData.push(totalsRow);
+  }
+
+  // Create worksheet and workbook
+  const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Report');
+
+  // Generate Excel file and trigger download
+  XLSX.writeFile(workbook, `${props.filename || 'report'}.xlsx`);
 };
 </script>
 
@@ -166,5 +246,10 @@ const exportToPDF = (): void => {
 .report-table th {
   background-color: #f2f2f2;
   font-weight: bold;
+}
+
+.report-table tfoot td {
+  font-weight: bold;
+  background-color: #e8e8e8;
 }
 </style>

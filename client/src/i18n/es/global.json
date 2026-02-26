@@ -119,7 +119,14 @@
       "save": "Guardar",
       "view": "Vista",
       "show": "Show { otherEntity }",
-      "search": "Buscar"
+      "search": "Buscar",
+      "export": {
+        "main": "Exportar",
+        "format": {
+          "pdf": "Exportar a PDF",
+          "excel": "Exportar a EXCEL"
+        }
+      }
     },
     "detail": {
       "field": "Campo",

@@ -21,7 +21,9 @@
       "count": "Count",
       "product": "Product",
       "area": "Area",
-      "ProductFamily": "ProductFamily"
+      "ProductFamily": "ProductFamily",
+      "unitPrice": "Unit Price",
+      "totalPrice": "Total Price"
     }
   }
 }

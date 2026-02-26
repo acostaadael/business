@@ -1,5 +1,11 @@
 <template>
-  <ReportTable title="Listado de inventarios" :data="inventaries" :columns="invetariesColumns" filename="reporte-inventario" />
+  <ReportTable
+    :title="t$('businessApp.report.reports.inventary')"
+    :data="inventaries"
+    :columns="invetariesColumns"
+    :total-columns="['total_price']"
+    filename="reporte-inventario"
+  />
 </template>
 
 <script setup lang="ts">
@@ -26,7 +32,11 @@ const retrieveInventarys = async () => {
     };
 
     const res = await inventaryService().retrieve(paginationQuery);
-    inventaries.value = res.data;
+    inventaries.value = res.data.map((item: IInventary) => ({
+      ...item,
+      unit_price: item.product?.costPrice,
+      total_price: item.product?.costPrice && item.count ? item.product?.costPrice * item.count : 0,
+    }));
   } catch (err: any) {
     alertService.showHttpError(err.response);
   }
@@ -43,6 +53,16 @@ const invetariesColumns = [
     render: (row: IInventary) => `${row.product?.name} (${row.product?.um?.name})`,
   },
   { key: 'count', label: t$('businessApp.inventary.count') },
+  {
+    key: 'unit_price',
+    label: t$('businessApp.inventary.unitPrice'),
+    render: (row: IInventary) => `${row.unit_price} $`,
+  },
+  {
+    key: 'total_price',
+    label: t$('businessApp.inventary.totalPrice'),
+    render: (row: IInventary) => `${row.total_price} $`,
+  },
   { key: 'area', label: t$('businessApp.inventary.area'), render: (row: IInventary) => row.area?.name },
 ];
 </script>

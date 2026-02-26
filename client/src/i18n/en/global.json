@@ -118,7 +118,14 @@
       "save": "Save",
       "view": "View",
       "show": "Show { otherEntity }",
-      "search": "Search"
+      "search": "Search",
+      "export": {
+        "main": "Export",
+        "format": {
+          "pdf": "Export PDF",
+          "excel": "Export EXCEL"
+        }
+      }
     },
     "detail": {
       "field": "Field",

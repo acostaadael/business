@@ -7,6 +7,9 @@
       },
       "actions": {
         "generate": "Generar"
+      },
+      "reports": {
+        "inventary": "Listado de inventarios"
       }
     }
   }

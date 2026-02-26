@@ -6,6 +6,8 @@ export interface IInventary {
   count?: number;
   product?: IProduct;
   area?: IArea;
+  unit_price?: number;
+  total_price?: number;
 }
 
 export class Inventary implements IInventary {
@@ -13,5 +15,7 @@ export class Inventary implements IInventary {
     public id?: number,
     public count?: number,
     public area?: IArea,
+    public unit_price?: number,
+    public total_price?: number,
   ) {}
 }

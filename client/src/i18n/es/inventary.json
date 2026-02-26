@@ -21,7 +21,9 @@
       "count": "Cantidad",
       "product": "Producto",
       "area": "Area",
-      "ProductFamily": "Familia Producto"
+      "ProductFamily": "Familia Producto",
+      "unitPrice": "Precio",
+      "totalPrice": "Importe"
     }
   }
 }
