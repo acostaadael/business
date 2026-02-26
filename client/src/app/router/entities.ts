@@ -42,6 +42,7 @@ const ProductShipment = () => import('@/entities/product-shipment/product-shipme
 const ProductShipmentUpdate = () => import('@/entities/product-shipment/product-shipment-update.vue');
 
 const EntryReport = () => import('@/entities/report/entry-report.vue');
+const InventaryReport = () => import('@/entities/report/inventary-report.vue');
 
 // jhipster-needle-add-entity-to-router-import - JHipster will import entities to the router here
 
@@ -257,6 +258,12 @@ export default {
       path: 'product-shipment/new',
       name: 'ProductShipmentCreate',
       component: ProductShipmentUpdate,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'inventary-report',
+      name: 'InventaryReport',
+      component: InventaryReport,
       meta: { authorities: [Authority.USER] },
     },
     {
