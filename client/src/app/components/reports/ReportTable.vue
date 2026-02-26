@@ -28,35 +28,27 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-const props = defineProps({
-  // Report title displayed above the table
-  title: {
-    type: String,
-    default: '',
-  },
-  // Array of data objects to display
-  data: {
-    type: Array,
-    required: true,
-  },
-  // Column configuration: [{ key: 'name', label: 'Full Name' }, ...]
-  columns: {
-    type: Array,
-    required: true,
-  },
-  // Base filename for exported files (without extension)
-  filename: {
-    type: String,
-    default: 'report',
-  },
-});
+// Define column structure
+interface Column {
+  key: string;
+  label: string;
+  render: any;
+}
+
+// Define props with types
+const props = defineProps<{
+  title?: string;
+  data: any[];
+  columns: Column[];
+  filename?: string;
+}>();
 
 // Escape CSV fields (commas, quotes, newlines)
-const escapeCSV = field => {
+const escapeCSV = (field: any): string => {
   if (field === null || field === undefined) return '';
   const str = String(field);
   if (str.includes(',') || str.includes('"') || str.includes('\n')) {
@@ -66,7 +58,7 @@ const escapeCSV = field => {
 };
 
 // Export as CSV
-const exportToCSV = () => {
+const exportToCSV = (): void => {
   const headers = props.columns.map(col => col.label);
   const rows = props.data.map(row => props.columns.map(col => escapeCSV(col.render ? col.render(row) : row[col.key])));
   const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
@@ -75,7 +67,7 @@ const exportToCSV = () => {
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
   link.href = url;
-  link.setAttribute('download', `${props.filename}.csv`);
+  link.setAttribute('download', `${props.filename || 'report'}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -83,13 +75,13 @@ const exportToCSV = () => {
 };
 
 // Export as JSON
-const exportToJSON = () => {
+const exportToJSON = (): void => {
   const jsonContent = JSON.stringify(props.data, null, 2);
   const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
   link.href = url;
-  link.setAttribute('download', `${props.filename}.json`);
+  link.setAttribute('download', `${props.filename || 'report'}.json`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -97,28 +89,31 @@ const exportToJSON = () => {
 };
 
 // Export as PDF (requires jspdf and jspdf-autotable)
-const exportToPDF = () => {
+const exportToPDF = (): void => {
   const doc = new jsPDF();
-
   const headers = props.columns.map(col => col.label);
-  const rows = props.data.map(row => props.columns.map(col => (col.render ? col.render(row) : row[col.key])));
+  const rows = props.data.map(row => props.columns.map(col => String(col.render ? col.render(row) : row[col.key])));
 
-  let finalY = 10; // start position
+  // Start position
+  let finalY = 10;
 
+  // Add title if provided
   if (props.title) {
     doc.setFontSize(16);
     doc.setFont(undefined, 'bold');
     doc.text(props.title, 10, finalY);
-    finalY += 10; // add some space after title
+    finalY += 10; // space after title
   }
 
+  // Generate table
   autoTable(doc, {
     head: [headers],
     body: rows,
     startY: finalY,
-    margin: { top: finalY }, // ensure table starts after title
+    margin: { top: finalY },
   });
-  doc.save(`${props.filename}.pdf`);
+
+  doc.save(`${props.filename || 'report'}.pdf`);
 };
 </script>
 
@@ -143,7 +138,7 @@ const exportToPDF = () => {
 }
 
 .export-options button {
-  margin-left: 10px; /* space between buttons */
+  margin-left: 10px;
   padding: 5px 10px;
   cursor: pointer;
   background-color: #4caf50;

@@ -40,9 +40,9 @@ const invetariesColumns = [
   {
     key: 'product',
     label: t$('businessApp.inventary.product'),
-    render: (row: any) => `${row['product']['name']} (${row['product']['um']['name']})`,
+    render: (row: IInventary) => `${row.product?.name} (${row.product?.um?.name})`,
   },
   { key: 'count', label: t$('businessApp.inventary.count') },
-  { key: 'area', label: t$('businessApp.inventary.area'), render: (row: any) => row['area']['name'] },
+  { key: 'area', label: t$('businessApp.inventary.area'), render: (row: IInventary) => row.area?.name },
 ];
 </script>
