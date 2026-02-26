@@ -68,7 +68,7 @@ const escapeCSV = field => {
 // Export as CSV
 const exportToCSV = () => {
   const headers = props.columns.map(col => col.label);
-  const rows = props.data.map(row => props.columns.map(col => escapeCSV(row[col.key])));
+  const rows = props.data.map(row => props.columns.map(col => escapeCSV(col.render ? col.render(row) : row[col.key])));
   const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
 
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
