@@ -1,6 +1,6 @@
 <template>
   <ReportTable
-    :title="t$('businessApp.report.reports.entry')"
+    :title="`${t$('businessApp.report.reports.entry')} (Mes: ${period.month}; Año: ${period.year})`"
     :data="entries"
     :columns="entriesColumns"
     :total-columns="['total_price']"
@@ -17,12 +17,16 @@ import { useRoute, useRouter } from 'vue-router';
 import { useAlertService } from '@/shared/alert/alert.service';
 import type { Ref } from 'vue';
 import type { IEntry } from '@/shared/model/entry.model';
+import { type IPeriod, Period } from '@/shared/model/period.model.ts';
+import PeriodService from '@/entities/period/period.service.ts';
 
 const entryService = inject('entryService', () => new EntryService());
+const periodService = inject('periodService', () => new PeriodService());
 const alertService = inject('alertService', () => useAlertService(), true);
 
 const { t: t$ } = useI18n();
 const entries: Ref<IEntry[]> = ref([]);
+const period: Ref<IPeriod> = ref(new Period());
 
 const route = useRoute();
 
@@ -46,8 +50,18 @@ const retrieveEntries = async () => {
   }
 };
 
+const retrievePeriod = async () => {
+  try {
+    const res = await periodService().find(Number(route.params.periodId));
+    period.value = res;
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  }
+};
+
 onMounted(async () => {
   await retrieveEntries();
+  await retrievePeriod();
 });
 
 const entriesColumns = [
