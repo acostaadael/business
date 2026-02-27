@@ -52,7 +52,7 @@ export class EntryController {
     const currentCompany = await this.companyService.findActive();
 
     const entryQuery = new EntryQueryDTO();
-    entryQuery.periodId = openPeriod.id;
+    entryQuery.periodId = req.query.periodId ? Number(req.query.periodId) : openPeriod.id;
     entryQuery.pageRequest = pageRequest;
     entryQuery.companyId = currentCompany.id;
     entryQuery.globalFilter = req.query.globalSearch ? req.query.globalSearch.toString() : null;

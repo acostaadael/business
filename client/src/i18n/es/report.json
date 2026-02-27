@@ -10,7 +10,8 @@
         "generate": "Generar"
       },
       "reports": {
-        "inventary": "Listado de inventarios"
+        "inventary": "Listado de inventarios",
+        "entry": "Listado de entradas de productos"
       }
     }
   }

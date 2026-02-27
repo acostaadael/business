@@ -25,7 +25,8 @@
       },
       "report": {
         "main": "Reportes",
-        "inventary": "Reporte de Inventarios"
+        "inventary": "Reporte de Inventarios",
+        "entry": "Reporte de Entradas"
       },
       "account": {
         "main": "Cuenta",

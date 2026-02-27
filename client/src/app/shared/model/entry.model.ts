@@ -7,6 +7,8 @@ export interface IEntry {
   count?: number;
   area?: IArea;
   product?: IProduct;
+  unit_price?: number;
+  total_price?: number;
 }
 
 export class Entry implements IEntry {
@@ -16,6 +18,8 @@ export class Entry implements IEntry {
     public count?: number,
     public area?: IArea,
     public product?: IProduct,
+    public unit_price?: number,
+    public total_price?: number,
   ) {
     const date = new Date();
     this.day = date.getDate();

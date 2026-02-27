@@ -1,42 +1,72 @@
 <template>
-  <div class="row justify-content-center">
-    <div class="col-8">
-      <form name="editForm" novalidate @submit.prevent="save()">
-        <h2 id="businessApp.report.params.main" data-cy="ReportParamsHeading" v-text="t$('businessApp.report.params.main')"></h2>
-        <div>
-          <div class="form-group">
-            <label class="form-control-label" v-text="t$('businessApp.report.params.period')" for="period-param"></label>
-            <select class="form-control" id="period-param" data-cy="period-param" name="period" v-model="reportParam.period" required>
-              <option :value="null"></option>
-              <option
-                :value="reportParam.period && periodOption.id === reportParam.period.id ? reportParam.period : periodOption"
-                v-for="periodOption in periods"
-                :key="periodOption.id"
-              >
-                {{ `Mes: ${periodOption.month}; Año: ${periodOption.year}` }}
-              </option>
-            </select>
-            <div v-if="v$.period.$anyDirty && v$.period.$invalid">
-              <small class="form-text text-danger" v-for="error of v$.period.$errors" :key="error.$uid">{{ error.$message }}</small>
-            </div>
-          </div>
-        </div>
-        <div>
-          <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" @click="previousState()">
-            <font-awesome-icon icon="ban"></font-awesome-icon>&nbsp;<span v-text="t$('entity.action.cancel')"></span>
-          </button>
-          <button
-            type="submit"
-            id="save-entity"
-            data-cy="entityCreateSaveButton"
-            :disabled="v$.$invalid || isSaving"
-            class="btn btn-primary"
-          >
-            <font-awesome-icon icon="save"></font-awesome-icon>&nbsp;<span v-text="t$('businessApp.report.actions.generate')"></span>
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <ReportTable
+    :title="t$('businessApp.report.reports.entry')"
+    :data="entries"
+    :columns="entriesColumns"
+    :total-columns="['total_price']"
+    filename="reporte-inventario"
+  />
 </template>
-<script lang="ts" src="./entry-report.component.ts"></script>
+
+<script setup lang="ts">
+import ReportTable from '@/components/reports/ReportTable.vue';
+import { useI18n } from 'vue-i18n';
+import { inject, onMounted, ref } from 'vue';
+import EntryService from '@/entities/entry/entry.service';
+import { useRoute, useRouter } from 'vue-router';
+import { useAlertService } from '@/shared/alert/alert.service';
+import type { Ref } from 'vue';
+import type { IEntry } from '@/shared/model/entry.model';
+
+const entryService = inject('entryService', () => new EntryService());
+const alertService = inject('alertService', () => useAlertService(), true);
+
+const { t: t$ } = useI18n();
+const entries: Ref<IEntry[]> = ref([]);
+
+const route = useRoute();
+
+const retrieveEntries = async () => {
+  try {
+    const paginationQuery = {
+      page: 0,
+      size: Number.MAX_SAFE_INTEGER,
+      sort: 'id,ASC',
+      periodId: Number(route.params.periodId),
+    };
+
+    const res = await entryService().retrieve(paginationQuery);
+    entries.value = res.data.map((item: IEntry) => ({
+      ...item,
+      unit_price: item.product?.costPrice,
+      total_price: item.product?.costPrice && item.count ? item.product?.costPrice * item.count : 0,
+    }));
+  } catch (err: any) {
+    alertService.showHttpError(err.response);
+  }
+};
+
+onMounted(async () => {
+  await retrieveEntries();
+});
+
+const entriesColumns = [
+  {
+    key: 'product',
+    label: t$('businessApp.entry.product'),
+    render: (row: IEntry) => `${row.product?.name} (${row.product?.um?.name})`,
+  },
+  { key: 'count', label: t$('businessApp.entry.count') },
+  {
+    key: 'unit_price',
+    label: t$('businessApp.entry.unitPrice'),
+    render: (row: IEntry) => `${row.unit_price} $`,
+  },
+  {
+    key: 'total_price',
+    label: t$('businessApp.entry.totalPrice'),
+    render: (row: IEntry) => `${row.total_price} $`,
+  },
+  { key: 'area', label: t$('businessApp.entry.area'), render: (row: IEntry) => row.area?.name },
+];
+</script>

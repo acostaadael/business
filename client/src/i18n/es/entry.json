@@ -22,7 +22,9 @@
       "count": "Cantidad",
       "area": "Area",
       "product": "Producto",
-      "createdDate": "Fecha de creación"
+      "createdDate": "Fecha de creación",
+      "unitPrice": "Precio",
+      "totalPrice": "Importe"
     }
   }
 }

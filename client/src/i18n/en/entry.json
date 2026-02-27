@@ -22,7 +22,9 @@
       "count": "Count",
       "area": "Area",
       "product": "Product",
-      "createdDate": "Created date"
+      "createdDate": "Created date",
+      "unitPrice": "Unit Price",
+      "totalPrice": "Total Price"
     }
   }
 }

@@ -8,17 +8,14 @@ import { useValidation } from '@/shared/composables';
 import { ReportParam, type IReportParam } from '@/shared/model/report-param.model';
 import PeriodService from '@/entities/period/period.service.ts';
 import type { IPeriod } from '@/shared/model/period.model.ts';
-import { useAlertService } from '@/shared/alert/alert.service.ts';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
-  name: 'EntryReport',
+  name: 'EntryParamReport',
   setup() {
     const periodService = inject('periodService', () => new PeriodService());
-    const alertService = inject('alertService', () => useAlertService(), true);
 
     const reportParam: Ref<IReportParam> = ref(new ReportParam());
-    const isSaving = ref(false);
     const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
 
     const periods: Ref<IPeriod[]> = ref([]);
@@ -54,17 +51,16 @@ export default defineComponent({
       reportParam,
       periods,
       previousState,
-      isSaving,
       currentLanguage,
       v$,
       t$,
+      router,
     };
   },
   created(): void {},
   methods: {
     save(): void {
-      this.isSaving = true;
-      window.open(`http://localhost:8080/api/reports/entries/${this.reportParam.period?.id}`, '_blank', 'noopener,noreferrer');
+      this.router.push(`/entry-report/${this.reportParam.period?.id}`);
     },
   },
 });

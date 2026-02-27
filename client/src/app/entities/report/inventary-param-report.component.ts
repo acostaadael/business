@@ -6,7 +6,6 @@ import { useVuelidate } from '@vuelidate/core';
 import { useValidation } from '@/shared/composables';
 
 import { ReportParam, type IReportParam } from '@/shared/model/report-param.model';
-import { useAlertService } from '@/shared/alert/alert.service.ts';
 import AreaService from '@/entities/area/area.service.ts';
 import type { IArea } from '@/shared/model/area.model.ts';
 
@@ -15,10 +14,8 @@ export default defineComponent({
   name: 'EntryReport',
   setup() {
     const areaService = inject('areaService', () => new AreaService());
-    const alertService = inject('alertService', () => useAlertService(), true);
 
     const reportParam: Ref<IReportParam> = ref(new ReportParam());
-    const isSaving = ref(false);
     const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
 
     const areas: Ref<IArea[]> = ref([]);
@@ -49,7 +46,6 @@ export default defineComponent({
       reportParam,
       areas,
       previousState,
-      isSaving,
       currentLanguage,
       v$,
       t$,
