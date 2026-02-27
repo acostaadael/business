@@ -112,8 +112,13 @@ export default defineComponent({
 
     const loadAreas = async () => {
       try {
-        const res = await areaService().retrieve(productShipment.value.type);
-        areas.value = res.data;
+        if (productShipment.value.type === ExitType.VENTA) {
+          const res = await areaService().retrieve(productShipment.value.type);
+          areas.value = res.data;
+        } else {
+          const res = await areaService().retrieve();
+          areas.value = res.data;
+        }
       } catch (e) {
         console.log(e);
       }
