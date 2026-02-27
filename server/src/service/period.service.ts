@@ -5,12 +5,16 @@ import { Period } from '../domain/period.entity';
 import { PeriodDTO } from '../service/dto/period.dto';
 import { PeriodMapper } from '../service/mapper/period.mapper';
 import { PeriodStatus } from '../domain/enumeration/period-status';
+import { InitInventaryPeriodService } from './init-inventary-period.service';
 
 @Injectable()
 export class PeriodService {
   logger = new Logger('PeriodService');
 
-  constructor(@InjectRepository(Period) private periodRepository: Repository<Period>) {}
+  constructor(
+    @InjectRepository(Period) private periodRepository: Repository<Period>,
+    private initInventaryPeriodService: InitInventaryPeriodService,
+  ) {}
 
   async findById(id: number): Promise<PeriodDTO | undefined> {
     const result = await this.periodRepository.findOne({
@@ -60,6 +64,8 @@ export class PeriodService {
     await this.validate(periodDTO);
 
     const result = await this.periodRepository.save(entity);
+
+    await this.initInventaryPeriodService.save(result);
     return PeriodMapper.fromEntityToDTO(result);
   }
 

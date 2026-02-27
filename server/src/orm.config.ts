@@ -16,6 +16,7 @@ import { Entry } from './domain/entry.entity';
 import { Company } from './domain/company.entity';
 import { InventoryMovement } from './domain/inventory-movement.entity';
 import { ProductShipment } from './domain/product-shipment.entity';
+import { InitInventaryPeriod } from './domain/init-inventary-period.entity';
 // jhipster-needle-add-entity-to-ormconfig-imports - JHipster will add code here, do not remove
 
 function ormConfig(): TypeOrmModuleOptions {
@@ -87,6 +88,7 @@ function ormConfig(): TypeOrmModuleOptions {
       Company,
       InventoryMovement,
       ProductShipment,
+      InitInventaryPeriod,
       // jhipster-needle-add-entity-to-ormconfig-entities - JHipster will add code here, do not remove
     ],
     migrations: [

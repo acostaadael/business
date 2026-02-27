@@ -17,6 +17,7 @@ import { CompanyModule } from './module/company.module';
 import { InventoryMovementModule } from './module/inventory-movement.module';
 import { ProductShipmentModule } from './module/product-shipment.module';
 import { ReportModule } from './module/report.module';
+import { InitInventaryPeriodModule } from './module/init-inventary-period.module';
 // jhipster-needle-add-entity-module-to-main-import - JHipster will import entity modules here, do not remove
 // jhipster-needle-add-controller-module-to-main-import - JHipster will import controller modules here, do not remove
 // jhipster-needle-add-service-module-to-main-import - JHipster will import service modules here, do not remove
@@ -41,6 +42,7 @@ import { ReportModule } from './module/report.module';
     InventoryMovementModule,
     ProductShipmentModule,
     ReportModule,
+    InitInventaryPeriodModule,
     // jhipster-needle-add-entity-module-to-main - JHipster will add entity modules here, do not remove
   ],
   controllers: [
