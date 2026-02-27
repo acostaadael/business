@@ -8,20 +8,19 @@ import { useValidation } from '@/shared/composables';
 import { ReportParam, type IReportParam } from '@/shared/model/report-param.model';
 import PeriodService from '@/entities/period/period.service.ts';
 import type { IPeriod } from '@/shared/model/period.model.ts';
-import { useAlertService } from '@/shared/alert/alert.service.ts';
+import { ExitType } from '@/shared/model/enumerations/exit-type.model.ts';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
-  name: 'ExitReport',
+  name: 'ExitParamReport',
   setup() {
     const periodService = inject('periodService', () => new PeriodService());
-    const alertService = inject('alertService', () => useAlertService(), true);
 
     const reportParam: Ref<IReportParam> = ref(new ReportParam());
-    const isSaving = ref(false);
     const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
 
     const periods: Ref<IPeriod[]> = ref([]);
+    const exitTypeValues: Ref<string[]> = ref(Object.keys(ExitType));
     const router = useRouter();
 
     const previousState = () => router.go(-1);
@@ -46,6 +45,9 @@ export default defineComponent({
       period: {
         required: validations.required(t$('entity.validation.required').toString()),
       },
+      exitType: {
+        required: validations.required(t$('entity.validation.required').toString()),
+      },
     };
     const v$ = useVuelidate(validationRules, reportParam as any);
     v$.value.$validate();
@@ -54,21 +56,17 @@ export default defineComponent({
       reportParam,
       periods,
       previousState,
-      isSaving,
       currentLanguage,
       v$,
       t$,
+      router,
+      exitTypeValues,
     };
   },
   created(): void {},
   methods: {
     save(): void {
-      this.isSaving = true;
-      window.open(
-        `http://localhost:8080/api/reports/exits?perioId=${this.reportParam.period?.id}&exitType`,
-        '_blank',
-        'noopener,noreferrer',
-      );
+      this.router.push(`/exit-report/${this.reportParam.period?.id}/${this.reportParam.exitType}`);
     },
   },
 });

@@ -25,7 +25,8 @@
       "report": {
         "main": "Reports",
         "inventary": "Inventary Report",
-        "entry": "Entry Report"
+        "entry": "Entry Report",
+        "exit": "Exit Report"
       },
       "account": {
         "main": "Account",

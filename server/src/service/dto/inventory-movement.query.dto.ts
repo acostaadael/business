@@ -14,6 +14,8 @@ export class InventoryMovementQueryDTO {
 
   globalFilter?: string;
 
+  exitType?: string;
+
   @IsNotEmpty()
   pageRequest: PageRequest;
   // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

@@ -24,7 +24,9 @@
       "product": "Producto",
       "company": "Compañia",
       "period": "Periodo",
-      "area": "Area"
+      "area": "Area",
+      "unitPrice": "Precio",
+      "totalPrice": "Importe"
     }
   }
 }

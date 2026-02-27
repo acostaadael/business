@@ -24,7 +24,9 @@
       "product": "Product",
       "company": "Company",
       "period": "Period",
-      "area": "Area"
+      "area": "Area",
+      "unitPrice": "Unit Price",
+      "totalPrice": "Total Price"
     }
   }
 }

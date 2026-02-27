@@ -47,6 +47,9 @@ const InventaryParamReport = () => import('@/entities/report/inventary-param-rep
 const EntryReport = () => import('@/entities/report/entry-report.vue');
 const EntryParamReport = () => import('@/entities/report/entry-param-report.vue');
 
+const ExitReport = () => import('@/entities/report/exit-report.vue');
+const ExitParamReport = () => import('@/entities/report/exit-param-report.vue');
+
 // jhipster-needle-add-entity-to-router-import - JHipster will import entities to the router here
 
 export default {
@@ -285,6 +288,18 @@ export default {
       path: 'entry-report/:periodId',
       name: 'EntryReport',
       component: EntryReport,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'exit-param-report',
+      name: 'ExitParamReport',
+      component: ExitParamReport,
+      meta: { authorities: [Authority.USER] },
+    },
+    {
+      path: 'exit-report/:periodId/:exitType',
+      name: 'ExitReport',
+      component: ExitReport,
       meta: { authorities: [Authority.USER] },
     },
     // jhipster-needle-add-entity-to-router - JHipster will add entities to the router here

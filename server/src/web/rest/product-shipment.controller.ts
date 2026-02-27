@@ -55,6 +55,7 @@ export class ProductShipmentController {
     entryQuery.periodId = openPeriod.id;
     entryQuery.pageRequest = pageRequest;
     entryQuery.companyId = currentCompany.id;
+    entryQuery.exitType = req.query.exitType ? req.query.exitType.toString() : null;
     entryQuery.globalFilter = req.query.globalSearch ? req.query.globalSearch.toString() : null;
 
     const [results, count] = await this.productShipmentService.findAndCount(entryQuery);

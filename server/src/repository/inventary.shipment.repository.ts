@@ -34,6 +34,10 @@ export class ProductShipmentRepository extends Repository<ProductShipment> {
       );
     }
 
+    if (query.exitType) {
+      q.andWhere('product_shipment.type = :exitType', { exitType: query.exitType });
+    }
+
     q.skip(+query.pageRequest.page * query.pageRequest.size);
     q.take(+query.pageRequest.size);
 

@@ -13,6 +13,8 @@ export interface IProductShipment {
   company?: ICompany;
   period?: IPeriod | null;
   area?: IArea;
+  unit_price?: number;
+  total_price?: number;
 }
 
 export class ProductShipment implements IProductShipment {
@@ -25,6 +27,8 @@ export class ProductShipment implements IProductShipment {
     public company?: ICompany,
     public period?: IPeriod | null,
     public area?: IArea,
+    public unit_price?: number,
+    public total_price?: number,
   ) {
     const date = new Date();
     this.day = date.getDate();

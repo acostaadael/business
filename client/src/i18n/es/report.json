@@ -4,14 +4,16 @@
       "params": {
         "main": "Parámetros del reporte",
         "period": "Periodo",
-        "area": "Area"
+        "area": "Area",
+        "exitType": "Tipo de Salida"
       },
       "actions": {
         "generate": "Generar"
       },
       "reports": {
         "inventary": "Listado de inventarios",
-        "entry": "Listado de entradas de productos"
+        "entry": "Listado de entradas de productos",
+        "exit": "Listado de salidas de productos"
       }
     }
   }
