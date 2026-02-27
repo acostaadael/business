@@ -13,6 +13,7 @@ import ReportTable from '@/components/reports/ReportTable.vue';
 import { useI18n } from 'vue-i18n';
 import { inject, onMounted, ref } from 'vue';
 import InventaryService from '@/entities/inventary/inventary.service';
+import { useRoute, useRouter } from 'vue-router';
 import { useAlertService } from '@/shared/alert/alert.service';
 import type { Ref } from 'vue';
 import type { IInventary } from '@/shared/model/inventary.model';
@@ -23,12 +24,15 @@ const alertService = inject('alertService', () => useAlertService(), true);
 const { t: t$ } = useI18n();
 const inventaries: Ref<IInventary[]> = ref([]);
 
+const route = useRoute();
+
 const retrieveInventarys = async () => {
   try {
     const paginationQuery = {
       page: 0,
       size: Number.MAX_SAFE_INTEGER,
       sort: 'id,ASC',
+      areaId: Number(route.params.areaId),
     };
 
     const res = await inventaryService().retrieve(paginationQuery);

@@ -9,6 +9,8 @@ export class InventaryQueryDTO {
   @IsNotEmpty()
   companyId: number;
 
+  areaId?: number;
+
   globalFilter?: string;
 
   @IsNotEmpty()

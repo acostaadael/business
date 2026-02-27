@@ -3,7 +3,8 @@
     "report": {
       "params": {
         "main": "Parámetros del reporte",
-        "period": "Periodo"
+        "period": "Periodo",
+        "area": "Area"
       },
       "actions": {
         "generate": "Generar"

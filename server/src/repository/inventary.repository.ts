@@ -21,6 +21,10 @@ export class InventaryRepository extends Repository<Inventary> {
       .innerJoinAndSelect('inventary.area', 'area')
       .where('company.id = :companyId', { companyId: query.companyId });
 
+    if (query.areaId) {
+      q.andWhere('area.id = :areaId', { areaId: query.areaId });
+    }
+
     if (query.globalFilter) {
       q.andWhere(
         new Brackets(qb => {

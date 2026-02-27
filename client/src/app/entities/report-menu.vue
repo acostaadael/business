@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-dropdown-item to="/inventary-report">
+    <b-dropdown-item to="/inventary-param-report">
       <font-awesome-icon icon="fa-store" />
       <span v-text="t$('global.menu.report.inventary')"></span>
     </b-dropdown-item>

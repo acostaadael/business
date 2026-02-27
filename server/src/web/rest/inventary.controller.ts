@@ -52,6 +52,7 @@ export class InventaryController {
     inventaryQuery.pageRequest = pageRequest;
     inventaryQuery.companyId = currentCompany.id;
     inventaryQuery.globalFilter = req.query.globalSearch ? req.query.globalSearch.toString() : null;
+    inventaryQuery.areaId = req.query.areaId ? Number(req.query.areaId) : null;
 
     const [results, count] = await this.inventaryService.findAndCount(inventaryQuery);
     HeaderUtil.addPaginationHeaders(req.res, new Page(results, count, pageRequest));
