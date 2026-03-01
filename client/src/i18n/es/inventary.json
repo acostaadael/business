@@ -23,7 +23,9 @@
       "area": "Area",
       "ProductFamily": "Familia Producto",
       "unitPrice": "Precio",
-      "totalPrice": "Importe"
+      "totalPrice": "Importe",
+      "unitSellingPrice": "Precio Venta",
+      "totalSellingPrice": "Importe Venta"
     }
   }
 }

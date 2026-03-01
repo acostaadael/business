@@ -3,7 +3,7 @@
     :title="t$('businessApp.report.reports.inventary')"
     :data="inventaries"
     :columns="invetariesColumns"
-    :total-columns="['total_price']"
+    :total-columns="['total_price', 'total_selling_price']"
     filename="reporte-inventario"
   />
 </template>
@@ -40,6 +40,8 @@ const retrieveInventarys = async () => {
       ...item,
       unit_price: item.product?.costPrice,
       total_price: item.product?.costPrice && item.count ? item.product?.costPrice * item.count : 0,
+      unit_selling_price: item.product?.sellingPrice,
+      total_selling_price: item.product?.sellingPrice && item.count ? item.product?.sellingPrice * item.count : 0,
     }));
   } catch (err: any) {
     alertService.showHttpError(err.response);
@@ -65,6 +67,16 @@ const invetariesColumns = [
   {
     key: 'total_price',
     label: t$('businessApp.inventary.totalPrice'),
+    render: (row: IInventary) => `${row.total_price} $`,
+  },
+  {
+    key: 'unit_selling_price',
+    label: t$('businessApp.inventary.unitSellingPrice'),
+    render: (row: IInventary) => `${row.unit_price} $`,
+  },
+  {
+    key: 'total_selling_price',
+    label: t$('businessApp.inventary.totalSellingPrice'),
     render: (row: IInventary) => `${row.total_price} $`,
   },
   { key: 'area', label: t$('businessApp.inventary.area'), render: (row: IInventary) => row.area?.name },

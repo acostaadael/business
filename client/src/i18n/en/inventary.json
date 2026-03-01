@@ -23,7 +23,9 @@
       "area": "Area",
       "ProductFamily": "ProductFamily",
       "unitPrice": "Unit Price",
-      "totalPrice": "Total Price"
+      "totalPrice": "Total Price",
+      "unitSellingPrice": "Unit Selling Price",
+      "totalSellingPrice": "Total Selling Price"
     }
   }
 }
