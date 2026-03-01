@@ -33,10 +33,6 @@
       <table class="table table-striped" aria-describedby="products">
         <thead>
           <tr>
-            <th scope="row" @click="changeOrder('id')">
-              <span v-text="t$('global.field.id')"></span>
-              <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'id'"></jhi-sort-indicator>
-            </th>
             <th scope="row" @click="changeOrder('code')">
               <span v-text="t$('businessApp.product.code')"></span>
               <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'code'"></jhi-sort-indicator>
@@ -48,6 +44,10 @@
             <th scope="row" @click="changeOrder('costPrice')">
               <span v-text="t$('businessApp.product.costPrice')"></span>
               <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'costPrice'"></jhi-sort-indicator>
+            </th>
+            <th scope="row" @click="changeOrder('sellingPrice')">
+              <span v-text="t$('businessApp.product.sellingPrice')"></span>
+              <jhi-sort-indicator :current-order="propOrder" :reverse="reverse" :field-name="'sellingPrice'"></jhi-sort-indicator>
             </th>
             <th scope="row" @click="changeOrder('um.id')">
               <span v-text="t$('businessApp.product.um')"></span>
@@ -62,12 +62,10 @@
         </thead>
         <tbody>
           <tr v-for="product in products" :key="product.id" data-cy="entityTable">
-            <td>
-              <router-link :to="{ name: 'ProductView', params: { productId: product.id } }">{{ product.id }}</router-link>
-            </td>
             <td>{{ product.code }}</td>
             <td>{{ product.name }}</td>
-            <td>{{ product.costPrice }}</td>
+            <td>{{ `${product.costPrice} $` }}</td>
+            <td>{{ `${product.sellingPrice} $` }}</td>
             <td>
               <div v-if="product.um">
                 {{ product.um.name }}

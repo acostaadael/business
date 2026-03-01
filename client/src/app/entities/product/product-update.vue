@@ -102,19 +102,19 @@
             </b-col>
             <b-col>
               <div class="form-group">
-                <label class="form-control-label" v-text="t$('businessApp.product.profitMargin')" for="product-profitMargin"></label>
+                <label class="form-control-label" v-text="t$('businessApp.product.sellingPrice')" for="product-sellingPrice"></label>
                 <input
                   type="number"
                   class="form-control"
-                  name="profitMargin"
-                  id="product-profitMargin"
-                  data-cy="profitMargin"
-                  :class="{ valid: !v$.profitMargin.$invalid, invalid: v$.profitMargin.$invalid }"
-                  v-model.number="v$.profitMargin.$model"
+                  name="sellingPrice"
+                  id="product-sellingPrice"
+                  data-cy="sellingPrice"
+                  :class="{ valid: !v$.sellingPrice.$invalid, invalid: v$.sellingPrice.$invalid }"
+                  v-model.number="v$.sellingPrice.$model"
                   required
                 />
-                <div v-if="v$.profitMargin.$anyDirty && v$.profitMargin.$invalid">
-                  <small class="form-text text-danger" v-for="error of v$.profitMargin.$errors" :key="error.$uid">{{
+                <div v-if="v$.sellingPrice.$anyDirty && v$.sellingPrice.$invalid">
+                  <small class="form-text text-danger" v-for="error of v$.sellingPrice.$errors" :key="error.$uid">{{
                     error.$message
                   }}</small>
                 </div>

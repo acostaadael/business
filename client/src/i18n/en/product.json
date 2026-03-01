@@ -22,7 +22,7 @@
       "name": "Name",
       "description": "Description",
       "costPrice": "Cost Price",
-      "profitMargin": "Profit Margin",
+      "sellingPrice": "Selling Price",
       "hasCode": "Has Code",
       "um": "Um",
       "productLine": "Product Line"

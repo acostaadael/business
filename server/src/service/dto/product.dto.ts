@@ -27,8 +27,8 @@ export class ProductDTO extends BaseDTO {
   costPrice: number;
 
   @IsNotEmpty()
-  @ApiProperty({ description: 'profitMargin field' })
-  profitMargin: number;
+  @ApiProperty({ description: 'sellingPrice field' })
+  sellingPrice: number;
 
   @ApiProperty({ description: 'hasCode field', required: false })
   hasCode?: boolean;

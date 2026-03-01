@@ -22,7 +22,7 @@
       "name": "Nombre",
       "description": "Descripción",
       "costPrice": "Precio costo",
-      "profitMargin": "Margen ganancia",
+      "sellingPrice": "Precio venta",
       "hasCode": "Tiene código",
       "um": "Unidad de medida",
       "productLine": "Linea de producto"

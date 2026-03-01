@@ -85,7 +85,7 @@ export default defineComponent({
       costPrice: {
         required: validations.required(t$('entity.validation.required').toString()),
       },
-      profitMargin: {
+      sellingPrice: {
         required: validations.required(t$('entity.validation.required').toString()),
       },
       hasCode: {},

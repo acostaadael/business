@@ -25,8 +25,8 @@ export class Product extends BaseEntity {
   @Column({ type: 'decimal', name: 'cost_price', precision: 10, scale: 2, default: 0 })
   costPrice: number;
 
-  @Column({ type: 'decimal', name: 'profit_margin', precision: 10, scale: 2, default: 0 })
-  profitMargin: number;
+  @Column({ type: 'decimal', name: 'selling_price', precision: 10, scale: 2, default: 0 })
+  sellingPrice: number;
 
   @Column({ type: 'boolean', name: 'has_code', nullable: true })
   hasCode?: boolean;

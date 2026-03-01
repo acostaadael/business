@@ -7,7 +7,7 @@ export interface IProduct {
   name?: string;
   description?: string | null;
   costPrice?: number;
-  profitMargin?: number;
+  sellingPrice?: number;
   hasCode?: boolean | null;
   um?: IUm;
   productLine?: IProductLine;
@@ -20,7 +20,7 @@ export class Product implements IProduct {
     public name?: string,
     public description?: string | null,
     public costPrice?: number,
-    public profitMargin?: number,
+    public sellingPrice?: number,
     public hasCode?: boolean | null,
     public um?: IUm,
     public productLine?: IProductLine,
