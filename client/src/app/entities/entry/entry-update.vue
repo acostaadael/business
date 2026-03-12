@@ -1,4 +1,137 @@
+<script setup lang="ts">
+import { type Ref, computed, inject, ref, reactive } from 'vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { useI18n } from 'vue-i18n';
 import { debounce } from 'lodash';
+import { useRoute, useRouter } from 'vue-router';
+import { useVuelidate } from '@vuelidate/core';
+
+import EntryService from './entry.service';
+import { useValidation } from '@/shared/composables';
+import { useAlertService } from '@/shared/alert/alert.service';
+
+import AreaService from '@/entities/area/area.service';
+import { type IArea } from '@/shared/model/area.model';
+import ProductService from '@/entities/product/product.service';
+import { type IProduct } from '@/shared/model/product.model';
+import { Entry, type IEntry } from '@/shared/model/entry.model';
+import { createAutoComplete } from '@/components/auto-complete';
+import { AreaType } from '@/shared/model/enumerations/area-type.model.ts';
+
+const entryService = inject('entryService', () => new EntryService());
+const alertService = inject('alertService', () => useAlertService(), true);
+const areaService = inject('areaService', () => new AreaService());
+const productService = inject('productService', () => new ProductService());
+
+const entry: IEntry = reactive(new Entry());
+const areas: Ref<IArea[]> = ref([]);
+
+const products: Ref<IProduct[]> = ref([]);
+const productLoading = ref(false);
+
+const isSaving = ref(false);
+const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
+
+const route = useRoute();
+const router = useRouter();
+
+const previousState = () => router.go(-1);
+
+const retrieveEntry = async (entryId: number) => {
+  try {
+    const data = await entryService().find(entryId);
+    if (data) {
+      Object.assign(entry, data);
+    }
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  }
+};
+
+if (route.params?.entryId) {
+  retrieveEntry(Number(route.params.entryId));
+}
+
+const initRelationships = () => {
+  areaService()
+    .retrieve(AreaType.ALMACEN)
+    .then(res => {
+      areas.value = res.data;
+    });
+  productService()
+    .retrieve()
+    .then(res => {
+      products.value = res.data;
+    });
+};
+initRelationships();
+
+const searchProducts = debounce(async (query: string) => {
+  productLoading.value = true;
+  try {
+    const paginationQuery = {
+      page: 0,
+      size: 20,
+      globalSearch: query,
+    };
+    const res = await productService().retrieve(paginationQuery);
+    products.value = res.data;
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  } finally {
+    productLoading.value = false;
+  }
+}, 500);
+
+const handleSelect = (item: IProduct) => {
+  entry.product = item;
+};
+
+const { t: t$ } = useI18n();
+const validations = useValidation();
+const validationRules = {
+  day: {
+    required: validations.required(t$('entity.validation.required').toString()),
+    integer: validations.integer(t$('entity.validation.number').toString()),
+  },
+  count: {
+    required: validations.required(t$('entity.validation.required').toString()),
+  },
+  area: {
+    required: validations.required(t$('entity.validation.required').toString()),
+  },
+  product: {
+    required: validations.required(t$('entity.validation.required').toString()),
+  },
+};
+const v$ = useVuelidate(validationRules, entry as any);
+v$.value.$validate();
+
+const save = async () => {
+  if (v$.value.$invalid) return;
+  isSaving.value = true;
+  try {
+    const result = await entryService().create(entry);
+    alertService.showSuccess(t$('businessApp.entry.created', { param: result.id }).toString());
+    previousState();
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  } finally {
+    isSaving.value = false;
+  }
+};
+
+// Create a typed alias for the AutoComplete component specialized to IProduct via factory
+const ProductAutoComplete = createAutoComplete<IProduct>();
+
+// helper to safely access slot item properties (avoids template TS errors for unknown)
+function getItemName(item: any) {
+  return item?.name ?? '';
+}
+function getItemId(item: any) {
+  return item?.id ?? '';
+}
+</script>
 <template>
   <div class="row justify-content-center">
     <div class="col-8">
@@ -12,17 +145,25 @@ import { debounce } from 'lodash';
           <b-form-row>
             <b-col>
               <label class="form-control-label" v-text="t$('businessApp.entry.product')" for="product"></label>
-              <Autocomplete
-                id="product"
-                v-model="entry.product"
+              <ProductAutoComplete
                 :items="products"
-                placeholder="Buscar productos..."
-                item-text="name"
+                v-model="entry.product"
+                item-key="id"
+                item-label="name"
                 :loading="productLoading"
-                :min-chars="2"
+                placeholder="Selecciona un producto"
+                clearable
+                @select="(item: IProduct) => (entry.product = item)"
                 @search="searchProducts"
-                @select="handleSelect"
-              />
+              >
+                <template #item="{ item }">
+                  <!-- Personalización de la representación de los elementos usando helpers -->
+                  <div>
+                    <strong>{{ getItemName(item) }}</strong> (ID: {{ getItemId(item) }})
+                  </div>
+                </template>
+              </ProductAutoComplete>
+
               <div v-if="v$.product.$anyDirty && v$.product.$invalid">
                 <small class="form-text text-danger" v-for="error of v$.product.$errors" :key="error.$uid">{{ error.$message }}</small>
               </div>
@@ -87,7 +228,7 @@ import { debounce } from 'lodash';
         </div>
         <div>
           <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" @click="previousState()">
-            <font-awesome-icon icon="ban"></font-awesome-icon>&nbsp;<span v-text="t$('entity.action.cancel')"></span>
+            <FontAwesomeIcon icon="ban"></FontAwesomeIcon>&nbsp;<span v-text="t$('entity.action.cancel')"></span>
           </button>
           <button
             type="submit"
@@ -96,17 +237,11 @@ import { debounce } from 'lodash';
             :disabled="v$.$invalid || isSaving"
             class="btn btn-primary"
           >
-            <font-awesome-icon icon="save"></font-awesome-icon>&nbsp;<span v-text="t$('entity.action.save')"></span>
+            <FontAwesomeIcon icon="save"></FontAwesomeIcon>&nbsp;<span v-text="t$('entity.action.save')"></span>
           </button>
         </div>
       </form>
     </div>
   </div>
 </template>
-<script lang="ts" src="./entry-update.component.ts"></script>
-<style scope>
-.user-item {
-  display: flex;
-  flex-direction: column;
-}
-</style>
+<style scoped></style>
