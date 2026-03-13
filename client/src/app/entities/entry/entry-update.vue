@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Ref, computed, inject, ref, reactive } from 'vue';
+import { type Ref, inject, ref, reactive } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { useI18n } from 'vue-i18n';
 import { debounce } from 'lodash';
@@ -30,7 +30,6 @@ const products: Ref<IProduct[]> = ref([]);
 const productLoading = ref(false);
 
 const isSaving = ref(false);
-const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
 
 const route = useRoute();
 const router = useRouter();
@@ -83,10 +82,6 @@ const searchProducts = debounce(async (query: string) => {
   }
 }, 500);
 
-const handleSelect = (item: IProduct) => {
-  entry.product = item;
-};
-
 const { t: t$ } = useI18n();
 const validations = useValidation();
 const validationRules = {
@@ -125,11 +120,14 @@ const save = async () => {
 const ProductAutoComplete = createAutoComplete<IProduct>();
 
 // helper to safely access slot item properties (avoids template TS errors for unknown)
-function getItemName(item: any) {
+function getItemName(item: IProduct) {
   return item?.name ?? '';
 }
-function getItemId(item: any) {
-  return item?.id ?? '';
+function getItemUm(item: IProduct) {
+  return item.um?.name ?? '';
+}
+function getItemLabel(item: IProduct) {
+  return `${getItemName(item)} (${getItemUm(item)})`;
 }
 </script>
 <template>
@@ -155,11 +153,12 @@ function getItemId(item: any) {
                 clearable
                 @select="(item: IProduct) => (entry.product = item)"
                 @search="searchProducts"
+                :renderItemLabel="getItemLabel"
               >
                 <template #item="{ item }">
                   <!-- Personalización de la representación de los elementos usando helpers -->
                   <div>
-                    <strong>{{ getItemName(item) }}</strong> (ID: {{ getItemId(item) }})
+                    <strong>{{ getItemName(item) }}</strong> ({{ getItemUm(item) }})
                   </div>
                 </template>
               </ProductAutoComplete>
