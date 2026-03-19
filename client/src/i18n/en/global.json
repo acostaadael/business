@@ -121,6 +121,7 @@
       "view": "View",
       "show": "Show { otherEntity }",
       "search": "Search",
+      "actions": "Actions",
       "export": {
         "main": "Export",
         "format": {

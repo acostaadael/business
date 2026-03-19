@@ -122,6 +122,7 @@
       "view": "Vista",
       "show": "Show { otherEntity }",
       "search": "Buscar",
+      "actions": "Acciones",
       "export": {
         "main": "Exportar",
         "format": {

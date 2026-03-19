@@ -22,6 +22,7 @@ export interface CrudTableActionType<T = any> {
 
 export interface CrudTableEntity<T = any> {
   title: string; // Título de la tabla
+  deleteMessage: string; // Mensaje de confirmación para eliminar
   columns: CrudTableColumn<T>[];
   actions?: CrudTableActionType<T>[]; // Acciones permitidas para la entidad
   // Puedes agregar más propiedades si tu entidad lo requiere

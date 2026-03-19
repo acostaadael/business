@@ -157,7 +157,7 @@ const actionTo = (type: CrudTableActionType['type'], item: any) => {
                 :field-name="col.key"
               ></jhi-sort-indicator>
             </th>
-            <th></th>
+            <th scope="col" class="text-right">{{ t$('entity.action.actions') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -183,21 +183,21 @@ const actionTo = (type: CrudTableActionType['type'], item: any) => {
                   </template>
 
                   <b-dropdown-item v-if="hasAction('View') && actionTo('View', item)" :to="actionTo('View', item)!">
-                    <font-awesome-icon icon="eye" class="mr-1" />
+                    <font-awesome-icon icon="eye" class="mr-1 text-secondary" />
                     {{ t$('entity.action.view') }}
                   </b-dropdown-item>
 
                   <b-dropdown-divider v-if="hasAction('View')" />
 
                   <b-dropdown-item v-if="hasAction('Update') && actionTo('Update', item)" :to="actionTo('Update', item)!">
-                    <font-awesome-icon icon="pencil-alt" class="mr-1" />
+                    <font-awesome-icon icon="pencil-alt" class="mr-1 text-warning" />
                     {{ t$('entity.action.edit') }}
                   </b-dropdown-item>
 
                   <b-dropdown-divider v-if="hasAction('Delete')" />
 
                   <b-dropdown-item v-if="hasAction('Delete')" @click="prepareRemove(item)" v-b-modal.removeEntity class="text-danger">
-                    <font-awesome-icon icon="times" class="mr-1" />
+                    <font-awesome-icon icon="times" class="mr-1 text-danger" />
                     {{ t$('entity.action.delete') }}
                   </b-dropdown-item>
 
@@ -219,7 +219,7 @@ const actionTo = (type: CrudTableActionType['type'], item: any) => {
         <span>{{ t$('entity.delete.title') }}</span>
       </template>
       <div class="modal-body">
-        <p>{{ t$('entity.delete.question', { id: removeId }) }}</p>
+        <p>{{ t$(props.entity.deleteMessage, { id: removeId }) }}</p>
       </div>
       <template #modal-footer>
         <div>
