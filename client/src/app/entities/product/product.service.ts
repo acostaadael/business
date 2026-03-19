@@ -1,12 +1,12 @@
 import axios from 'axios';
-
 import buildPaginationQueryOpts from '@/shared/sort/sorts';
 
 import { type IProduct } from '@/shared/model/product.model';
+import type { CrudTableService } from '@/components/crud/crud-table-interface.ts';
 
 const baseApiUrl = 'api/products';
 
-export default class ProductService {
+export default class ProductService implements CrudTableService<IProduct> {
   public find(id: number): Promise<IProduct> {
     return new Promise<IProduct>((resolve, reject) => {
       axios
@@ -33,7 +33,7 @@ export default class ProductService {
     });
   }
 
-  public delete(id: number): Promise<any> {
+  public delete(id: number): Promise<void> {
     return new Promise<any>((resolve, reject) => {
       axios
         .delete(`${baseApiUrl}/${id}`)

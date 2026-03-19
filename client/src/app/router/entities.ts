@@ -22,7 +22,7 @@ const ProductLine = () => import('@/entities/product-line/product-line.vue');
 const ProductLineUpdate = () => import('@/entities/product-line/product-line-update.vue');
 const ProductLineDetails = () => import('@/entities/product-line/product-line-details.vue');
 
-const Product = () => import('@/entities/product/product.vue');
+const ProductCrud = () => import('@/entities/product/product-crud.vue');
 const ProductUpdate = () => import('@/entities/product/product-update.vue');
 const ProductDetails = () => import('@/entities/product/product-details.vue');
 
@@ -179,7 +179,7 @@ export default {
     {
       path: 'product',
       name: 'Product',
-      component: Product,
+      component: ProductCrud,
       meta: { authorities: [Authority.USER] },
     },
     {
