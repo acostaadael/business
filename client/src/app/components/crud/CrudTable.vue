@@ -177,34 +177,37 @@ const actionTo = (type: CrudTableActionType['type'], item: any) => {
             </td>
             <td class="text-right">
               <template v-if="actions.length">
-                <div class="btn-group">
-                  <router-link
-                    v-if="hasAction('View') && actionTo('View', item)"
-                    :to="actionTo('View', item)!"
-                    custom
-                    v-slot="{ navigate }"
-                  >
-                    <button @click="navigate" class="btn btn-info btn-sm mr-1">
-                      <font-awesome-icon icon="eye"></font-awesome-icon>
-                      <span class="d-none d-md-inline">{{ t$('entity.action.view') }}</span>
-                    </button>
-                  </router-link>
-                  <router-link
-                    v-if="hasAction('Update') && actionTo('Update', item)"
-                    :to="actionTo('Update', item)!"
-                    custom
-                    v-slot="{ navigate }"
-                  >
-                    <button @click="navigate" class="btn btn-primary btn-sm mr-1">
-                      <font-awesome-icon icon="pencil-alt"></font-awesome-icon>
-                      <span class="d-none d-md-inline">{{ t$('entity.action.edit') }}</span>
-                    </button>
-                  </router-link>
-                  <button v-if="hasAction('Delete')" class="btn btn-sm btn-danger mr-1" @click="prepareRemove(item)" v-b-modal.removeEntity>
-                    <font-awesome-icon icon="times"></font-awesome-icon>
-                    <span class="d-none d-md-inline">{{ t$('entity.action.delete') }}</span>
-                  </button>
-                </div>
+                <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret right size="sm">
+                  <template #button-content>
+                    <font-awesome-icon icon="ellipsis-v" />
+                  </template>
+
+                  <b-dropdown-item v-if="hasAction('View') && actionTo('View', item)" :to="actionTo('View', item)!">
+                    <font-awesome-icon icon="eye" class="mr-1" />
+                    {{ t$('entity.action.view') }}
+                  </b-dropdown-item>
+
+                  <b-dropdown-divider v-if="hasAction('View')" />
+
+                  <b-dropdown-item v-if="hasAction('Update') && actionTo('Update', item)" :to="actionTo('Update', item)!">
+                    <font-awesome-icon icon="pencil-alt" class="mr-1" />
+                    {{ t$('entity.action.edit') }}
+                  </b-dropdown-item>
+
+                  <b-dropdown-divider v-if="hasAction('Delete')" />
+
+                  <b-dropdown-item v-if="hasAction('Delete')" @click="prepareRemove(item)" v-b-modal.removeEntity class="text-danger">
+                    <font-awesome-icon icon="times" class="mr-1" />
+                    {{ t$('entity.action.delete') }}
+                  </b-dropdown-item>
+
+                  <b-dropdown-divider v-if="hasAction('Custom')" />
+
+                  <b-dropdown-item v-if="hasAction('Custom') && actionTo('Custom', item)" :to="actionTo('Custom', item)!">
+                    <font-awesome-icon icon="pencil-alt" class="mr-1" />
+                    {{ t$('entity.action.edit') }}
+                  </b-dropdown-item>
+                </b-dropdown>
               </template>
             </td>
           </tr>
