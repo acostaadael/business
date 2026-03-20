@@ -21,7 +21,6 @@ export interface CrudTableActionType<T = any> {
 }
 
 export interface CrudTableEntity<T = any> {
-  title: string; // Título de la tabla
   deleteMessage: string; // Mensaje de confirmación para eliminar
   columns: CrudTableColumn<T>[];
   actions?: CrudTableActionType<T>[]; // Acciones permitidas para la entidad
@@ -36,10 +35,4 @@ export interface CrudTableService<T = any> {
   partialUpdate(entity: T): Promise<T>;
   delete(id: number | string): Promise<void>;
   // Puedes agregar create, update, etc. si lo necesitas
-}
-
-export interface CrudTableProps<T = any> {
-  entity: CrudTableEntity<T>;
-  service: CrudTableService<T>;
-  items?: T[]; // opcional, si quieres pasar los items desde el padre
 }

@@ -7,7 +7,8 @@ import type { CrudTableActionType, CrudTableEntity, CrudTableService } from './c
 const { t: t$ } = useI18n();
 
 const props = defineProps<{
-  entity: CrudTableEntity;
+  title: string;
+  entity: CrudTableEntity<any>;
   service: CrudTableService<any>;
 }>();
 
@@ -126,7 +127,7 @@ const actionTo = (type: CrudTableActionType['type'], item: any) => {
 <template>
   <div>
     <h2 id="page-heading" data-cy="ItemHeading">
-      <span>{{ t$(props.entity.title) ?? '' }}</span>
+      <span>{{ t$(props.title) ?? '' }}</span>
       <div class="d-flex justify-content-end">
         <b-form-input
           class="mr-2"

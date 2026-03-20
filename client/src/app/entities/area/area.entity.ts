@@ -2,7 +2,6 @@ import type { CrudTableEntity } from '@/components/crud/crud-table-interface.ts'
 import type { IArea } from '@/shared/model/area.model';
 
 export const entity: CrudTableEntity<IArea> = {
-  title: 'businessApp.area.home.title',
   deleteMessage: 'businessApp.area.delete.question',
   columns: [
     {
