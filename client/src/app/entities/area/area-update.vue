@@ -78,4 +78,90 @@
     </div>
   </div>
 </template>
-<script lang="ts" src="./area-update.component.ts"></script>
+
+<script setup lang="ts">
+import { type Ref, computed, inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import { useVuelidate } from '@vuelidate/core';
+
+import AreaService from './area.service';
+import { useValidation } from '@/shared/composables';
+import { useAlertService } from '@/shared/alert/alert.service';
+import { AreaType } from '@/shared/model/enumerations/area-type.model.ts';
+
+import { Area, type IArea } from '@/shared/model/area.model';
+
+const areaService = inject('areaService', () => new AreaService());
+const alertService = inject('alertService', () => useAlertService(), true);
+
+const area: Ref<IArea> = ref(new Area());
+const isSaving = ref(false);
+const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
+const areaTypeValues: Ref<string[]> = ref(Object.keys(AreaType));
+
+const route = useRoute();
+const router = useRouter();
+
+const previousState = () => router.go(-1);
+
+const retrieveArea = async (areaId: number) => {
+  try {
+    area.value = await areaService().find(areaId);
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  }
+};
+
+if (route.params?.areaId) {
+  const id = Number(route.params.areaId);
+  if (!Number.isNaN(id)) {
+    retrieveArea(id);
+  }
+}
+
+const { t: t$ } = useI18n();
+const validations = useValidation();
+
+const validationRules = {
+  name: {
+    required: validations.required(t$('entity.validation.required').toString()),
+  },
+  type: {
+    required: validations.required(t$('entity.validation.required').toString()),
+  },
+  description: {},
+};
+
+const v$ = useVuelidate(validationRules, area as any);
+v$.value.$validate();
+
+const save = (): void => {
+  isSaving.value = true;
+  if (area.value.id) {
+    areaService()
+      .update(area.value)
+      .then((param: any) => {
+        isSaving.value = false;
+        previousState();
+        alertService.showInfo(t$('businessApp.area.updated', { param: param.id }));
+      })
+      .catch((error: any) => {
+        isSaving.value = false;
+        alertService.showHttpError(error.response);
+      });
+  } else {
+    areaService()
+      .create(area.value)
+      .then((param: any) => {
+        isSaving.value = false;
+        previousState();
+        alertService.showSuccess(t$('businessApp.area.created', { param: param.id }).toString());
+      })
+      .catch((error: any) => {
+        isSaving.value = false;
+        alertService.showHttpError(error.response);
+      });
+  }
+};
+</script>

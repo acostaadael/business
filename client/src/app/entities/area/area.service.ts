@@ -1,10 +1,12 @@
 import axios from 'axios';
 
 import { type IArea } from '@/shared/model/area.model';
+import type { CrudTableService } from '@/components/crud/crud-table-interface.ts';
+import buildPaginationQueryOpts from '@/shared/sort/sorts.ts';
 
 const baseApiUrl = 'api/areas';
 
-export default class AreaService {
+export default class AreaService implements CrudTableService<IArea> {
   public find(id: number): Promise<IArea> {
     return new Promise<IArea>((resolve, reject) => {
       axios
@@ -18,11 +20,15 @@ export default class AreaService {
     });
   }
 
-  public retrieve(type?: any): Promise<any> {
-    const params = type ? `?type=${type}` : '';
+  /**
+   * Recupera áreas.
+   * - Si se pasa `{ type: 'X' }` o `type` como string, filtra por tipo.
+   * - Si no, recupera todas.
+   */
+  public retrieve(paginationQuery?: any): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       axios
-        .get(`${baseApiUrl}${params}`)
+        .get(`${baseApiUrl}?${buildPaginationQueryOpts(paginationQuery)}`)
         .then(res => {
           resolve(res);
         })
@@ -32,7 +38,7 @@ export default class AreaService {
     });
   }
 
-  public delete(id: number): Promise<any> {
+  public delete(id: number): Promise<void> {
     return new Promise<any>((resolve, reject) => {
       axios
         .delete(`${baseApiUrl}/${id}`)

@@ -53,7 +53,7 @@ if (route.params?.entryId) {
 
 const initRelationships = () => {
   areaService()
-    .retrieve(AreaType.ALMACEN)
+    .retrieve({ type: AreaType.ALMACEN })
     .then(res => {
       areas.value = res.data;
     });

@@ -7,7 +7,7 @@ const PeriodUpdate = () => import('@/entities/period/period-update.vue');
 const Um = () => import('@/entities/um/um.vue');
 const UmUpdate = () => import('@/entities/um/um-update.vue');
 
-const Area = () => import('@/entities/area/area.vue');
+const AreaCrud = () => import('@/entities/area/area-crud.vue');
 const AreaUpdate = () => import('@/entities/area/area-update.vue');
 
 const ProductCategory = () => import('@/entities/product-category/product-category.vue');
@@ -89,7 +89,7 @@ export default {
     {
       path: 'area',
       name: 'Area',
-      component: Area,
+      component: AreaCrud,
       meta: { authorities: [Authority.USER] },
     },
     {
