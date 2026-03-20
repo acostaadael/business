@@ -153,10 +153,10 @@ function getItemLabel(item: IProduct) {
                 clearable
                 @select="(item: IProduct) => (entry.product = item)"
                 @search="searchProducts"
+                @clear="() => (entry.product = null)"
                 :renderItemLabel="getItemLabel"
               >
                 <template #item="{ item }">
-                  <!-- Personalización de la representación de los elementos usando helpers -->
                   <div>
                     <strong>{{ getItemName(item) }}</strong> ({{ getItemUm(item) }})
                   </div>
