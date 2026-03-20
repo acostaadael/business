@@ -28,13 +28,13 @@
             <span v-text="t$('businessApp.product.costPrice')"></span>
           </dt>
           <dd>
-            <span>{{ product.costPrice }}</span>
+            <span>{{ `${product.costPrice} $` }}</span>
           </dd>
           <dt>
-            <span v-text="t$('businessApp.product.profitMargin')"></span>
+            <span v-text="t$('businessApp.product.sellingPrice')"></span>
           </dt>
           <dd>
-            <span>{{ product.profitMargin }}</span>
+            <span>{{ `${product.sellingPrice} $` }}</span>
           </dd>
           <dt>
             <span v-text="t$('businessApp.product.hasCode')"></span>
@@ -72,4 +72,38 @@
   </div>
 </template>
 
-<script lang="ts" src="./product-details.component.ts"></script>
+<script setup lang="ts">
+import { type Ref, inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+
+import ProductService from './product.service';
+import { type IProduct } from '@/shared/model/product.model';
+import { useAlertService } from '@/shared/alert/alert.service';
+
+const productService = inject('productService', () => new ProductService());
+const alertService = inject('alertService', () => useAlertService(), true);
+
+const route = useRoute();
+const router = useRouter();
+
+const previousState = () => router.go(-1);
+
+// Mantiene el mismo comportamiento del componente original (producto inicial vacío)
+const product: Ref<IProduct> = ref({} as IProduct);
+
+const retrieveProduct = async (productId: string | number) => {
+  try {
+    const res = await productService().find(productId);
+    product.value = res;
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  }
+};
+
+if (route.params?.productId) {
+  retrieveProduct(route.params.productId as any);
+}
+
+const { t: t$ } = useI18n();
+</script>

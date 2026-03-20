@@ -13,17 +13,16 @@ export const entity: CrudTableEntity<IProduct> = {
     {
       key: 'name',
       label: 'businessApp.product.name',
-      sortable: true,
     },
     {
       key: 'costPrice',
       label: 'businessApp.product.costPrice',
-      sortable: true,
+      render: (item: IProduct) => `${item.costPrice} $`,
     },
     {
       key: 'sellingPrice',
       label: 'businessApp.product.sellingPrice',
-      sortable: true,
+      render: (item: IProduct) => `${item.sellingPrice} $`,
     },
     {
       key: 'um',

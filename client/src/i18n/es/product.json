@@ -21,8 +21,8 @@
       "code": "Código",
       "name": "Nombre",
       "description": "Descripción",
-      "costPrice": "Precio costo",
-      "sellingPrice": "Precio venta",
+      "costPrice": "Precio costo $",
+      "sellingPrice": "Precio venta $",
       "hasCode": "Tiene código",
       "um": "Unidad de medida",
       "productLine": "Linea de producto"
