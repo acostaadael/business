@@ -31,6 +31,7 @@ export interface CrudTableService<T = any> {
   retrieve(paginationQuery?: any): Promise<any>;
   find(id: number | string): Promise<T>;
   create(entity: T): Promise<T>;
+  createMany(entities: T[]): Promise<T[]>;
   update(entity: T): Promise<T>;
   partialUpdate(entity: T): Promise<T>;
   delete(id: number | string): Promise<void>;

@@ -64,6 +64,19 @@ export default class AreaService implements CrudTableService<IArea> {
     });
   }
 
+  public createMany(entities: IArea[]): Promise<IArea[]> {
+    return new Promise<IArea[]>((resolve, reject) => {
+      axios
+        .post(`${baseApiUrl}/batch`, entities)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
   public update(entity: IArea): Promise<IArea> {
     return new Promise<IArea>((resolve, reject) => {
       axios

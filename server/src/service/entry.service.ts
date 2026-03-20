@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { FindOneOptions } from 'typeorm';
-import { EntryDTO } from '../service/dto/entry.dto';
-import { EntryMapper } from '../service/mapper/entry.mapper';
-import { PeriodService } from '../service/period.service';
-import { InventaryService } from '../service/inventary.service';
+import { EntryDTO } from './dto/entry.dto';
+import { EntryMapper } from './mapper/entry.mapper';
+import { PeriodService } from './period.service';
+import { InventaryService } from './inventary.service';
 import { EntryRepository } from '../repository/entry.repository';
-import { EntryQueryDTO } from '../service/dto/entry.query.dto';
-import { CompanyService } from '../service/company.service';
+import { EntryQueryDTO } from './dto/entry.query.dto';
+import { CompanyService } from './company.service';
 
 const relations = {
   area: true,
@@ -70,6 +70,19 @@ export class EntryService {
       return EntryMapper.fromEntityToDTO(result);
     }
     throw new HttpException('No se puede crear entrada sin un periodo abierto!', HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Guarda múltiples entradas.
+   * Se ejecuta en serie para mantener consistencia al actualizar inventario.
+   */
+  async saveMany(entries: EntryDTO[], creator?: string): Promise<EntryDTO[]> {
+    const results: EntryDTO[] = [];
+    for (const entry of entries ?? []) {
+      const created = await this.save(entry, creator);
+      if (created) results.push(created);
+    }
+    return results;
   }
 
   async update(entryDTO: EntryDTO, updater?: string): Promise<EntryDTO | undefined> {

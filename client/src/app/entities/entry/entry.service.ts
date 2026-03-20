@@ -60,6 +60,19 @@ export default class EntryService implements CrudTableService<IEntry> {
     });
   }
 
+  public createMany(entities: IEntry[]): Promise<IEntry[]> {
+    return new Promise<IEntry[]>((resolve, reject) => {
+      axios
+        .post(`${baseApiUrl}/batch`, entities)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
   public update(entity: IEntry): Promise<IEntry> {
     return new Promise<IEntry>((resolve, reject) => {
       axios

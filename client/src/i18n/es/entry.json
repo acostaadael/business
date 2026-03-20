@@ -17,6 +17,9 @@
       "detail": {
         "title": "Entrada"
       },
+      "multiUpdate": {
+        "title": "Crear multiples entradas"
+      },
       "id": "ID",
       "day": "Día",
       "count": "Cantidad",

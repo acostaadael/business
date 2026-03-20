@@ -1,6 +1,6 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.common with an alias.
-import Vue, { computed, createApp, onMounted, provide, watch } from 'vue';
+import Vue, { computed, createApp, onMounted, watch } from 'vue';
 import { createPinia, storeToRefs } from 'pinia';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import { useI18n } from 'vue-i18n';
@@ -64,7 +64,7 @@ const app = createApp({
   template: '<App/>',
   setup(_props, { emit }) {
     const loginService = new LoginService({ emit });
-    provide('loginService', loginService);
+    app.provide('loginService', loginService);
     const store = useStore();
     const accountService = new AccountService(store);
     const i18n = useI18n();
@@ -78,8 +78,8 @@ const app = createApp({
       }
     };
 
-    provide('currentLanguage', i18n.locale);
-    provide('changeLanguage', changeLanguage);
+    app.provide('currentLanguage', i18n.locale);
+    app.provide('changeLanguage', changeLanguage);
 
     watch(
       () => store.account,
@@ -144,14 +144,14 @@ const app = createApp({
     );
 
     const { authenticated } = storeToRefs(store);
-    provide('authenticated', authenticated);
-    provide(
+    app.provide('authenticated', authenticated);
+    app.provide(
       'currentUsername',
       computed(() => store.account?.login),
     );
 
-    provide('translationService', translationService);
-    provide('accountService', accountService);
+    app.provide('translationService', translationService);
+    app.provide('accountService', accountService);
     // jhipster-needle-add-entity-service-to-main - JHipster will import entities services here
   },
 });

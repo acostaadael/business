@@ -59,6 +59,19 @@ export default class ProductService implements CrudTableService<IProduct> {
     });
   }
 
+  public createMany(entities: IProduct[]): Promise<IProduct[]> {
+    return new Promise<IProduct[]>((resolve, reject) => {
+      axios
+        .post(`${baseApiUrl}/batch`, entities)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
   public update(entity: IProduct): Promise<IProduct> {
     return new Promise<IProduct>((resolve, reject) => {
       axios

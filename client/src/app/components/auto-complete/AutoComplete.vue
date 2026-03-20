@@ -75,6 +75,14 @@ function getLabel(item: Item) {
   return String(item);
 }
 
+// clear() emit undefined to indicate cleared selection (works better with models typed as T | undefined)
+function clear() {
+  emit('update:modelValue', undefined);
+  emit('clear');
+  query.value = '';
+  isOpen.value = false;
+}
+
 // keep input showing label of selected modelValue
 watch(
   () => props.modelValue,
@@ -105,14 +113,6 @@ function select(item: Item) {
   emit('update:modelValue', item);
   emit('select', item);
   query.value = getLabel(item);
-  isOpen.value = false;
-}
-
-function clear() {
-  // emit null to indicate cleared selection; allow undefined in types as well
-  emit('update:modelValue', null);
-  emit('clear');
-  query.value = '';
   isOpen.value = false;
 }
 

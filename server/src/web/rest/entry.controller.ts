@@ -88,6 +88,23 @@ export class EntryController {
     return created;
   }
 
+  @PostMethod('/batch')
+  @Roles(RoleType.USER)
+  @ApiOperation({ summary: 'Create many entries' })
+  @ApiResponse({
+    status: 201,
+    description: 'The records have been successfully created.',
+    type: EntryDTO,
+    isArray: true,
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  async postMany(@Req() req: Request, @Body() entries: EntryDTO[]): Promise<EntryDTO[]> {
+    const created = await this.entryService.saveMany(entries, req.user?.login);
+    // Header genérico (no hay un único id)
+    HeaderUtil.addEntityCreatedHeaders(req.res, 'Entry', 'batch');
+    return created;
+  }
+
   @Put('/')
   @Roles(RoleType.USER)
   @ApiOperation({ summary: 'Update entry' })
