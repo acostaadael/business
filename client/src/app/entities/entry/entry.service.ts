@@ -3,10 +3,11 @@ import axios from 'axios';
 import buildPaginationQueryOpts from '@/shared/sort/sorts';
 
 import { type IEntry } from '@/shared/model/entry.model';
+import type { CrudTableService } from '@/components/crud/crud-table-interface.ts';
 
 const baseApiUrl = 'api/entries';
 
-export default class EntryService {
+export default class EntryService implements CrudTableService<IEntry> {
   public find(id: number): Promise<IEntry> {
     return new Promise<IEntry>((resolve, reject) => {
       axios

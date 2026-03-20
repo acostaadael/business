@@ -28,7 +28,7 @@ const ProductDetails = () => import('@/entities/product/product-details.vue');
 
 const Inventary = () => import('@/entities/inventary/inventary.vue');
 
-const Entry = () => import('@/entities/entry/entry.vue');
+const Entry = () => import('@/entities/entry/entry-crud.vue');
 const EntryUpdate = () => import('@/entities/entry/entry-update.vue');
 
 const Company = () => import('@/entities/company/company.vue');

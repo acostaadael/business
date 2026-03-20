@@ -127,7 +127,7 @@ const actionTo = (type: CrudTableActionType['type'], item: any) => {
 <template>
   <div>
     <h2 id="page-heading" data-cy="ItemHeading">
-      <span>{{ t$(props.title) ?? '' }}</span>
+      <span>{{ props.title ?? '' }}</span>
       <div class="d-flex justify-content-end">
         <b-form-input
           class="mr-2"
@@ -158,7 +158,7 @@ const actionTo = (type: CrudTableActionType['type'], item: any) => {
                 :field-name="col.key"
               ></jhi-sort-indicator>
             </th>
-            <th scope="col" class="text-right">{{ t$('entity.action.actions') }}</th>
+            <th v-if="actions.length" scope="col" class="text-right">{{ t$('entity.action.actions') }}</th>
           </tr>
         </thead>
         <tbody>
