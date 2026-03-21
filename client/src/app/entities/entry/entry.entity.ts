@@ -2,6 +2,8 @@ import type { CrudTableEntity } from '@/components/crud/crud-table-interface.ts'
 import type { IEntry } from '@/shared/model/entry.model.ts';
 
 export const entity: CrudTableEntity<IEntry> = {
+  deleteMessage: 'businessApp.entry.delete.question',
+  notFound: 'businessApp.entry.home.notFound',
   columns: [
     {
       key: 'product',
