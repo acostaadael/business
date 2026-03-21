@@ -19,7 +19,8 @@
       },
       "multiUpdate": {
         "title": "Create Multiple Entries",
-        "entryItem": "Entries to save"
+        "entryItem": "Entries to save",
+        "createdMany": "Entries are created"
       },
       "id": "ID",
       "day": "Day",

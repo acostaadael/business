@@ -100,8 +100,13 @@ export class EntryController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   async postMany(@Req() req: Request, @Body() entries: EntryDTO[]): Promise<EntryDTO[]> {
     const created = await this.entryService.saveMany(entries, req.user?.login);
-    // Header genérico (no hay un único id)
-    HeaderUtil.addEntityCreatedHeaders(req.res, 'Entry', 'batch');
+
+    const createdIds = created
+      .map(it => it?.id)
+      .filter((id): id is number => typeof id === 'number')
+      .join(',');
+
+    HeaderUtil.addEntityCreatedHeaders(req.res, 'Entry', createdIds);
     return created;
   }
 

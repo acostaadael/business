@@ -143,9 +143,12 @@ const saveEntries = async (updatedEntries: IEntry[]) => {
 
   isSaving.value = true;
   try {
-    // Por ahora: crear todas en paralelo (si necesitas update vs create, lo ajustamos)
-    await entryService().createMany(updatedEntries);
-    alertService.showSuccess(t$('businessApp.entry.created').toString());
+    const res = await entryService().createMany(updatedEntries);
+
+    // El servidor envía los ids creados en el header X-<app>-params
+    /* const paramsHeader = res?.headers?.['X-Business-Params'] ?? '';
+    const createdIds = (paramsHeader ?? '').toString();*/
+    alertService.showSuccess(t$('businessApp.entry.multiUpdate.createdMany'));
     previousState();
   } catch (error: any) {
     alertService.showHttpError(error.response);
