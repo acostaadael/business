@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Ref, onMounted, ref, watch, defineProps, computed } from 'vue';
+import { computed, onMounted, ref, watch, defineProps } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { debounce } from 'lodash';
 import type { CrudTableActionType, CrudTableEntity, CrudTableService } from './crud-table-interface';
@@ -13,13 +13,13 @@ const props = defineProps<{
 }>();
 
 const itemsPerPage = ref(20);
-const queryCount: Ref<number> = ref(0);
-const page: Ref<number> = ref(1);
+const queryCount = ref(0);
+const page = ref(1);
 const propOrder = ref<string>('id');
 const reverse = ref(false);
 const totalItems = ref(0);
 const searchText = ref('');
-const items: Ref<any[]> = ref([]);
+const items = ref<any[]>([]);
 const isFetching = ref(false);
 
 const clear = () => {
@@ -28,9 +28,7 @@ const clear = () => {
 
 const sort = (): Array<any> => {
   const result = [`${propOrder.value},${reverse.value ? 'desc' : 'asc'}`];
-  if (propOrder.value !== 'id') {
-    result.push('id');
-  }
+  if (propOrder.value !== 'id') result.push('id');
   return result;
 };
 
@@ -38,18 +36,10 @@ const retrieveItems = async () => {
   isFetching.value = true;
   try {
     const paginationQuery =
-      searchText.value == ''
-        ? {
-            page: page.value - 1,
-            size: itemsPerPage.value,
-            sort: sort(),
-          }
-        : {
-            page: page.value - 1,
-            size: itemsPerPage.value,
-            globalSearch: searchText.value,
-            sort: sort(),
-          };
+      searchText.value === ''
+        ? { page: page.value - 1, size: itemsPerPage.value, sort: sort() }
+        : { page: page.value - 1, size: itemsPerPage.value, globalSearch: searchText.value, sort: sort() };
+
     const res = await props.service.retrieve(paginationQuery);
     totalItems.value = Number(res.headers['x-total-count'] || res.headers['X-Total-Count'] || 0);
     queryCount.value = totalItems.value;
@@ -65,22 +55,44 @@ onMounted(async () => {
   await retrieveItems();
 });
 
-const removeId: Ref<number | string | null> = ref(null);
+const removeId = ref<number | string | null>(null);
 const removeEntity = ref<any>(null);
+const removeInstance = ref<any | null>(null);
+
 const prepareRemove = (instance: any) => {
-  removeId.value = instance.id;
-  removeEntity.value.show();
+  removeId.value = instance?.id ?? null;
+  removeInstance.value = instance ?? null;
+  removeEntity.value?.show?.();
 };
+
+const removeItemLabel = computed(() => {
+  const instance = removeInstance.value;
+  if (!instance) return removeId.value ?? '';
+
+  const fn = props.entity.deleteItemLabel;
+  if (typeof fn === 'function') {
+    try {
+      return fn(instance) ?? '';
+    } catch (e) {
+      console.warn('deleteItemLabel lanzó un error, usando id como fallback', e);
+    }
+  }
+
+  return instance.id ?? '';
+});
+
 const closeDialog = () => {
-  removeEntity.value.hide();
+  removeEntity.value?.hide?.();
 };
+
 const removeItem = async () => {
   if (removeId.value === null || removeId.value === undefined) return;
-  if (typeof removeId.value !== 'string' && typeof removeId.value !== 'number') return;
+
   try {
     await props.service.delete(removeId.value);
     removeId.value = null;
-    retrieveItems();
+    removeInstance.value = null;
+    await retrieveItems();
     closeDialog();
   } catch (error: any) {
     console.error(error);
@@ -88,24 +100,16 @@ const removeItem = async () => {
 };
 
 const changeOrder = (newOrder: string) => {
-  if (propOrder.value === newOrder) {
-    reverse.value = !reverse.value;
-  } else {
-    reverse.value = false;
-  }
+  if (propOrder.value === newOrder) reverse.value = !reverse.value;
+  else reverse.value = false;
   propOrder.value = newOrder;
 };
 
-// Whenever order changes, reset the pagination
 watch([propOrder, reverse], async () => {
-  if (page.value === 1) {
-    await retrieveItems();
-  } else {
-    clear();
-  }
+  if (page.value === 1) await retrieveItems();
+  else clear();
 });
 
-// Whenever page changes, switch to the new page.
 watch(page, async () => {
   await retrieveItems();
 });
@@ -124,6 +128,7 @@ const actionTo = (type: CrudTableActionType['type'], item: any) => {
   return { name: a.routeName, params };
 };
 </script>
+
 <template>
   <div>
     <h2 id="page-heading" data-cy="ItemHeading">
@@ -142,14 +147,16 @@ const actionTo = (type: CrudTableActionType['type'], item: any) => {
       </div>
     </h2>
     <br />
+
     <div class="alert alert-warning" v-if="!isFetching && items && items.length === 0">
-      <span>{{ t$('entity.home.notFound') }}</span>
+      <span>{{ t$(props.entity.notFound) }}</span>
     </div>
+
     <div class="table-responsive" v-if="items && items.length > 0">
       <table class="table table-striped">
         <thead>
           <tr>
-            <th v-for="col in entity.columns" :key="col.key" @click="col.sortable ? changeOrder(col.key) : null">
+            <th v-for="col in props.entity.columns" :key="col.key" @click="col.sortable ? changeOrder(col.key) : null">
               <span>{{ t$(col.label) }}</span>
               <jhi-sort-indicator
                 v-if="col.sortable"
@@ -163,7 +170,7 @@ const actionTo = (type: CrudTableActionType['type'], item: any) => {
         </thead>
         <tbody>
           <tr v-for="item in items" :key="item.id">
-            <td v-for="col in entity.columns" :key="col.key">
+            <td v-for="col in props.entity.columns" :key="col.key">
               <slot v-if="col.slot" :name="`cell-${col.key}`" :item="item">
                 {{ item[col.key] }}
               </slot>
@@ -215,12 +222,15 @@ const actionTo = (type: CrudTableActionType['type'], item: any) => {
         </tbody>
       </table>
     </div>
+
     <b-modal ref="removeEntity" id="removeEntity">
       <template #modal-title>
         <span>{{ t$('entity.delete.title') }}</span>
       </template>
       <div class="modal-body">
-        <p>{{ t$(props.entity.deleteMessage, { id: removeId }) }}</p>
+        <p v-if="props.entity.deleteMessage">
+          {{ t$(props.entity.deleteMessage, { id: props.entity.deleteItemLabel ? removeItemLabel : removeId }) }}
+        </p>
       </div>
       <template #modal-footer>
         <div>
@@ -229,6 +239,7 @@ const actionTo = (type: CrudTableActionType['type'], item: any) => {
         </div>
       </template>
     </b-modal>
+
     <div v-show="items && items.length > 0">
       <div class="row justify-content-center">
         <jhi-item-count :page="page" :total="queryCount" :itemsPerPage="itemsPerPage"></jhi-item-count>

@@ -3,6 +3,7 @@ import type { IArea } from '@/shared/model/area.model';
 
 export const entity: CrudTableEntity<IArea> = {
   deleteMessage: 'businessApp.area.delete.question',
+  notFound: 'businessApp.area.home.notFound',
   columns: [
     {
       key: 'id',

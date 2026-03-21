@@ -22,6 +22,20 @@ export interface CrudTableActionType<T = any> {
 
 export interface CrudTableEntity<T = any> {
   deleteMessage?: string; // Mensaje de confirmación para eliminar
+
+  /**
+   * Permite definir cómo se construye el texto/identificador del ítem que se muestra
+   * dentro del mensaje de confirmación al eliminar.
+   *
+   * Si no se define, el componente puede hacer fallback a `item.id`.
+   *
+   * Ejemplos:
+   *  - (item) => `${item.code} - ${item.name}`
+   *  - (item) => item.name
+   */
+  deleteItemLabel?: (item: T) => string;
+
+  notFound: string;
   columns: CrudTableColumn<T>[];
   actions?: CrudTableActionType<T>[]; // Acciones permitidas para la entidad
   // Puedes agregar más propiedades si tu entidad lo requiere

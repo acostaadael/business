@@ -3,6 +3,8 @@ import type { IProduct } from '@/shared/model/product.model.ts';
 
 export const entity: CrudTableEntity<IProduct> = {
   deleteMessage: 'businessApp.product.delete.question',
+  notFound: 'businessApp.product.home.notFound',
+  deleteItemLabel: (item: IProduct) => item.name,
   columns: [
     {
       key: 'code',
