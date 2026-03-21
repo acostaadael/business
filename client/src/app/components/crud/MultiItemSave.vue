@@ -4,6 +4,8 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
+type StickyFields<T> = Array<keyof T> | ((item: T) => Partial<T>);
+
 interface MultiItemSaveProps<T> {
   items: T[];
   notFound: string;
@@ -14,6 +16,26 @@ interface MultiItemSaveProps<T> {
   maxWidth?: string;
   onSave: (items: T[]) => void;
   createItem: () => T;
+
+  /**
+   * Campos del formulario que deben mantenerse (no reiniciarse) luego de presionar Add.
+   *
+   * Opciones:
+   *  - Array de keys: ['day', 'periodId']
+   *  - Función que devuelve un objeto parcial con valores a preservar
+   */
+  stickyFields?: StickyFields<T>;
+
+  /**
+   * Si es true, no se bloquea Enter a nivel del form (útil si el formulario
+   * quiere capturar Enter en un input específico para hacer Add).
+   *
+   * Default: false (Enter no hace submit / no hace Add).
+   */
+  addOnEnter?: boolean;
+
+  /** Título opcional mostrado encima de la tabla (si hay items). */
+  tableTitle?: string;
 }
 
 const props = defineProps<MultiItemSaveProps<any>>();
@@ -27,9 +49,29 @@ const newItem = reactive(props.createItem());
 
 const hasItems = computed(() => (props.items?.length ?? 0) > 0);
 
+const pickStickyValues = (currentItem: any) => {
+  const sticky = props.stickyFields;
+  if (!sticky) return {};
+
+  if (typeof sticky === 'function') {
+    return sticky(currentItem) ?? {};
+  }
+
+  const out: any = {};
+  for (const key of sticky) {
+    out[key as any] = currentItem?.[key as any];
+  }
+  return out;
+};
+
+const resetForm = () => {
+  const stickyValues = pickStickyValues(newItem as any);
+  Object.assign(newItem, props.createItem(), stickyValues);
+};
+
 const addItem = () => {
   props.items.push({ ...(newItem as any) });
-  Object.assign(newItem, props.createItem());
+  resetForm();
 };
 
 const removeItem = (index: number) => {
@@ -44,10 +86,10 @@ const saveItems = () => {
 
 <template>
   <div class="multi-item-save__container" :style="{ maxWidth: props.maxWidth ?? '100%' }">
-    <form class="multi-item-save__form" @submit.prevent="addItem">
+    <form class="multi-item-save__form" @submit.prevent v-on:keydown.enter.prevent="props.addOnEnter ? undefined : true">
       <div class="multi-item-save__form-col">
         <div class="multi-item-save__form-body">
-          <slot name="form" :newItem="newItem" />
+          <slot name="form" :newItem="newItem" :addItem="addItem" />
         </div>
 
         <div class="multi-item-save__form-actions">
@@ -57,6 +99,12 @@ const saveItems = () => {
     </form>
 
     <div class="mt-3" v-if="hasItems">
+      <div class="multi-item-save__table-title" v-if="props.tableTitle || $slots['table-title']">
+        <slot name="table-title">
+          <h5 class="mb-2">{{ props.tableTitle }}</h5>
+        </slot>
+      </div>
+
       <div class="table-responsive">
         <table class="table table-bordered">
           <thead>
@@ -149,5 +197,9 @@ const saveItems = () => {
   align-items: center;
   gap: 8.5rem;
   margin-top: 1rem;
+}
+
+.multi-item-save__table-title {
+  width: 100%;
 }
 </style>

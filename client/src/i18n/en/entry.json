@@ -18,7 +18,8 @@
         "title": "Entry"
       },
       "multiUpdate": {
-        "title": "Create Multiple Entries"
+        "title": "Create Multiple Entries",
+        "entryItem": "Entries to save"
       },
       "id": "ID",
       "day": "Day",

@@ -16,8 +16,6 @@ import { type IArea } from '@/shared/model/area.model';
 import ProductService from '@/entities/product/product.service';
 import { type IProduct } from '@/shared/model/product.model';
 import { Entry, type IEntry } from '@/shared/model/entry.model';
-import { AreaType } from '@/shared/model/enumerations/area-type.model.ts';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { useRouter } from 'vue-router';
 
 const { t: t$ } = useI18n();
@@ -47,7 +45,7 @@ const isSaving = ref(false);
 
 const initRelationships = () => {
   areaService()
-    .retrieve({ type: AreaType.ALMACEN })
+    .retrieve()
     .then(res => {
       areas.value = res.data;
     })
@@ -120,12 +118,8 @@ const productAutoCompleteKey = ref(0);
 const resetForm = async () => {
   // Reset explícito para evitar que queden referencias/reacividad antigua
   (formModel as any).product = undefined;
-  (formModel as any).area = undefined;
   (formModel as any).count = null;
   // Reiniciar el día al valor inicial deseado al agregar un nuevo ítem
-  const date = new Date();
-  (formModel as any).day = date.getDate();
-
   // Forzar recreación del autocomplete para limpiar su estado interno (query/selected label)
   productAutoCompleteKey.value += 1;
 
@@ -159,6 +153,13 @@ const saveEntries = async (updatedEntries: IEntry[]) => {
     isSaving.value = false;
   }
 };
+
+const addEntryFromForm = async () => {
+  vForm$.value.$touch();
+  if (vForm$.value.$invalid) return;
+  entries.value.push({ ...(formModel as any) });
+  await resetForm();
+};
 </script>
 
 <template>
@@ -169,6 +170,8 @@ const saveEntries = async (updatedEntries: IEntry[]) => {
       :createItem="() => reactive(new Entry())"
       maxWidth="80%"
       :notFound="t$('businessApp.entry.home.notFound')"
+      :stickyFields="['area', 'day']"
+      :addOnEnter="true"
     >
       <template #form>
         <h2
@@ -176,6 +179,40 @@ const saveEntries = async (updatedEntries: IEntry[]) => {
           data-cy="EntryCreateUpdateHeading"
           v-text="t$('businessApp.entry.multiUpdate.title')"
         ></h2>
+        <b-form-row>
+          <b-col>
+            <label class="form-control-label" v-text="t$('businessApp.entry.area')" for="entry-area"></label>
+            <select class="form-control" id="entry-area" data-cy="area" name="area" v-model="formModel.area" required>
+              <option v-if="!formModel.area" :value="null" selected></option>
+              <option
+                :value="formModel.area && areaOption.id === formModel.area.id ? formModel.area : areaOption"
+                v-for="areaOption in areas"
+                :key="areaOption.id"
+              >
+                {{ areaOption.name }}
+              </option>
+            </select>
+            <div v-if="vForm$.area.$anyDirty && vForm$.area.$invalid">
+              <small class="form-text text-danger" v-for="error of vForm$.area.$errors" :key="error.$uid">{{ error.$message }}</small>
+            </div>
+          </b-col>
+          <b-col>
+            <label class="form-control-label" v-text="t$('businessApp.entry.day')" for="entry-day"></label>
+            <input
+              type="number"
+              class="form-control"
+              name="day"
+              id="entry-day"
+              data-cy="day"
+              :class="{ valid: !vForm$.day.$invalid, invalid: vForm$.day.$invalid }"
+              v-model.number="vForm$.day.$model"
+              required
+            />
+            <div v-if="vForm$.day.$anyDirty && vForm$.day.$invalid">
+              <small class="form-text text-danger" v-for="error of vForm$.day.$errors" :key="error.$uid">{{ error.$message }}</small>
+            </div>
+          </b-col>
+        </b-form-row>
         <b-form-row>
           <b-col>
             <label class="form-control-label" v-text="t$('businessApp.entry.product')" for="product"></label>
@@ -214,6 +251,7 @@ const saveEntries = async (updatedEntries: IEntry[]) => {
               data-cy="count"
               :class="{ valid: !vForm$.count.$invalid, invalid: vForm$.count.$invalid }"
               v-model.number="vForm$.count.$model"
+              @keydown.enter.prevent="addEntryFromForm"
               required
             />
             <div v-if="vForm$.count.$anyDirty && vForm$.count.$invalid">
@@ -221,56 +259,10 @@ const saveEntries = async (updatedEntries: IEntry[]) => {
             </div>
           </b-col>
         </b-form-row>
-        <b-form-row>
-          <b-col>
-            <label class="form-control-label" v-text="t$('businessApp.entry.area')" for="entry-area"></label>
-            <select class="form-control" id="entry-area" data-cy="area" name="area" v-model="formModel.area" required>
-              <option v-if="!formModel.area" :value="null" selected></option>
-              <option
-                :value="formModel.area && areaOption.id === formModel.area.id ? formModel.area : areaOption"
-                v-for="areaOption in areas"
-                :key="areaOption.id"
-              >
-                {{ areaOption.name }}
-              </option>
-            </select>
-            <div v-if="vForm$.area.$anyDirty && vForm$.area.$invalid">
-              <small class="form-text text-danger" v-for="error of vForm$.area.$errors" :key="error.$uid">{{ error.$message }}</small>
-            </div>
-          </b-col>
-          <b-col>
-            <label class="form-control-label" v-text="t$('businessApp.entry.day')" for="entry-day"></label>
-            <input
-              type="number"
-              class="form-control"
-              name="day"
-              id="entry-day"
-              data-cy="day"
-              :class="{ valid: !vForm$.day.$invalid, invalid: vForm$.day.$invalid }"
-              v-model.number="vForm$.day.$model"
-              required
-            />
-            <div v-if="vForm$.day.$anyDirty && vForm$.day.$invalid">
-              <small class="form-text text-danger" v-for="error of vForm$.day.$errors" :key="error.$uid">{{ error.$message }}</small>
-            </div>
-          </b-col>
-        </b-form-row>
       </template>
-      <template #form-actions>
-        <button
-          type="button"
-          class="btn btn-primary"
-          @click="
-            async () => {
-              vForm$.$touch();
-              if (vForm$.$invalid) return;
-              entries.push({ ...(formModel as any) });
-              await resetForm();
-            }
-          "
-        >
-          <FontAwesomeIcon icon="plus"></FontAwesomeIcon>&nbsp;<span v-text="t$('entity.action.add')"></span>
-        </button>
+
+      <template #table-title>
+        <h5 class="mb-2" v-text="t$('businessApp.entry.multiUpdate.entryItem')"></h5>
       </template>
 
       <template #table-headers>
