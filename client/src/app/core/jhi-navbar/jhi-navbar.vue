@@ -30,7 +30,8 @@
 
             <details class="jh-left-collapsible" open>
               <summary class="jh-left-collapsible-summary">
-                <span class="small text-uppercase text-muted" v-text="t$('global.menu.entities.main')"></span>
+                <!-- Misma apariencia/color que un item (Inicio): quitar text-muted -->
+                <span class="small text-uppercase" v-text="t$('global.menu.entities.main')"></span>
               </summary>
               <div class="jh-left-collapsible-body">
                 <entities-menu></entities-menu>
@@ -42,7 +43,7 @@
 
               <details class="jh-left-collapsible">
                 <summary class="jh-left-collapsible-summary">
-                  <span class="small text-uppercase text-muted" v-text="t$('global.menu.economy.main')"></span>
+                  <span class="small text-uppercase" v-text="t$('global.menu.economy.main')"></span>
                 </summary>
                 <div class="jh-left-collapsible-body">
                   <economy-menu></economy-menu>
@@ -53,7 +54,7 @@
 
               <details class="jh-left-collapsible">
                 <summary class="jh-left-collapsible-summary">
-                  <span class="small text-uppercase text-muted" v-text="t$('global.menu.report.main')"></span>
+                  <span class="small text-uppercase" v-text="t$('global.menu.report.main')"></span>
                 </summary>
                 <div class="jh-left-collapsible-body">
                   <report-menu></report-menu>
@@ -64,7 +65,7 @@
 
               <details class="jh-left-collapsible">
                 <summary class="jh-left-collapsible-summary">
-                  <span class="small text-uppercase text-muted" v-text="t$('global.menu.admin.main')"></span>
+                  <span class="small text-uppercase" v-text="t$('global.menu.admin.main')"></span>
                 </summary>
                 <div class="jh-left-collapsible-body">
                   <b-nav-item to="/company" @click="closeLeftMenu">
@@ -306,6 +307,25 @@
   color: #0f172a;
 }
 
+/* Left menu: uniformar color de todos los items igual que 'Compañias' */
+.jh-left-sidebar-nav :deep(a.nav-link),
+.jh-left-sidebar-nav :deep(.dropdown-item),
+.jh-left-sidebar-nav :deep(a),
+.jh-left-sidebar-nav :deep(.nav-item > a) {
+  color: #0f172a !important;
+}
+
+.jh-left-sidebar-nav :deep(a.nav-link:hover),
+.jh-left-sidebar-nav :deep(.dropdown-item:hover),
+.jh-left-sidebar-nav :deep(a:hover) {
+  color: #0f172a !important;
+}
+
+.jh-left-sidebar-nav :deep(a.nav-link.active),
+.jh-left-sidebar-nav :deep(.dropdown-item.active) {
+  color: #0f172a !important;
+}
+
 .jh-left-collapsible {
   margin: 0.25rem 0;
 }
@@ -315,6 +335,7 @@
   cursor: pointer;
   padding: 0.35rem 0.5rem;
   border-radius: 0.25rem;
+  color: #0f172a;
 }
 
 .jh-left-collapsible-summary::-webkit-details-marker {
