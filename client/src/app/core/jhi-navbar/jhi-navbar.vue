@@ -12,8 +12,8 @@
       title="Menu"
       shadow
       backdrop
-      bg-variant="dark"
-      text-variant="light"
+      bg-variant="light"
+      text-variant="dark"
       :width="sidebarWidth"
       @hidden="onSidebarHidden"
       class="jh-left-sidebar"
@@ -131,12 +131,15 @@
 
     <b-collapse is-nav id="header-tabs">
       <b-navbar-nav class="ml-auto">
+        <!-- Inicio removido del menú superior -->
+        <!--
         <b-nav-item to="/" exact>
           <span>
             <font-awesome-icon icon="home" />
             <span v-text="t$('global.menu.home')"></span>
           </span>
         </b-nav-item>
+        -->
 
         <b-nav-item-dropdown id="languagesnavBarDropdown" right v-if="languages && Object.keys(languages).length > 1">
           <template #button-content>
@@ -195,76 +198,53 @@
     ========================================================================== */
 
 .jh-navbar {
-  background-color: #353d47;
+  /* Azul claro */
+  background-color: #dbeafe; /* tailwind blue-100 */
   padding: 0.2em 1em;
+  border-bottom: 1px solid rgba(30, 64, 175, 0.18);
 }
 
-.jh-navbar .profile-image {
-  margin: -10px 0;
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
+/* Texto/links del navbar sobre fondo azul claro */
+.jh-navbar :deep(.nav-link),
+.jh-navbar :deep(.navbar-brand),
+.jh-navbar .no-bold {
+  color: #0f172a; /* slate-900 */
 }
 
-.jh-navbar .dropdown-item.active,
-.jh-navbar .dropdown-item.active:focus,
-.jh-navbar .dropdown-item.active:hover {
-  background-color: #353d47;
-}
-
-.jh-navbar .dropdown-toggle::after {
-  margin-left: 0.15em;
-}
-
-.jh-navbar ul.navbar-nav {
-  padding: 0.5em;
-}
-
-.jh-navbar .navbar-nav .nav-item {
-  margin-left: 1.5rem;
+.jh-navbar :deep(.nav-link:hover),
+.jh-navbar :deep(.navbar-brand:hover) {
+  color: #0b1220;
 }
 
 .jh-navbar a.nav-link,
 .jh-navbar .no-bold {
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .jh-navbar .jh-navbar-toggler {
-  color: #ccc;
+  color: #0f172a;
   font-size: 1.5em;
   padding: 10px;
 }
 
 .jh-navbar .jh-navbar-toggler:hover {
-  color: #fff;
+  color: #0b1220;
 }
 
 .jh-left-menu-btn {
-  color: #ccc;
+  color: #0f172a;
   font-size: 1.35rem;
   padding: 0.25rem 0.5rem;
   text-decoration: none;
 }
 
 .jh-left-menu-btn:hover {
-  color: #fff;
-}
-
-@media screen and (min-width: 768px) {
-  .jh-navbar-toggler {
-    display: none;
-  }
-}
-
-@media screen and (min-width: 768px) and (max-width: 1150px) {
-  span span {
-    display: none;
-  }
+  color: #0b1220;
 }
 
 .navbar-title {
   display: inline-block;
-  color: white;
+  color: #0f172a;
 }
 
 /* ==========================================================================
@@ -298,23 +278,32 @@
 }
 
 .jh-left-sidebar :deep(.b-sidebar) {
-  max-width: 85vw;
+  background-color: #dbeafe; /* mismo azul claro */
+  color: #0f172a;
 }
 
 .jh-left-sidebar :deep(.b-sidebar-header) {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: #dbeafe;
+  color: #0f172a;
+  border-bottom: 1px solid rgba(30, 64, 175, 0.18);
+}
+
+.jh-left-sidebar :deep(.b-sidebar-backdrop) {
+  background-color: rgba(15, 23, 42, 0.25);
 }
 
 .jh-left-sidebar-nav :deep(a.nav-link) {
-  color: rgba(255, 255, 255, 0.9);
+  color: #0f172a;
 }
 
 .jh-left-sidebar-nav :deep(a.nav-link:hover) {
-  color: #fff;
+  color: #0f172a;
+  background-color: rgba(30, 64, 175, 0.1);
 }
 
 .jh-left-sidebar-nav :deep(a.nav-link.active) {
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: rgba(30, 64, 175, 0.18);
+  color: #0f172a;
 }
 
 .jh-left-collapsible {
@@ -333,10 +322,52 @@
 }
 
 .jh-left-collapsible-summary:hover {
-  background-color: rgba(255, 255, 255, 0.06);
+  background-color: rgba(30, 64, 175, 0.1);
 }
 
 .jh-left-collapsible-body {
   padding-left: 0.25rem;
+}
+
+/* Texto muted para cabeceras de secciones */
+.jh-left-sidebar :deep(.text-muted) {
+  color: rgba(15, 23, 42, 0.65) !important;
+}
+
+/* Asegura que los íconos (FontAwesome svg) hereden el mismo color del texto del navbar */
+.jh-navbar :deep(svg),
+.jh-navbar :deep(.svg-inline--fa) {
+  color: currentColor;
+  fill: currentColor;
+}
+
+/* En el dropdown de idioma, fuerza el mismo color para el ícono y el label */
+.jh-navbar :deep(#languagesnavBarDropdown__BV_toggle_),
+.jh-navbar :deep(#languagesnavBarDropdown__BV_toggle_ svg),
+.jh-navbar :deep(#languagesnavBarDropdown__BV_toggle_ .svg-inline--fa) {
+  color: #0f172a;
+  fill: #0f172a;
+}
+
+.jh-navbar :deep(#languagesnavBarDropdown__BV_toggle_:hover),
+.jh-navbar :deep(#languagesnavBarDropdown__BV_toggle_:hover svg),
+.jh-navbar :deep(#languagesnavBarDropdown__BV_toggle_:hover .svg-inline--fa) {
+  color: #0b1220;
+  fill: #0b1220;
+}
+
+/* En el dropdown de cuenta, fuerza el mismo color para el ícono y el label */
+.jh-navbar :deep(#account-menu__BV_toggle_),
+.jh-navbar :deep(#account-menu__BV_toggle_ svg),
+.jh-navbar :deep(#account-menu__BV_toggle_ .svg-inline--fa) {
+  color: #0f172a;
+  fill: #0f172a;
+}
+
+.jh-navbar :deep(#account-menu__BV_toggle_:hover),
+.jh-navbar :deep(#account-menu__BV_toggle_:hover svg),
+.jh-navbar :deep(#account-menu__BV_toggle_:hover .svg-inline--fa) {
+  color: #0b1220;
+  fill: #0b1220;
 }
 </style>
