@@ -1,8 +1,92 @@
 <template>
   <b-navbar data-cy="navbar" toggleable="md" type="dark" class="jh-navbar">
+    <!-- Botón menú (siempre visible) -->
+    <b-button variant="link" class="jh-left-menu-btn" @click.prevent="openLeftMenu" aria-label="Abrir menú">
+      <font-awesome-icon icon="bars" />
+    </b-button>
+
+    <!-- Menú lateral izquierdo -->
+    <b-sidebar
+      id="left-sidebar"
+      v-model="leftMenuOpen"
+      title="Menu"
+      shadow
+      backdrop
+      bg-variant="dark"
+      text-variant="light"
+      :width="sidebarWidth"
+      @hidden="onSidebarHidden"
+      class="jh-left-sidebar"
+    >
+      <div class="px-3 py-2">
+        <b-nav vertical pills class="jh-left-sidebar-nav">
+          <b-nav-item to="/" exact @click="closeLeftMenu">
+            <font-awesome-icon icon="home" class="mr-2" />
+            <span v-text="t$('global.menu.home')"></span>
+          </b-nav-item>
+
+          <template v-if="authenticated">
+            <div class="dropdown-divider my-2"></div>
+            <div class="small text-uppercase text-muted px-2" v-text="t$('global.menu.entities.main')"></div>
+            <entities-menu></entities-menu>
+
+            <template v-if="hasAnyAuthority('ROLE_ADMIN')">
+              <div class="dropdown-divider my-2"></div>
+              <div class="small text-uppercase text-muted px-2" v-text="t$('global.menu.economy.main')"></div>
+              <economy-menu></economy-menu>
+
+              <div class="dropdown-divider my-2"></div>
+              <div class="small text-uppercase text-muted px-2" v-text="t$('global.menu.report.main')"></div>
+              <report-menu></report-menu>
+
+              <div class="dropdown-divider my-2"></div>
+              <div class="small text-uppercase text-muted px-2" v-text="t$('global.menu.admin.main')"></div>
+              <b-nav-item to="/company" @click="closeLeftMenu">
+                <font-awesome-icon icon="asterisk" class="mr-2" />
+                <span v-text="t$('global.menu.admin.company')"></span>
+              </b-nav-item>
+              <b-nav-item to="/admin/user-management" @click="closeLeftMenu">
+                <font-awesome-icon icon="users" class="mr-2" />
+                <span v-text="t$('global.menu.admin.userManagement')"></span>
+              </b-nav-item>
+              <b-nav-item v-if="openAPIEnabled" to="/admin/docs" @click="closeLeftMenu">
+                <font-awesome-icon icon="book" class="mr-2" />
+                <span v-text="t$('global.menu.admin.apidocs')"></span>
+              </b-nav-item>
+            </template>
+          </template>
+
+          <div class="dropdown-divider my-2"></div>
+
+          <!-- Acciones de cuenta removidas del menú lateral -->
+          <!--
+          <template v-if="authenticated">
+            <b-nav-item href="javascript:void(0);" @click="logout(); closeLeftMenu();">
+              <font-awesome-icon icon="sign-out-alt" class="mr-2" />
+              <span v-text="t$('global.menu.account.logout')"></span>
+            </b-nav-item>
+          </template>
+          -->
+
+          <template v-if="!authenticated">
+            <b-nav-item
+              href="javascript:void(0);"
+              @click="
+                openLogin();
+                closeLeftMenu();
+              "
+            >
+              <font-awesome-icon icon="sign-in-alt" class="mr-2" />
+              <span v-text="t$('global.menu.account.login')"></span>
+            </b-nav-item>
+          </template>
+        </b-nav>
+      </div>
+    </b-sidebar>
+
     <b-navbar-brand class="logo" b-link to="/">
       <span class="logo-img"></span>
-      <span v-text="t$('global.title')" class="navbar-title"></span> <span class="navbar-version">{{ version }}</span>
+      <span v-text="t$('global.title')" class="navbar-title"></span>
     </b-navbar-brand>
     <b-navbar-toggle
       right
@@ -12,6 +96,7 @@
       target="header-tabs"
       aria-expanded="false"
       aria-label="Toggle navigation"
+      @click.prevent="openLeftMenu"
     >
       <font-awesome-icon icon="bars" />
     </b-navbar-toggle>
@@ -24,76 +109,7 @@
             <span v-text="t$('global.menu.home')"></span>
           </span>
         </b-nav-item>
-        <b-nav-item-dropdown right id="entity-menu" v-if="authenticated" active-class="active" class="pointer" data-cy="entity">
-          <template #button-content>
-            <span class="navbar-dropdown-menu">
-              <font-awesome-icon icon="th-list" />
-              <span class="no-bold" v-text="t$('global.menu.entities.main')"></span>
-            </span>
-          </template>
-          <entities-menu></entities-menu>
-          <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
-        </b-nav-item-dropdown>
-        <b-nav-item-dropdown
-          right
-          id="economy-menu"
-          v-if="hasAnyAuthority('ROLE_ADMIN') && authenticated"
-          active-class="active"
-          class="pointer"
-          data-cy="economy"
-        >
-          <template #button-content>
-            <span class="navbar-dropdown-menu">
-              <font-awesome-icon icon="fa-coins" />
-              <span class="no-bold" v-text="t$('global.menu.economy.main')"></span>
-            </span>
-          </template>
-          <economy-menu></economy-menu>
-        </b-nav-item-dropdown>
-        <b-nav-item-dropdown
-          right
-          id="report-menu"
-          v-if="hasAnyAuthority('ROLE_ADMIN') && authenticated"
-          active-class="active"
-          class="pointer"
-          data-cy="economy"
-        >
-          <template #button-content>
-            <span class="navbar-dropdown-menu">
-              <font-awesome-icon icon="fa-file-alt" />
-              <span class="no-bold" v-text="t$('global.menu.report.main')"></span>
-            </span>
-          </template>
-          <report-menu></report-menu>
-        </b-nav-item-dropdown>
-        <b-nav-item-dropdown
-          right
-          id="admin-menu"
-          v-if="hasAnyAuthority('ROLE_ADMIN') && authenticated"
-          :class="{ 'router-link-active': subIsActive('/admin') }"
-          active-class="active"
-          class="pointer"
-          data-cy="adminMenu"
-        >
-          <template #button-content>
-            <span class="navbar-dropdown-menu">
-              <font-awesome-icon icon="users-cog" />
-              <span class="no-bold" v-text="t$('global.menu.admin.main')"></span>
-            </span>
-          </template>
-          <b-dropdown-item to="/company">
-            <font-awesome-icon icon="asterisk" />
-            <span v-text="t$('global.menu.admin.company')"></span>
-          </b-dropdown-item>
-          <b-dropdown-item to="/admin/user-management" active-class="active">
-            <font-awesome-icon icon="users" />
-            <span v-text="t$('global.menu.admin.userManagement')"></span>
-          </b-dropdown-item>
-          <b-dropdown-item v-if="openAPIEnabled" to="/admin/docs" active-class="active">
-            <font-awesome-icon icon="book" />
-            <span v-text="t$('global.menu.admin.apidocs')"></span>
-          </b-dropdown-item>
-        </b-nav-item-dropdown>
+
         <b-nav-item-dropdown id="languagesnavBarDropdown" right v-if="languages && Object.keys(languages).length > 1">
           <template #button-content>
             <font-awesome-icon icon="flag" />
@@ -108,6 +124,7 @@
             {{ value.name }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
+
         <b-nav-item-dropdown
           right
           href="javascript:void(0);"
@@ -148,10 +165,6 @@
 /* ==========================================================================
     Navbar
     ========================================================================== */
-.navbar-version {
-  font-size: 0.65em;
-  color: #ccc;
-}
 
 .jh-navbar {
   background-color: #353d47;
@@ -198,6 +211,17 @@
   color: #fff;
 }
 
+.jh-left-menu-btn {
+  color: #ccc;
+  font-size: 1.35rem;
+  padding: 0.25rem 0.5rem;
+  text-decoration: none;
+}
+
+.jh-left-menu-btn:hover {
+  color: #fff;
+}
+
 @media screen and (min-width: 768px) {
   .jh-navbar-toggler {
     display: none;
@@ -231,10 +255,37 @@
 
 .logo-img {
   height: 100%;
-  background: url('/content/images/logo-jhipster.png') no-repeat center center;
+  background: url('../../../content/images/logo-jhipster.png') no-repeat center center;
   background-size: contain;
   width: 100%;
   filter: drop-shadow(0 0 0.05rem white);
   margin: 0 5px;
+}
+
+/* ==========================================================================
+    Sidebar styles
+    ========================================================================== */
+.jh-left-sidebar {
+  z-index: 1050;
+}
+
+.jh-left-sidebar :deep(.b-sidebar) {
+  max-width: 85vw;
+}
+
+.jh-left-sidebar :deep(.b-sidebar-header) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.jh-left-sidebar-nav :deep(a.nav-link) {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.jh-left-sidebar-nav :deep(a.nav-link:hover) {
+  color: #fff;
+}
+
+.jh-left-sidebar-nav :deep(a.nav-link.active) {
+  background-color: rgba(255, 255, 255, 0.12);
 }
 </style>

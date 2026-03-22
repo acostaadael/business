@@ -8,7 +8,9 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const ribbonEnv = computed(() => store.ribbonOnProfiles);
-    const ribbonEnabled = computed(() => store.ribbonOnProfiles && store.activeProfiles.indexOf(store.ribbonOnProfiles) > -1);
+
+    // Deshabilitado permanentemente: ocultar la cinta de entorno ("Development", etc.)
+    const ribbonEnabled = computed(() => false);
 
     return {
       ribbonEnv,

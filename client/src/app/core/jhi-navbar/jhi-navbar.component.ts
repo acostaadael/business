@@ -22,7 +22,7 @@ export default defineComponent({
     const loginService = inject<LoginService>('loginService');
     const accountService = inject<AccountService>('accountService');
     const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
-    const changeLanguage = inject<(string) => Promise<void>>('changeLanguage');
+    const changeLanguage = inject<(lang: string) => Promise<void>>('changeLanguage');
 
     const isActiveLanguage = (key: string) => {
       return key === currentLanguage.value;
@@ -30,6 +30,31 @@ export default defineComponent({
 
     const router = useRouter();
     const store = useStore();
+
+    // Sidebar izquierda
+    const leftMenuOpen = ref(false);
+    const sidebarWidth = computed(() => '320px');
+
+    const openLeftMenu = () => {
+      leftMenuOpen.value = true;
+    };
+
+    const toggleLeftMenu = () => {
+      leftMenuOpen.value = !leftMenuOpen.value;
+    };
+
+    const closeLeftMenu = () => {
+      leftMenuOpen.value = false;
+    };
+
+    const onSidebarHidden = () => {
+      leftMenuOpen.value = false;
+    };
+
+    // Cierra el menú en cualquier navegación
+    router.afterEach(() => {
+      leftMenuOpen.value = false;
+    });
 
     const version = `v${APP_VERSION}`;
     const hasAnyAuthorityValues: Ref<any> = ref({});
@@ -39,7 +64,7 @@ export default defineComponent({
     const authenticated = computed(() => store.authenticated);
 
     const openLogin = () => {
-      loginService.openLogin();
+      loginService?.openLogin();
     };
 
     const subIsActive = (input: string | string[]) => {
@@ -63,7 +88,7 @@ export default defineComponent({
       subIsActive,
       accountService,
       openLogin,
-      changeLanguage,
+      changeLanguage: changeLanguage ?? (async () => undefined),
       languages: languages(),
       isActiveLanguage,
       version,
@@ -73,11 +98,17 @@ export default defineComponent({
       inProduction,
       authenticated,
       t$: useI18n().t,
+      leftMenuOpen,
+      sidebarWidth,
+      openLeftMenu,
+      toggleLeftMenu,
+      closeLeftMenu,
+      onSidebarHidden,
     };
   },
   methods: {
     hasAnyAuthority(authorities: any): boolean {
-      this.accountService.hasAnyAuthorityAndCheckAuth(authorities).then(value => {
+      this.accountService?.hasAnyAuthorityAndCheckAuth(authorities).then(value => {
         if (this.hasAnyAuthorityValues[authorities] !== value) {
           this.hasAnyAuthorityValues = { ...this.hasAnyAuthorityValues, [authorities]: value };
         }

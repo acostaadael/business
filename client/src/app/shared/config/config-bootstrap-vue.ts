@@ -16,6 +16,7 @@ import {
   BInputGroupPrepend,
   BLink,
   BModal,
+  BNav,
   BNavItem,
   BNavItemDropdown,
   BNavbar,
@@ -25,6 +26,7 @@ import {
   BPagination,
   BProgress,
   BProgressBar,
+  BSidebar,
   ToastPlugin,
   VBModal,
   BContainer,
@@ -33,7 +35,7 @@ import {
   BFormRow,
 } from 'bootstrap-vue';
 
-export function initBootstrapVue(vue) {
+export function initBootstrapVue(vue: any) {
   vue.use(ToastPlugin);
 
   vue.component('b-badge', BBadge);
@@ -55,8 +57,10 @@ export function initBootstrapVue(vue) {
   vue.component('b-form-group', BFormGroup);
   vue.component('b-form-checkbox', BFormCheckbox);
   vue.component('b-collapse', BCollapse);
+  vue.component('b-nav', BNav);
   vue.component('b-nav-item', BNavItem);
   vue.component('b-nav-item-dropdown', BNavItemDropdown);
+  vue.component('b-sidebar', BSidebar);
   vue.component('b-modal', BModal);
   vue.directive('b-modal', VBModal);
   vue.component('b-form-datepicker', BFormDatepicker);
