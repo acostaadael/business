@@ -27,32 +27,60 @@
 
           <template v-if="authenticated">
             <div class="dropdown-divider my-2"></div>
-            <div class="small text-uppercase text-muted px-2" v-text="t$('global.menu.entities.main')"></div>
-            <entities-menu></entities-menu>
+
+            <details class="jh-left-collapsible" open>
+              <summary class="jh-left-collapsible-summary">
+                <span class="small text-uppercase text-muted" v-text="t$('global.menu.entities.main')"></span>
+              </summary>
+              <div class="jh-left-collapsible-body">
+                <entities-menu></entities-menu>
+              </div>
+            </details>
 
             <template v-if="hasAnyAuthority('ROLE_ADMIN')">
               <div class="dropdown-divider my-2"></div>
-              <div class="small text-uppercase text-muted px-2" v-text="t$('global.menu.economy.main')"></div>
-              <economy-menu></economy-menu>
+
+              <details class="jh-left-collapsible">
+                <summary class="jh-left-collapsible-summary">
+                  <span class="small text-uppercase text-muted" v-text="t$('global.menu.economy.main')"></span>
+                </summary>
+                <div class="jh-left-collapsible-body">
+                  <economy-menu></economy-menu>
+                </div>
+              </details>
 
               <div class="dropdown-divider my-2"></div>
-              <div class="small text-uppercase text-muted px-2" v-text="t$('global.menu.report.main')"></div>
-              <report-menu></report-menu>
+
+              <details class="jh-left-collapsible">
+                <summary class="jh-left-collapsible-summary">
+                  <span class="small text-uppercase text-muted" v-text="t$('global.menu.report.main')"></span>
+                </summary>
+                <div class="jh-left-collapsible-body">
+                  <report-menu></report-menu>
+                </div>
+              </details>
 
               <div class="dropdown-divider my-2"></div>
-              <div class="small text-uppercase text-muted px-2" v-text="t$('global.menu.admin.main')"></div>
-              <b-nav-item to="/company" @click="closeLeftMenu">
-                <font-awesome-icon icon="asterisk" class="mr-2" />
-                <span v-text="t$('global.menu.admin.company')"></span>
-              </b-nav-item>
-              <b-nav-item to="/admin/user-management" @click="closeLeftMenu">
-                <font-awesome-icon icon="users" class="mr-2" />
-                <span v-text="t$('global.menu.admin.userManagement')"></span>
-              </b-nav-item>
-              <b-nav-item v-if="openAPIEnabled" to="/admin/docs" @click="closeLeftMenu">
-                <font-awesome-icon icon="book" class="mr-2" />
-                <span v-text="t$('global.menu.admin.apidocs')"></span>
-              </b-nav-item>
+
+              <details class="jh-left-collapsible">
+                <summary class="jh-left-collapsible-summary">
+                  <span class="small text-uppercase text-muted" v-text="t$('global.menu.admin.main')"></span>
+                </summary>
+                <div class="jh-left-collapsible-body">
+                  <b-nav-item to="/company" @click="closeLeftMenu">
+                    <font-awesome-icon icon="asterisk" class="mr-2" />
+                    <span v-text="t$('global.menu.admin.company')"></span>
+                  </b-nav-item>
+                  <b-nav-item to="/admin/user-management" @click="closeLeftMenu">
+                    <font-awesome-icon icon="users" class="mr-2" />
+                    <span v-text="t$('global.menu.admin.userManagement')"></span>
+                  </b-nav-item>
+                  <b-nav-item v-if="openAPIEnabled" to="/admin/docs" @click="closeLeftMenu">
+                    <font-awesome-icon icon="book" class="mr-2" />
+                    <span v-text="t$('global.menu.admin.apidocs')"></span>
+                  </b-nav-item>
+                </div>
+              </details>
             </template>
           </template>
 
@@ -287,5 +315,28 @@
 
 .jh-left-sidebar-nav :deep(a.nav-link.active) {
   background-color: rgba(255, 255, 255, 0.12);
+}
+
+.jh-left-collapsible {
+  margin: 0.25rem 0;
+}
+
+.jh-left-collapsible-summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.jh-left-collapsible-summary::-webkit-details-marker {
+  display: none;
+}
+
+.jh-left-collapsible-summary:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.jh-left-collapsible-body {
+  padding-left: 0.25rem;
 }
 </style>
