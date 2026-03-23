@@ -3,11 +3,12 @@ import axios from 'axios';
 import buildPaginationQueryOpts from '@/shared/sort/sorts';
 
 import { type IInventary } from '@/shared/model/inventary.model';
+import type { CrudTableService } from '@/components/crud/crud-table-interface';
 
 const baseApiUrl = 'api/inventaries';
 
-export default class InventaryService {
-  public find(id: number): Promise<IInventary> {
+export default class InventaryService implements CrudTableService<IInventary> {
+  public find(id: number | string): Promise<IInventary> {
     return new Promise<IInventary>((resolve, reject) => {
       axios
         .get(`${baseApiUrl}/${id}`)
@@ -33,12 +34,12 @@ export default class InventaryService {
     });
   }
 
-  public delete(id: number): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
+  public delete(id: number | string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
       axios
         .delete(`${baseApiUrl}/${id}`)
-        .then(res => {
-          resolve(res);
+        .then(() => {
+          resolve();
         })
         .catch(err => {
           reject(err);

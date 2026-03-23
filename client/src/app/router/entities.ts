@@ -26,7 +26,7 @@ const ProductCrud = () => import('@/entities/product/product-crud.vue');
 const ProductUpdate = () => import('@/entities/product/product-update.vue');
 const ProductDetails = () => import('@/entities/product/product-details.vue');
 
-const Inventary = () => import('@/entities/inventary/inventary.vue');
+const Inventary = () => import('@/entities/inventary/inventary-crud.vue');
 
 const Entry = () => import('@/entities/entry/entry-crud.vue');
 const EntryUpdate = () => import('@/entities/entry/entry-multiple-update.vue');
