@@ -54,4 +54,82 @@ export class ProductShipmentRepository extends Repository<ProductShipment> {
 
     return await q.getManyAndCount();
   }
+
+  /**
+   * Total vendido (suma de count) para un tipo (por defecto VENTA)
+   */
+  async sumCountByPeriodCompanyType(params: { companyId: number; periodId: number; type: string }): Promise<number> {
+    const { companyId, periodId, type } = params;
+
+    const raw = await this.createQueryBuilder('product_shipment')
+      .select('COALESCE(SUM(product_shipment.count), 0)', 'sum')
+      .innerJoin('product_shipment.company', 'company')
+      .innerJoin('product_shipment.period', 'period')
+      .where('company.id = :companyId', { companyId })
+      .andWhere('period.id = :periodId', { periodId })
+      .andWhere('product_shipment.type = :type', { type })
+      .getRawOne<{ sum: string | number }>();
+
+    const val = raw?.sum;
+    const num = typeof val === 'number' ? val : parseFloat(String(val ?? 0));
+    return Number.isFinite(num) ? num : 0;
+  }
+
+  /**
+   * Ventas por día (day 1..31) para un tipo.
+   */
+  async sumCountByDay(params: { companyId: number; periodId: number; type: string }): Promise<Array<{ day: number; total: number }>> {
+    const { companyId, periodId, type } = params;
+
+    const rows = await this.createQueryBuilder('product_shipment')
+      .select('product_shipment.day', 'day')
+      .addSelect('COALESCE(SUM(product_shipment.count), 0)', 'total')
+      .innerJoin('product_shipment.company', 'company')
+      .innerJoin('product_shipment.period', 'period')
+      .where('company.id = :companyId', { companyId })
+      .andWhere('period.id = :periodId', { periodId })
+      .andWhere('product_shipment.type = :type', { type })
+      .groupBy('product_shipment.day')
+      .orderBy('product_shipment.day', 'ASC')
+      .getRawMany<{ day: string | number; total: string | number }>();
+
+    return (rows ?? []).map(r => ({
+      day: typeof r.day === 'number' ? r.day : parseInt(String(r.day), 10),
+      total: typeof r.total === 'number' ? r.total : parseFloat(String(r.total ?? 0)),
+    }));
+  }
+
+  /**
+   * Top productos por cantidad vendida.
+   */
+  async topProductsByCount(params: {
+    companyId: number;
+    periodId: number;
+    type: string;
+    limit?: number;
+  }): Promise<Array<{ productId: number; productName: string; total: number }>> {
+    const { companyId, periodId, type, limit = 5 } = params;
+
+    const rows = await this.createQueryBuilder('product_shipment')
+      .select('product.id', 'productId')
+      .addSelect('product.name', 'productName')
+      .addSelect('COALESCE(SUM(product_shipment.count), 0)', 'total')
+      .innerJoin('product_shipment.product', 'product')
+      .innerJoin('product_shipment.company', 'company')
+      .innerJoin('product_shipment.period', 'period')
+      .where('company.id = :companyId', { companyId })
+      .andWhere('period.id = :periodId', { periodId })
+      .andWhere('product_shipment.type = :type', { type })
+      .groupBy('product.id')
+      .addGroupBy('product.name')
+      .orderBy('total', 'DESC')
+      .limit(limit)
+      .getRawMany<{ productId: string | number; productName: string; total: string | number }>();
+
+    return (rows ?? []).map(r => ({
+      productId: typeof r.productId === 'number' ? r.productId : parseInt(String(r.productId), 10),
+      productName: String(r.productName ?? ''),
+      total: typeof r.total === 'number' ? r.total : parseFloat(String(r.total ?? 0)),
+    }));
+  }
 }

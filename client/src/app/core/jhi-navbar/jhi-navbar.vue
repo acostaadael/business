@@ -172,6 +172,16 @@
               <span class="no-bold" v-text="t$('global.menu.account.main')"></span>
             </span>
           </template>
+
+          <!-- Encabezado: usuario autenticado -->
+          <template v-if="authenticated">
+            <b-dropdown-item-button class="jh-account-header" disabled>
+              <font-awesome-icon icon="user" />
+              <span class="ml-2">{{ username }}</span>
+            </b-dropdown-item-button>
+            <b-dropdown-divider />
+          </template>
+
           <b-dropdown-item data-cy="settings" to="/account/settings" v-if="authenticated" active-class="active">
             <font-awesome-icon icon="wrench" />
             <span v-text="t$('global.menu.account.settings')"></span>
@@ -390,5 +400,18 @@
 .jh-navbar :deep(#account-menu__BV_toggle_:hover .svg-inline--fa) {
   color: #0b1220;
   fill: #0b1220;
+}
+
+.jh-account-header {
+  opacity: 1;
+  font-weight: 600;
+  cursor: default;
+}
+
+.jh-account-header:deep(svg),
+.jh-account-header :deep(svg),
+.jh-account-header :deep(.svg-inline--fa) {
+  color: #0f172a;
+  fill: #0f172a;
 }
 </style>

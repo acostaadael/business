@@ -7,6 +7,8 @@ import { CompanyService } from '../service/company.service';
 import { InventaryService } from '../service/inventary.service';
 import { InventoryMovementQueryDTO } from './dto/inventory-movement.query.dto';
 import { ProductShipmentRepository } from '../repository/inventary.shipment.repository';
+import { ExitType } from '../domain/enumeration/exit-type';
+import { SalesDashboardDTO } from './dto/sales-dashboard.dto';
 
 const relations = {
   product: true,
@@ -98,5 +100,43 @@ export class ProductShipmentService {
     if (entityFind) {
       throw new HttpException('Error, entity not deleted!', HttpStatus.NOT_FOUND);
     }
+  }
+
+  async getSalesDashboard(): Promise<SalesDashboardDTO> {
+    const openPeriod = await this.periodService.findOpen();
+    const currentCompany = await this.companyService.findActive();
+
+    if (!openPeriod || !currentCompany) {
+      throw new HttpException('No existe un periodo abierto o una compañía activa para calcular el dashboard.', HttpStatus.BAD_REQUEST);
+    }
+
+    const type = ExitType.VENTA;
+
+    const [totalSalesCount, salesByDay, topProducts] = await Promise.all([
+      this.productShipmentRepository.sumCountByPeriodCompanyType({
+        companyId: currentCompany.id,
+        periodId: openPeriod.id,
+        type,
+      }),
+      this.productShipmentRepository.sumCountByDay({
+        companyId: currentCompany.id,
+        periodId: openPeriod.id,
+        type,
+      }),
+      this.productShipmentRepository.topProductsByCount({
+        companyId: currentCompany.id,
+        periodId: openPeriod.id,
+        type,
+        limit: 8,
+      }),
+    ]);
+
+    return {
+      year: openPeriod.year,
+      month: openPeriod.month,
+      totalSalesCount,
+      salesByDay,
+      topProducts,
+    };
   }
 }

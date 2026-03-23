@@ -63,6 +63,8 @@ export default defineComponent({
     const inProduction = computed(() => store.activeProfiles.indexOf('prod') > -1);
     const authenticated = computed(() => store.authenticated);
 
+    const username = computed(() => store.account?.login ?? '');
+
     const openLogin = () => {
       loginService?.openLogin();
     };
@@ -97,6 +99,7 @@ export default defineComponent({
       openAPIEnabled,
       inProduction,
       authenticated,
+      username,
       t$: useI18n().t,
       leftMenuOpen,
       sidebarWidth,

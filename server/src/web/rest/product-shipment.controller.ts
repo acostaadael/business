@@ -23,6 +23,7 @@ import { LoggingInterceptor } from '../../client/interceptors/logging.intercepto
 import { PeriodService } from '../../service/period.service';
 import { CompanyService } from '../../service/company.service';
 import { InventoryMovementQueryDTO } from '../../service/dto/inventory-movement.query.dto';
+import { SalesDashboardDTO } from '../../service/dto/sales-dashboard.dto';
 
 @Controller('api/product-shipments')
 @UseGuards(AuthGuard, RolesGuard)
@@ -61,6 +62,14 @@ export class ProductShipmentController {
     const [results, count] = await this.productShipmentService.findAndCount(entryQuery);
     HeaderUtil.addPaginationHeaders(req.res, new Page(results, count, pageRequest));
     return results;
+  }
+
+  @Get('/summary')
+  @Roles(RoleType.USER)
+  @ApiOperation({ summary: 'Dashboard resumen de ventas (periodo abierto)' })
+  @ApiResponse({ status: 200, description: 'Resumen de ventas', type: SalesDashboardDTO })
+  async getSummary(): Promise<SalesDashboardDTO> {
+    return await this.productShipmentService.getSalesDashboard();
   }
 
   @Get('/:id')
