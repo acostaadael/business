@@ -32,4 +32,35 @@
   </div>
 </template>
 
-<script lang="ts" src="./company-details.component.ts"></script>
+<script setup lang="ts">
+import { inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+
+import CompanyService from './company.service';
+import type { ICompany } from '@/shared/model/company.model';
+import { useAlertService } from '@/shared/alert/alert.service';
+
+const companyService = inject('companyService', () => new CompanyService());
+const alertService = inject('alertService', () => useAlertService(), true);
+
+const route = useRoute();
+const router = useRouter();
+
+const { t: t$ } = useI18n();
+
+const previousState = () => router.go(-1);
+const company = ref<ICompany>({});
+
+const retrieveCompany = async (companyId: number | string) => {
+  try {
+    company.value = await companyService().find(companyId);
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  }
+};
+
+if (route.params?.companyId) {
+  retrieveCompany(route.params.companyId as any);
+}
+</script>

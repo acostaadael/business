@@ -59,4 +59,77 @@
     </div>
   </div>
 </template>
-<script lang="ts" src="./company-update.component.ts"></script>
+
+<script setup lang="ts">
+import { computed, inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import { useVuelidate } from '@vuelidate/core';
+
+import CompanyService from './company.service';
+import { useValidation } from '@/shared/composables';
+import { useAlertService } from '@/shared/alert/alert.service';
+
+import { Company, type ICompany } from '@/shared/model/company.model';
+
+const companyService = inject('companyService', () => new CompanyService());
+const alertService = inject('alertService', () => useAlertService(), true);
+
+const company = ref<ICompany>(new Company());
+const isSaving = ref(false);
+
+// Se mantiene por compatibilidad con el resto de la app (aunque este componente no lo use directamente)
+const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
+void currentLanguage;
+
+const route = useRoute();
+const router = useRouter();
+
+const previousState = () => router.go(-1);
+
+const retrieveCompany = async (companyId: number | string) => {
+  try {
+    const res = await companyService().find(companyId);
+    company.value = res;
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  }
+};
+
+if (route.params?.companyId) {
+  retrieveCompany(route.params.companyId as any);
+}
+
+const { t: t$ } = useI18n();
+const validations = useValidation();
+
+const validationRules = {
+  name: {
+    required: validations.required(t$('entity.validation.required').toString()),
+  },
+  active: {},
+};
+
+const v$ = useVuelidate(validationRules, company as any);
+v$.value.$validate();
+
+const save = async (): Promise<void> => {
+  isSaving.value = true;
+  try {
+    if (company.value.id) {
+      const param = await companyService().update(company.value);
+      isSaving.value = false;
+      previousState();
+      alertService.showInfo(t$('businessApp.company.updated', { param: param.id }));
+    } else {
+      const param = await companyService().create(company.value);
+      isSaving.value = false;
+      previousState();
+      alertService.showSuccess(t$('businessApp.company.created', { param: param.id }).toString());
+    }
+  } catch (error: any) {
+    isSaving.value = false;
+    alertService.showHttpError(error.response);
+  }
+};
+</script>

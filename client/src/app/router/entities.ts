@@ -31,7 +31,7 @@ const Inventary = () => import('@/entities/inventary/inventary.vue');
 const Entry = () => import('@/entities/entry/entry-crud.vue');
 const EntryUpdate = () => import('@/entities/entry/entry-multiple-update.vue');
 
-const Company = () => import('@/entities/company/company.vue');
+const Company = () => import('@/entities/company/company-crud.vue');
 const CompanyUpdate = () => import('@/entities/company/company-update.vue');
 const CompanyDetails = () => import('@/entities/company/company-details.vue');
 
