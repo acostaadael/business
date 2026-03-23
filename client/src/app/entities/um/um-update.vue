@@ -59,4 +59,74 @@
     </div>
   </div>
 </template>
-<script lang="ts" src="./um-update.component.ts"></script>
+
+<script setup lang="ts">
+import { type Ref, computed, inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import { useVuelidate } from '@vuelidate/core';
+
+import UmService from './um.service';
+import { useValidation } from '@/shared/composables';
+import { useAlertService } from '@/shared/alert/alert.service';
+
+import { type IUm, Um } from '@/shared/model/um.model';
+
+const umService = inject('umService', () => new UmService());
+const alertService = inject('alertService', () => useAlertService(), true);
+
+const um: Ref<IUm> = ref(new Um());
+const isSaving = ref(false);
+const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
+
+const route = useRoute();
+const router = useRouter();
+
+const previousState = () => router.go(-1);
+
+const retrieveUm = async (umId: string | number) => {
+  try {
+    um.value = await umService().find(Number(umId));
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  }
+};
+
+if (route.params?.umId) {
+  retrieveUm(route.params.umId as any);
+}
+
+const { t: t$ } = useI18n();
+const validations = useValidation();
+
+const validationRules = {
+  name: {
+    required: validations.required(t$('entity.validation.required').toString()),
+  },
+  description: {},
+};
+
+const v$ = useVuelidate(validationRules as any, um as any);
+v$.value.$validate();
+
+const save = async (): Promise<void> => {
+  isSaving.value = true;
+
+  try {
+    if (um.value.id) {
+      const param = await umService().update(um.value);
+      isSaving.value = false;
+      previousState();
+      alertService.showInfo(t$('businessApp.um.updated', { param: param.id }));
+    } else {
+      const param = await umService().create(um.value);
+      isSaving.value = false;
+      previousState();
+      alertService.showSuccess(t$('businessApp.um.created', { param: param.id }).toString());
+    }
+  } catch (error: any) {
+    isSaving.value = false;
+    alertService.showHttpError(error.response);
+  }
+};
+</script>

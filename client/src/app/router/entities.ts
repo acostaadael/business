@@ -4,7 +4,7 @@ const Entities = () => import('@/entities/entities.vue');
 const Period = () => import('@/entities/period/period.vue');
 const PeriodUpdate = () => import('@/entities/period/period-update.vue');
 
-const Um = () => import('@/entities/um/um.vue');
+const Um = () => import('@/entities/um/um-crud.vue');
 const UmUpdate = () => import('@/entities/um/um-update.vue');
 
 const AreaCrud = () => import('@/entities/area/area-crud.vue');

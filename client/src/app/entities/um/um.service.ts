@@ -3,10 +3,11 @@ import axios from 'axios';
 import buildPaginationQueryOpts from '@/shared/sort/sorts';
 
 import { type IUm } from '@/shared/model/um.model';
+import type { CrudTableService } from '@/components/crud/crud-table-interface.ts';
 
 const baseApiUrl = 'api/ums';
 
-export default class UmService {
+export default class UmService implements CrudTableService<IUm> {
   public find(id: number): Promise<IUm> {
     return new Promise<IUm>((resolve, reject) => {
       axios
@@ -33,7 +34,7 @@ export default class UmService {
     });
   }
 
-  public delete(id: number): Promise<any> {
+  public delete(id: number): Promise<void> {
     return new Promise<any>((resolve, reject) => {
       axios
         .delete(`${baseApiUrl}/${id}`)
