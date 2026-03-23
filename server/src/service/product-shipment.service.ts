@@ -9,6 +9,7 @@ import { InventoryMovementQueryDTO } from './dto/inventory-movement.query.dto';
 import { ProductShipmentRepository } from '../repository/inventary.shipment.repository';
 import { ExitType } from '../domain/enumeration/exit-type';
 import { SalesDashboardDTO } from './dto/sales-dashboard.dto';
+import { EntryRepository } from '../repository/entry.repository';
 
 const relations = {
   product: true,
@@ -25,6 +26,7 @@ export class ProductShipmentService {
     private periodService: PeriodService,
     private companyService: CompanyService,
     private inventaryService: InventaryService,
+    private readonly entryRepository: EntryRepository,
   ) {}
 
   async findById(id: number): Promise<ProductShipmentDTO | undefined> {
@@ -112,18 +114,27 @@ export class ProductShipmentService {
 
     const type = ExitType.VENTA;
 
-    const [totalSalesCount, salesByDay, topProducts] = await Promise.all([
+    const [totalSalesCount, totalSalesAmount, totalCostAmount, salesByDay, topProducts] = await Promise.all([
       this.productShipmentRepository.sumCountByPeriodCompanyType({
         companyId: currentCompany.id,
         periodId: openPeriod.id,
         type,
       }),
-      this.productShipmentRepository.sumCountByDay({
+      this.productShipmentRepository.sumAmountByPeriodCompanyType({
         companyId: currentCompany.id,
         periodId: openPeriod.id,
         type,
       }),
-      this.productShipmentRepository.topProductsByCount({
+      this.entryRepository.sumCostAmountByPeriodCompany({
+        companyId: currentCompany.id,
+        periodId: openPeriod.id,
+      }),
+      this.productShipmentRepository.sumCountAndAmountByDay({
+        companyId: currentCompany.id,
+        periodId: openPeriod.id,
+        type,
+      }),
+      this.productShipmentRepository.topProductsByCountAndAmount({
         companyId: currentCompany.id,
         periodId: openPeriod.id,
         type,
@@ -131,10 +142,15 @@ export class ProductShipmentService {
       }),
     ]);
 
+    const totalProfitAmount = (totalSalesAmount ?? 0) - (totalCostAmount ?? 0);
+
     return {
       year: openPeriod.year,
       month: openPeriod.month,
       totalSalesCount,
+      totalSalesAmount,
+      totalCostAmount,
+      totalProfitAmount,
       salesByDay,
       topProducts,
     };

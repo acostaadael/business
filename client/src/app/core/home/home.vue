@@ -41,15 +41,12 @@
               <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                   <div>
-                    <div class="text-muted">Ventas del período</div>
-                    <div class="h3 mb-0">{{ formatNumber(dashboard.totalSalesCount) }}</div>
+                    <div class="text-muted">Venta del período</div>
+                    <div class="h3 mb-0">{{ formatMoney(dashboard.totalSalesAmount) }}</div>
                   </div>
                   <div class="dashboard-icon">
-                    <font-awesome-icon icon="store" />
+                    <font-awesome-icon icon="dollar-sign" />
                   </div>
-                </div>
-                <div class="mt-3">
-                  <SalesSparkline :values="salesDaySeries" />
                 </div>
               </div>
             </div>
@@ -75,15 +72,19 @@
           </div>
 
           <div class="col-md-4 mb-3">
-            <div class="card dashboard-card">
+            <div
+              class="card dashboard-card"
+              :class="dashboard.totalProfitAmount >= 0 ? 'dashboard-card--profitPositive' : 'dashboard-card--profitNegative'"
+            >
               <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                   <div>
-                    <div class="text-muted">Top productos</div>
-                    <div class="h3 mb-0">{{ dashboard.topProducts?.length ?? 0 }}</div>
+                    <div class="text-muted">Ganancia del período</div>
+                    <div class="h3 mb-0">{{ formatMoney(dashboard.totalProfitAmount) }}</div>
+                    <div class="text-muted small">Costo: {{ formatMoney(dashboard.totalCostAmount) }}</div>
                   </div>
                   <div class="dashboard-icon">
-                    <font-awesome-icon icon="box" />
+                    <font-awesome-icon icon="chart-line" />
                   </div>
                 </div>
               </div>
@@ -105,7 +106,7 @@
                     <div class="chart-bar__barWrap">
                       <div class="chart-bar__bar" :style="{ width: `${it.pct}%` }"></div>
                     </div>
-                    <div class="chart-bar__value">{{ formatNumber(it.total) }}</div>
+                    <div class="chart-bar__value">{{ formatMoney(it.total) }}</div>
                   </div>
                 </div>
                 <div v-else class="text-muted">Aún no hay ventas registradas en el período.</div>
@@ -115,22 +116,24 @@
 
           <div class="col-lg-5 mb-3">
             <div class="card">
-              <div class="card-header">Top productos (cantidad)</div>
+              <div class="card-header">Top productos (cantidad y venta)</div>
               <div class="card-body p-0">
                 <table class="table mb-0">
                   <thead>
                     <tr>
                       <th>Producto</th>
                       <th class="text-right">Cantidad</th>
+                      <th class="text-right">Venta</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="p in dashboard.topProducts" :key="p.productId">
                       <td>{{ p.productName }}</td>
-                      <td class="text-right">{{ formatNumber(p.total) }}</td>
+                      <td class="text-right">{{ formatNumber(p.total) }} {{ p.umName }}</td>
+                      <td class="text-right">{{ formatMoney(p.amount) }}</td>
                     </tr>
                     <tr v-if="!dashboard.topProducts?.length">
-                      <td colspan="2" class="text-muted">Sin datos</td>
+                      <td colspan="3" class="text-muted">Sin datos</td>
                     </tr>
                   </tbody>
                 </table>
@@ -170,6 +173,27 @@ export default Component;
 .dashboard-card {
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 12px;
+}
+
+.dashboard-card--profitPositive {
+  background: rgba(21, 218, 93, 0.12); /* verde claro */
+  border-color: rgba(21, 218, 93, 0.35);
+}
+
+.dashboard-card--profitNegative {
+  background: rgba(239, 68, 68, 0.12); /* rojo claro */
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #7f1d1d; /* texto rojo oscuro para que se lea bien */
+}
+
+/* Asegura que los textos muted dentro de la card negativa sigan siendo legibles */
+.dashboard-card--profitNegative .text-muted {
+  color: rgba(127, 29, 29, 0.85) !important;
+}
+
+.dashboard-card--profitNegative .dashboard-icon {
+  background: rgba(239, 68, 68, 0.14);
+  color: #b91c1c;
 }
 
 .dashboard-icon {

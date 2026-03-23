@@ -4,8 +4,11 @@ export class SalesByDayDTO {
   @ApiProperty({ example: 1 })
   day: number;
 
-  @ApiProperty({ example: 120 })
+  @ApiProperty({ example: 120, description: 'Cantidad total vendida (suma de count)' })
   total: number;
+
+  @ApiProperty({ example: 3450.75, description: 'Importe total del día (SUM(count * sellingPrice))' })
+  amount: number;
 }
 
 export class TopProductSalesDTO {
@@ -17,6 +20,12 @@ export class TopProductSalesDTO {
 
   @ApiProperty({ example: 350 })
   total: number;
+
+  @ApiProperty({ example: 'kg', description: 'Unidad de medida del producto' })
+  umName: string;
+
+  @ApiProperty({ example: 12500.5, description: 'Importe total vendido del producto (count * sellingPrice)' })
+  amount: number;
 }
 
 export class SalesDashboardDTO {
@@ -28,6 +37,15 @@ export class SalesDashboardDTO {
 
   @ApiProperty({ example: 1200 })
   totalSalesCount: number;
+
+  @ApiProperty({ example: 45678.9, description: 'Importe total vendido del periodo (count * sellingPrice)' })
+  totalSalesAmount: number;
+
+  @ApiProperty({ example: 32100.45, description: 'Costo total de compras del periodo (SUM(entry.count * costPrice))' })
+  totalCostAmount: number;
+
+  @ApiProperty({ example: 13578.45, description: 'Ganancia estimada del periodo (totalSalesAmount - totalCostAmount)' })
+  totalProfitAmount: number;
 
   @ApiProperty({ type: () => [SalesByDayDTO] })
   salesByDay: SalesByDayDTO[];

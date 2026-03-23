@@ -61,14 +61,14 @@ export default defineComponent({
       // Convertimos a serie con huecos (1..31) para que el sparkline sea estable
       const maxDay = list.length ? Math.max(...list.map(i => i.day)) : 0;
       const days = Math.max(maxDay, 1);
-      const map = new Map(list.map(i => [i.day, i.total] as const));
+      const map = new Map(list.map(i => [i.day, i.amount] as const));
       return Array.from({ length: days }, (_, idx) => map.get(idx + 1) ?? 0);
     });
 
     const bestDay = computed(() => {
       const items = dashboard.value?.salesByDay ?? [];
       if (!items.length) return null;
-      return items.reduce((best, cur) => (cur.total > best.total ? cur : best), items[0]);
+      return items.reduce((best, cur) => (cur.amount > best.amount ? cur : best), items[0]);
     });
 
     const bestDayLabel = computed(() => {
@@ -78,17 +78,17 @@ export default defineComponent({
 
     const bestDayTotalLabel = computed(() => {
       if (!bestDay.value) return '';
-      return `${formatNumber(bestDay.value.total)} unidades`;
+      return `${formatMoney(bestDay.value.amount)}`;
     });
 
     const salesByDayBars = computed(() => {
       const items = dashboard.value?.salesByDay ?? [];
-      const max = items.length ? Math.max(...items.map(i => i.total)) : 0;
+      const max = items.length ? Math.max(...items.map(i => i.amount)) : 0;
       const denom = max || 1;
       return items.map(i => ({
         day: i.day,
-        total: i.total,
-        pct: Math.round((i.total / denom) * 100),
+        total: i.amount,
+        pct: Math.round((i.amount / denom) * 100),
       }));
     });
 
@@ -96,6 +96,17 @@ export default defineComponent({
       const num = typeof n === 'number' ? n : parseFloat(String(n ?? 0));
       if (!Number.isFinite(num)) return '0';
       return new Intl.NumberFormat('es-ES', { maximumFractionDigits: 2 }).format(num);
+    };
+
+    const formatMoney = (n: any) => {
+      const num = typeof n === 'number' ? n : parseFloat(String(n ?? 0));
+      const safe = Number.isFinite(num) ? num : 0;
+      /*return new Intl.NumberFormat('es-ES', {
+        style: 'currency',
+        currency: 'US',
+        maximumFractionDigits: 2,
+      }).format(safe);*/
+      return `${safe} $`;
     };
 
     return {
@@ -115,6 +126,7 @@ export default defineComponent({
       bestDayLabel,
       bestDayTotalLabel,
       formatNumber,
+      formatMoney,
     };
   },
 });

@@ -7,9 +7,16 @@ import { CompanyModule } from './company.module';
 import { PeriodModule } from './period.module';
 import { InventaryModule } from './inventary.module';
 import { ProductShipmentRepository } from '../repository/inventary.shipment.repository';
+import { EntryModule } from './entry.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProductShipment, ProductShipmentRepository]), CompanyModule, PeriodModule, InventaryModule],
+  imports: [
+    TypeOrmModule.forFeature([ProductShipment, ProductShipmentRepository]),
+    CompanyModule,
+    PeriodModule,
+    InventaryModule,
+    EntryModule,
+  ],
   controllers: [ProductShipmentController],
   providers: [ProductShipmentService, ProductShipmentRepository],
   exports: [ProductShipmentService, ProductShipmentRepository],

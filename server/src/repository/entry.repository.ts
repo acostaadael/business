@@ -50,4 +50,24 @@ export class EntryRepository extends Repository<Entry> {
 
     return await q.getManyAndCount();
   }
+
+  /**
+   * Costo total de compras del periodo (SUM(entry.count * product.cost_price)).
+   */
+  async sumCostAmountByPeriodCompany(params: { companyId: number; periodId: number }): Promise<number> {
+    const { companyId, periodId } = params;
+
+    const raw = await this.createQueryBuilder('entry')
+      .select('COALESCE(SUM(entry.count * product.cost_price), 0)', 'sum')
+      .innerJoin('entry.product', 'product')
+      .innerJoin('entry.company', 'company')
+      .innerJoin('entry.period', 'period')
+      .where('company.id = :companyId', { companyId })
+      .andWhere('period.id = :periodId', { periodId })
+      .getRawOne<{ sum: string | number }>();
+
+    const val = raw?.sum;
+    const num = typeof val === 'number' ? val : parseFloat(String(val ?? 0));
+    return Number.isFinite(num) ? num : 0;
+  }
 }
