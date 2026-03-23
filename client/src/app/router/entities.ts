@@ -18,7 +18,7 @@ const ProductFamily = () => import('@/entities/product-family/product-family-cru
 const ProductFamilyUpdate = () => import('@/entities/product-family/product-family-update.vue');
 const ProductFamilyDetails = () => import('@/entities/product-family/product-family-details.vue');
 
-const ProductLine = () => import('@/entities/product-line/product-line.vue');
+const ProductLine = () => import('@/entities/product-line/product-line-crud.vue');
 const ProductLineUpdate = () => import('@/entities/product-line/product-line-update.vue');
 const ProductLineDetails = () => import('@/entities/product-line/product-line-details.vue');
 

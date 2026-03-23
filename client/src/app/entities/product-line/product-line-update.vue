@@ -87,4 +87,92 @@
     </div>
   </div>
 </template>
-<script lang="ts" src="./product-line-update.component.ts"></script>
+
+<script setup lang="ts">
+import { type Ref, computed, inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import { useVuelidate } from '@vuelidate/core';
+
+import ProductLineService from './product-line.service';
+import { useValidation } from '@/shared/composables';
+import { useAlertService } from '@/shared/alert/alert.service';
+
+import ProductFamilyService from '@/entities/product-family/product-family.service';
+import { type IProductFamily } from '@/shared/model/product-family.model';
+import { type IProductLine, ProductLine } from '@/shared/model/product-line.model';
+
+const productLineService = inject('productLineService', () => new ProductLineService());
+const productFamilyService = inject('productFamilyService', () => new ProductFamilyService());
+const alertService = inject('alertService', () => useAlertService(), true);
+
+const productLine: Ref<IProductLine> = ref(new ProductLine());
+const productFamilies: Ref<IProductFamily[]> = ref([]);
+const isSaving = ref(false);
+const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
+
+const route = useRoute();
+const router = useRouter();
+
+const previousState = () => router.go(-1);
+
+const retrieveProductLine = async (productLineId: string | number) => {
+  try {
+    productLine.value = await productLineService().find(Number(productLineId));
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  }
+};
+
+if (route.params?.productLineId) {
+  retrieveProductLine(route.params.productLineId as any);
+}
+
+const initRelationships = async () => {
+  try {
+    const res = await productFamilyService().retrieve();
+    productFamilies.value = res.data;
+  } catch {
+    productFamilies.value = [];
+  }
+};
+
+initRelationships();
+
+const { t: t$ } = useI18n();
+const validations = useValidation();
+
+const validationRules = {
+  name: {
+    required: validations.required(t$('entity.validation.required').toString()),
+  },
+  description: {},
+  productFamily: {
+    required: validations.required(t$('entity.validation.required').toString()),
+  },
+};
+
+const v$ = useVuelidate(validationRules as any, productLine as any);
+v$.value.$validate();
+
+const save = async (): Promise<void> => {
+  isSaving.value = true;
+
+  try {
+    if (productLine.value.id) {
+      const param = await productLineService().update(productLine.value);
+      isSaving.value = false;
+      previousState();
+      alertService.showInfo(t$('businessApp.productLine.updated', { param: param.id }));
+    } else {
+      const param = await productLineService().create(productLine.value);
+      isSaving.value = false;
+      previousState();
+      alertService.showSuccess(t$('businessApp.productLine.created', { param: param.id }).toString());
+    }
+  } catch (error: any) {
+    isSaving.value = false;
+    alertService.showHttpError(error.response);
+  }
+};
+</script>

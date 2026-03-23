@@ -47,4 +47,36 @@
   </div>
 </template>
 
-<script lang="ts" src="./product-line-details.component.ts"></script>
+<script setup lang="ts">
+import { type Ref, inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+
+import ProductLineService from './product-line.service';
+import { type IProductLine } from '@/shared/model/product-line.model';
+import { useAlertService } from '@/shared/alert/alert.service';
+
+const productLineService = inject('productLineService', () => new ProductLineService());
+const alertService = inject('alertService', () => useAlertService(), true);
+
+const route = useRoute();
+const router = useRouter();
+
+const previousState = () => router.go(-1);
+
+const productLine: Ref<IProductLine> = ref({} as IProductLine);
+
+const retrieveProductLine = async (productLineId: string | number) => {
+  try {
+    productLine.value = await productLineService().find(Number(productLineId));
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  }
+};
+
+if (route.params?.productLineId) {
+  retrieveProductLine(route.params.productLineId as any);
+}
+
+const { t: t$ } = useI18n();
+</script>
