@@ -3,10 +3,11 @@ import axios from 'axios';
 import buildPaginationQueryOpts from '@/shared/sort/sorts';
 
 import { type IProductCategory } from '@/shared/model/product-category.model';
+import type { CrudTableService } from '@/components/crud/crud-table-interface.ts';
 
 const baseApiUrl = 'api/product-categories';
 
-export default class ProductCategoryService {
+export default class ProductCategoryService implements CrudTableService<IProductCategory> {
   public find(id: number): Promise<IProductCategory> {
     return new Promise<IProductCategory>((resolve, reject) => {
       axios

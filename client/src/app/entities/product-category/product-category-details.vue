@@ -37,4 +37,37 @@
   </div>
 </template>
 
-<script lang="ts" src="./product-category-details.component.ts"></script>
+<script setup lang="ts">
+import { type Ref, inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+
+import ProductCategoryService from './product-category.service';
+import { type IProductCategory } from '@/shared/model/product-category.model';
+import { useAlertService } from '@/shared/alert/alert.service';
+
+const productCategoryService = inject('productCategoryService', () => new ProductCategoryService());
+const alertService = inject('alertService', () => useAlertService(), true);
+
+const route = useRoute();
+const router = useRouter();
+
+const previousState = () => router.go(-1);
+
+const productCategory: Ref<IProductCategory> = ref({} as IProductCategory);
+
+const retrieveProductCategory = async (productCategoryId: string | number) => {
+  try {
+    const res = await productCategoryService().find(Number(productCategoryId));
+    productCategory.value = res;
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  }
+};
+
+if (route.params?.productCategoryId) {
+  retrieveProductCategory(route.params.productCategoryId as any);
+}
+
+const { t: t$ } = useI18n();
+</script>

@@ -10,7 +10,7 @@ const UmUpdate = () => import('@/entities/um/um-update.vue');
 const AreaCrud = () => import('@/entities/area/area-crud.vue');
 const AreaUpdate = () => import('@/entities/area/area-update.vue');
 
-const ProductCategory = () => import('@/entities/product-category/product-category.vue');
+const ProductCategory = () => import('@/entities/product-category/product-category-crud.vue');
 const ProductCategoryUpdate = () => import('@/entities/product-category/product-category-update.vue');
 const ProductCategoryDetails = () => import('@/entities/product-category/product-category-details.vue');
 

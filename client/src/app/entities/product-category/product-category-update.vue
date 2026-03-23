@@ -63,4 +63,79 @@
     </div>
   </div>
 </template>
-<script lang="ts" src="./product-category-update.component.ts"></script>
+
+<script setup lang="ts">
+import { type Ref, computed, inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import { useVuelidate } from '@vuelidate/core';
+
+import ProductCategoryService from './product-category.service';
+import { useValidation } from '@/shared/composables';
+import { useAlertService } from '@/shared/alert/alert.service';
+
+import { type IProductCategory, ProductCategory } from '@/shared/model/product-category.model';
+
+const productCategoryService = inject('productCategoryService', () => new ProductCategoryService());
+const alertService = inject('alertService', () => useAlertService(), true);
+
+const productCategory: Ref<IProductCategory> = ref(new ProductCategory());
+const isSaving = ref(false);
+const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
+
+const route = useRoute();
+const router = useRouter();
+
+const previousState = () => router.go(-1);
+
+const retrieveProductCategory = async (productCategoryId: string | number) => {
+  try {
+    const res = await productCategoryService().find(Number(productCategoryId));
+    productCategory.value = res;
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  }
+};
+
+if (route.params?.productCategoryId) {
+  retrieveProductCategory(route.params.productCategoryId as any);
+}
+
+const initRelationships = () => {};
+initRelationships();
+
+const { t: t$ } = useI18n();
+const validations = useValidation();
+
+const validationRules = {
+  name: {
+    required: validations.required(t$('entity.validation.required').toString()),
+  },
+  description: {},
+  productFamilies: {},
+};
+
+const v$ = useVuelidate(validationRules as any, productCategory as any);
+v$.value.$validate();
+
+const save = async (): Promise<void> => {
+  isSaving.value = true;
+
+  try {
+    if (productCategory.value.id) {
+      const param = await productCategoryService().update(productCategory.value);
+      isSaving.value = false;
+      previousState();
+      alertService.showInfo(t$('businessApp.productCategory.updated', { param: param.id }));
+    } else {
+      const param = await productCategoryService().create(productCategory.value);
+      isSaving.value = false;
+      previousState();
+      alertService.showSuccess(t$('businessApp.productCategory.created', { param: param.id }).toString());
+    }
+  } catch (error: any) {
+    isSaving.value = false;
+    alertService.showHttpError(error.response);
+  }
+};
+</script>
