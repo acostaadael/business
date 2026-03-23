@@ -56,9 +56,13 @@ const invetariesColumns = [
   {
     key: 'product',
     label: t$('businessApp.inventary.product'),
-    render: (row: IInventary) => `${row.product?.name} (${row.product?.um?.name})`,
+    render: (row: IInventary) => `${row.product?.name}`,
   },
-  { key: 'count', label: t$('businessApp.inventary.count') },
+  {
+    key: 'count',
+    label: t$('businessApp.inventary.count'),
+    render: (row: IInventary) => `${row.count} ${row.product?.um?.name}`,
+  },
   {
     key: 'unit_price',
     label: t$('businessApp.inventary.unitPrice'),

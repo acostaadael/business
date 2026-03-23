@@ -69,9 +69,13 @@ const productShipmentsColumns = [
   {
     key: 'product',
     label: t$('businessApp.productShipment.product'),
-    render: (row: IProductShipment) => `${row.product?.name} (${row.product?.um?.name})`,
+    render: (row: IProductShipment) => `${row.product?.name}`,
   },
-  { key: 'count', label: t$('businessApp.productShipment.count') },
+  {
+    key: 'count',
+    label: t$('businessApp.productShipment.count'),
+    render: (row: IProductShipment) => `${row.count} ${row.product?.um?.name}`,
+  },
   {
     key: 'unit_price',
     label: t$('businessApp.productShipment.unitPrice'),

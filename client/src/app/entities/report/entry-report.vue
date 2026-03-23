@@ -68,9 +68,13 @@ const entriesColumns = [
   {
     key: 'product',
     label: t$('businessApp.entry.product'),
-    render: (row: IEntry) => `${row.product?.name} (${row.product?.um?.name})`,
+    render: (row: IEntry) => `${row.product?.name}`,
   },
-  { key: 'count', label: t$('businessApp.entry.count') },
+  {
+    key: 'count',
+    label: t$('businessApp.entry.count'),
+    render: (row: IEntry) => `${row.count} ${row.product?.um?.name}`,
+  },
   {
     key: 'unit_price',
     label: t$('businessApp.entry.unitPrice'),
