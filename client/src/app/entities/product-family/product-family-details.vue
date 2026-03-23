@@ -47,4 +47,36 @@
   </div>
 </template>
 
-<script lang="ts" src="./product-family-details.component.ts"></script>
+<script setup lang="ts">
+import { type Ref, inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+
+import ProductFamilyService from './product-family.service';
+import { type IProductFamily } from '@/shared/model/product-family.model';
+import { useAlertService } from '@/shared/alert/alert.service';
+
+const productFamilyService = inject('productFamilyService', () => new ProductFamilyService());
+const alertService = inject('alertService', () => useAlertService(), true);
+
+const route = useRoute();
+const router = useRouter();
+
+const previousState = () => router.go(-1);
+
+const productFamily: Ref<IProductFamily> = ref({} as IProductFamily);
+
+const retrieveProductFamily = async (productFamilyId: string | number) => {
+  try {
+    productFamily.value = await productFamilyService().find(Number(productFamilyId));
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  }
+};
+
+if (route.params?.productFamilyId) {
+  retrieveProductFamily(route.params.productFamilyId as any);
+}
+
+const { t: t$ } = useI18n();
+</script>

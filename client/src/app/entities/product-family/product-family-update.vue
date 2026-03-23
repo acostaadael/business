@@ -93,4 +93,93 @@
     </div>
   </div>
 </template>
-<script lang="ts" src="./product-family-update.component.ts"></script>
+
+<script setup lang="ts">
+import { type Ref, computed, inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import { useVuelidate } from '@vuelidate/core';
+
+import ProductFamilyService from './product-family.service';
+import { useValidation } from '@/shared/composables';
+import { useAlertService } from '@/shared/alert/alert.service';
+
+import ProductCategoryService from '@/entities/product-category/product-category.service';
+import { type IProductCategory } from '@/shared/model/product-category.model';
+import { type IProductFamily, ProductFamily } from '@/shared/model/product-family.model';
+
+const productFamilyService = inject('productFamilyService', () => new ProductFamilyService());
+const productCategoryService = inject('productCategoryService', () => new ProductCategoryService());
+const alertService = inject('alertService', () => useAlertService(), true);
+
+const productFamily: Ref<IProductFamily> = ref(new ProductFamily());
+const productCategories: Ref<IProductCategory[]> = ref([]);
+const isSaving = ref(false);
+const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
+
+const route = useRoute();
+const router = useRouter();
+
+const previousState = () => router.go(-1);
+
+const retrieveProductFamily = async (productFamilyId: string | number) => {
+  try {
+    productFamily.value = await productFamilyService().find(Number(productFamilyId));
+  } catch (error: any) {
+    alertService.showHttpError(error.response);
+  }
+};
+
+if (route.params?.productFamilyId) {
+  retrieveProductFamily(route.params.productFamilyId as any);
+}
+
+const initRelationships = async () => {
+  try {
+    const res = await productCategoryService().retrieve();
+    productCategories.value = res.data;
+  } catch {
+    // si falla, dejamos la lista vacía (el backend puede no estar disponible y no debe romper el formulario)
+    productCategories.value = [];
+  }
+};
+
+initRelationships();
+
+const { t: t$ } = useI18n();
+const validations = useValidation();
+
+const validationRules = {
+  name: {
+    required: validations.required(t$('entity.validation.required').toString()),
+  },
+  description: {},
+  productCategory: {
+    required: validations.required(t$('entity.validation.required').toString()),
+  },
+};
+
+const v$ = useVuelidate(validationRules as any, productFamily as any);
+v$.value.$validate();
+
+const save = async (): Promise<void> => {
+  isSaving.value = true;
+
+  try {
+    if (productFamily.value.id) {
+      const param = await productFamilyService().update(productFamily.value);
+      isSaving.value = false;
+      previousState();
+      alertService.showInfo(t$('businessApp.productFamily.updated', { param: param.id }));
+    } else {
+      const param = await productFamilyService().create(productFamily.value);
+      isSaving.value = false;
+      previousState();
+      alertService.showSuccess(t$('businessApp.productFamily.created', { param: param.id }).toString());
+    }
+  } catch (error: any) {
+    isSaving.value = false;
+    alertService.showHttpError(error.response);
+  }
+};
+</script>
