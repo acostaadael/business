@@ -38,8 +38,8 @@ const CompanyDetails = () => import('@/entities/company/company-details.vue');
 const InventoryMovement = () => import('@/entities/inventory-movement/inventory-movement.vue');
 const InventoryMovementUpdate = () => import('@/entities/inventory-movement/inventory-movement-update.vue');
 
-const ProductShipment = () => import('@/entities/product-shipment/product-shipment.vue');
-const ProductShipmentUpdate = () => import('@/entities/product-shipment/product-shipment-update.vue');
+const ProductShipment = () => import('@/entities/product-shipment/product-shipment-crud.vue');
+const ProductShipmentUpdate = () => import('@/entities/product-shipment/product-shipment-multiple-update.vue');
 
 const InventaryReport = () => import('@/entities/report/inventary-report.vue');
 const InventaryParamReport = () => import('@/entities/report/inventary-param-report.vue');

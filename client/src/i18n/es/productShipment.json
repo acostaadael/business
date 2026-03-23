@@ -17,6 +17,11 @@
       "detail": {
         "title": "Salida de Producto"
       },
+      "multiUpdate": {
+        "title": "Crear Salidas de Productos",
+        "entryItem": "Salidas de Productos a salvar",
+        "createdMany": "Salidas de Productos han sido creadas"
+      },
       "id": "ID",
       "day": "Dia",
       "count": "Cantidad",

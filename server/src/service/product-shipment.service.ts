@@ -70,6 +70,19 @@ export class ProductShipmentService {
     throw new HttpException('No se puede crear salida sin un periodo abierto!', HttpStatus.BAD_REQUEST);
   }
 
+  /**
+   * Guarda múltiples salidas.
+   * Se ejecuta en serie para mantener consistencia al actualizar inventario.
+   */
+  async saveMany(items: ProductShipmentDTO[], creator?: string): Promise<ProductShipmentDTO[]> {
+    const productShipmentDTOS: ProductShipmentDTO[] = [];
+    for (const item of items ?? []) {
+      const created = await this.save(item, creator);
+      if (created) productShipmentDTOS.push(created);
+    }
+    return productShipmentDTOS;
+  }
+
   async update(productShipmentDTO: ProductShipmentDTO, updater?: string): Promise<ProductShipmentDTO | undefined> {
     const entity = ProductShipmentMapper.fromDTOtoEntity(productShipmentDTO);
     if (updater) {

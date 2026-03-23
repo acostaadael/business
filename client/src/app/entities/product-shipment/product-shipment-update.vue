@@ -10,43 +10,6 @@
         <div>
           <b-form-row>
             <b-col>
-              <label class="form-control-label" v-text="t$('businessApp.productShipment.product')" for="product"></label>
-              <Autocomplete
-                id="product"
-                v-model="productShipment.product"
-                :items="products"
-                placeholder="Buscar productos..."
-                item-text="name"
-                :loading="productLoading"
-                :min-chars="2"
-                @search="searchProducts"
-                @select="handleSelect"
-              />
-              <div v-if="v$.product.$anyDirty && v$.product.$invalid">
-                <small class="form-text text-danger" v-for="error of v$.product.$errors" :key="error.$uid">{{ error.$message }}</small>
-              </div>
-            </b-col>
-            <b-col>
-              <div class="form-group">
-                <label class="form-control-label" v-text="t$('businessApp.productShipment.count')" for="product-shipment-count"></label>
-                <input
-                  type="number"
-                  class="form-control"
-                  name="count"
-                  id="product-shipment-count"
-                  data-cy="count"
-                  :class="{ valid: !v$.count.$invalid, invalid: v$.count.$invalid }"
-                  v-model.number="v$.count.$model"
-                  required
-                />
-                <div v-if="v$.count.$anyDirty && v$.count.$invalid">
-                  <small class="form-text text-danger" v-for="error of v$.count.$errors" :key="error.$uid">{{ error.$message }}</small>
-                </div>
-              </div>
-            </b-col>
-          </b-form-row>
-          <b-form-row>
-            <b-col>
               <div class="form-group">
                 <label class="form-control-label" v-text="t$('businessApp.productShipment.type')" for="product-shipment-type"></label>
                 <select
@@ -116,6 +79,43 @@
                 />
                 <div v-if="v$.day.$anyDirty && v$.day.$invalid">
                   <small class="form-text text-danger" v-for="error of v$.day.$errors" :key="error.$uid">{{ error.$message }}</small>
+                </div>
+              </div>
+            </b-col>
+          </b-form-row>
+          <b-form-row>
+            <b-col>
+              <label class="form-control-label" v-text="t$('businessApp.productShipment.product')" for="product"></label>
+              <Autocomplete
+                id="product"
+                v-model="productShipment.product"
+                :items="products"
+                placeholder="Buscar productos..."
+                item-text="name"
+                :loading="productLoading"
+                :min-chars="2"
+                @search="searchProducts"
+                @select="handleSelect"
+              />
+              <div v-if="v$.product.$anyDirty && v$.product.$invalid">
+                <small class="form-text text-danger" v-for="error of v$.product.$errors" :key="error.$uid">{{ error.$message }}</small>
+              </div>
+            </b-col>
+            <b-col>
+              <div class="form-group">
+                <label class="form-control-label" v-text="t$('businessApp.productShipment.count')" for="product-shipment-count"></label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="count"
+                  id="product-shipment-count"
+                  data-cy="count"
+                  :class="{ valid: !v$.count.$invalid, invalid: v$.count.$invalid }"
+                  v-model.number="v$.count.$model"
+                  required
+                />
+                <div v-if="v$.count.$anyDirty && v$.count.$invalid">
+                  <small class="form-text text-danger" v-for="error of v$.count.$errors" :key="error.$uid">{{ error.$message }}</small>
                 </div>
               </div>
             </b-col>

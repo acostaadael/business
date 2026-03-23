@@ -17,6 +17,11 @@
       "detail": {
         "title": "Product Shipment"
       },
+      "multiUpdate": {
+        "title": "Create Product Shipments",
+        "entryItem": "Product Shipments to save",
+        "createdMany": "Product Shipments are created"
+      },
       "id": "ID",
       "day": "Day",
       "count": "Count",

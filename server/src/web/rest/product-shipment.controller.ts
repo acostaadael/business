@@ -89,6 +89,28 @@ export class ProductShipmentController {
     return created;
   }
 
+  @PostMethod('/batch')
+  @Roles(RoleType.USER)
+  @ApiOperation({ summary: 'Create many exits' })
+  @ApiResponse({
+    status: 201,
+    description: 'The records have been successfully created.',
+    type: ProductShipmentDTO,
+    isArray: true,
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  async postMany(@Req() req: Request, @Body() productShipmentDTOS: ProductShipmentDTO[]): Promise<ProductShipmentDTO[]> {
+    const created = await this.productShipmentService.saveMany(productShipmentDTOS, req.user?.login);
+
+    const ids = created
+      .map(it => it?.id)
+      .filter((id): id is number => typeof id === 'number')
+      .join(',');
+
+    HeaderUtil.addEntityCreatedHeaders(req.res, 'ProductShipment', ids);
+    return created;
+  }
+
   @Put('/')
   @Roles(RoleType.USER)
   @ApiOperation({ summary: 'Update productShipment' })
