@@ -102,6 +102,15 @@ const app = createApp({
         lang => lang && translationService.isLanguageSupported(lang),
       );
       await changeLanguage(lang);
+
+      // Si no hay sesión, mostramos el modal de autenticación
+      // (esperamos a que el componente App y el b-modal existan en el DOM)
+      if (!store.authenticated) {
+        await accountService.update();
+        if (!store.authenticated) {
+          loginService.openLogin();
+        }
+      }
     });
 
     router.beforeResolve(async (to, from, next) => {
