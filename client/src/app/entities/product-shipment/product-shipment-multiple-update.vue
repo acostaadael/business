@@ -190,9 +190,12 @@ const saveProductShipments = async (updatedItems: IProductShipment[]) => {
   try {
     // createMany es opcional en la interfaz, pero el service no lo implementa.
     // Usamos create en batch manual para mantener compat.
-    await Promise.all(updatedItems.map(it => productShipmentService().create(it)));
+    const res = await productShipmentService().createMany(updatedItems);
 
-    alertService.showSuccess(t$('businessApp.productShipment.created', { param: '' }).toString());
+    // El servidor envía los ids creados en el header X-<app>-params
+    /* const paramsHeader = res?.headers?.['X-Business-Params'] ?? '';
+    const createdIds = (paramsHeader ?? '').toString();*/
+    alertService.showSuccess(t$('businessApp.productShipment.multiUpdate.createdMany'));
     previousState();
   } catch (error: any) {
     alertService.showHttpError(error.response);
