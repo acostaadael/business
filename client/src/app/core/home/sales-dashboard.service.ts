@@ -27,7 +27,17 @@ export interface SalesDashboard {
 
 const baseApiUrl = 'api/product-shipments';
 
-export const getSalesDashboard = async (): Promise<SalesDashboard> => {
-  const res = await axios.get<SalesDashboard>(`${baseApiUrl}/summary`);
+export const getSalesDashboard = async (filter?: {
+  productCategoryId?: number;
+  productFamilyId?: number;
+  productLineId?: number;
+}): Promise<SalesDashboard> => {
+  const res = await axios.get<SalesDashboard>(`${baseApiUrl}/summary`, {
+    params: {
+      ...(filter?.productCategoryId ? { productCategoryId: filter.productCategoryId } : {}),
+      ...(filter?.productFamilyId ? { productFamilyId: filter.productFamilyId } : {}),
+      ...(filter?.productLineId ? { productLineId: filter.productLineId } : {}),
+    },
+  });
   return res.data;
 };

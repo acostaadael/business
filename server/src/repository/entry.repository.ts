@@ -70,4 +70,41 @@ export class EntryRepository extends Repository<Entry> {
     const num = typeof val === 'number' ? val : parseFloat(String(val ?? 0));
     return Number.isFinite(num) ? num : 0;
   }
+
+  async sumCostAmountByPeriodCompanyFiltered(params: {
+    companyId: number;
+    periodId: number;
+    productCategoryId?: number;
+    productFamilyId?: number;
+    productLineId?: number;
+  }): Promise<number> {
+    const { companyId, periodId, productCategoryId, productFamilyId, productLineId } = params;
+
+    const qb = this.createQueryBuilder('entry')
+      .select('COALESCE(SUM(entry.count * product.cost_price), 0)', 'sum')
+      .innerJoin('entry.product', 'product')
+      .innerJoin('entry.company', 'company')
+      .innerJoin('entry.period', 'period')
+      .where('company.id = :companyId', { companyId })
+      .andWhere('period.id = :periodId', { periodId });
+
+    if (productLineId || productFamilyId || productCategoryId) {
+      qb.innerJoin('product.productLine', 'productLine');
+    }
+    if (productFamilyId || productCategoryId) {
+      qb.innerJoin('productLine.productFamily', 'productFamily');
+    }
+    if (productCategoryId) {
+      qb.innerJoin('productFamily.productCategory', 'productCategory');
+    }
+
+    if (productLineId) qb.andWhere('productLine.id = :productLineId', { productLineId });
+    if (productFamilyId) qb.andWhere('productFamily.id = :productFamilyId', { productFamilyId });
+    if (productCategoryId) qb.andWhere('productCategory.id = :productCategoryId', { productCategoryId });
+
+    const raw = await qb.getRawOne<{ sum: string | number }>();
+    const val = raw?.sum;
+    const num = typeof val === 'number' ? val : parseFloat(String(val ?? 0));
+    return Number.isFinite(num) ? num : 0;
+  }
 }

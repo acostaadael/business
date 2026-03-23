@@ -5,6 +5,7 @@ import type LoginService from '@/account/login.service';
 import { usePeriodStore } from '@/store';
 import SalesSparkline from './components/SalesSparkline.vue';
 import { getSalesDashboard, type SalesDashboard } from './sales-dashboard.service';
+import { getCategories, getFamilies, getLines, type IdName } from './product-hierarchy.service';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -23,6 +24,17 @@ export default defineComponent({
     const loadError = ref<string | null>(null);
     const dashboard = ref<SalesDashboard | null>(null);
 
+    const categories = ref<IdName[]>([]);
+    const families = ref<IdName[]>([]);
+    const lines = ref<IdName[]>([]);
+
+    const selectedCategoryId = ref<number | null>(null);
+    const selectedFamilyId = ref<number | null>(null);
+    const selectedLineId = ref<number | null>(null);
+
+    const isFamilyEnabled = computed(() => selectedCategoryId.value != null);
+    const isLineEnabled = computed(() => selectedFamilyId.value != null);
+
     const openLogin = () => {
       loginService?.openLogin();
     };
@@ -32,7 +44,11 @@ export default defineComponent({
       loading.value = true;
       loadError.value = null;
       try {
-        dashboard.value = await getSalesDashboard();
+        dashboard.value = await getSalesDashboard({
+          productCategoryId: selectedCategoryId.value ?? undefined,
+          productFamilyId: selectedFamilyId.value ?? undefined,
+          productLineId: selectedLineId.value ?? undefined,
+        });
       } catch (e: any) {
         loadError.value = e?.response?.data?.message ?? e?.message ?? 'Error desconocido';
       } finally {
@@ -40,19 +56,62 @@ export default defineComponent({
       }
     };
 
-    // Cuando el usuario se autentica desde el modal, este componente ya está montado.
-    // Sin este watch, el dashboard no se vuelve a cargar hasta un F5.
+    const loadHierarchy = async () => {
+      categories.value = await getCategories();
+      // Cascada: si no hay categoría seleccionada, familia/linea quedan vacías y deshabilitadas
+      families.value = [];
+      lines.value = [];
+    };
+
+    watch(selectedCategoryId, async newVal => {
+      // Al cambiar categoría: resetear niveles inferiores
+      selectedFamilyId.value = null;
+      selectedLineId.value = null;
+      lines.value = [];
+
+      if (newVal == null) {
+        families.value = [];
+        await refresh();
+        return;
+      }
+
+      families.value = await getFamilies(newVal);
+      await refresh();
+    });
+
+    watch(selectedFamilyId, async newVal => {
+      // Al cambiar familia: resetear línea
+      selectedLineId.value = null;
+
+      if (newVal == null) {
+        lines.value = [];
+        await refresh();
+        return;
+      }
+
+      lines.value = await getLines(newVal);
+      await refresh();
+    });
+
+    watch(selectedLineId, async () => {
+      await refresh();
+    });
+
     watch(
       () => authenticated?.value,
       async (isAuth, wasAuth) => {
         if (isAuth && !wasAuth) {
           dashboard.value = null;
+          await loadHierarchy();
           await refresh();
         }
       },
     );
 
     onMounted(async () => {
+      if (authenticated?.value) {
+        await loadHierarchy();
+      }
       await refresh();
     });
 
@@ -101,11 +160,6 @@ export default defineComponent({
     const formatMoney = (n: any) => {
       const num = typeof n === 'number' ? n : parseFloat(String(n ?? 0));
       const safe = Number.isFinite(num) ? num : 0;
-      /*return new Intl.NumberFormat('es-ES', {
-        style: 'currency',
-        currency: 'US',
-        maximumFractionDigits: 2,
-      }).format(safe);*/
       return `${safe} $`;
     };
 
@@ -120,6 +174,15 @@ export default defineComponent({
       loadError,
       dashboard,
       refresh,
+
+      categories,
+      families,
+      lines,
+      selectedCategoryId,
+      selectedFamilyId,
+      selectedLineId,
+      isFamilyEnabled,
+      isLineEnabled,
 
       salesDaySeries,
       salesByDayBars,

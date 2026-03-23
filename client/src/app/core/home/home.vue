@@ -24,6 +24,31 @@
             <template v-else>Resumen del período actual</template>
           </small>
         </div>
+
+        <!-- NUEVO: Filtros en cascada -->
+        <div class="dashboard-filters row">
+          <div class="col-md-4 mb-2">
+            <label class="small text-muted mb-1">Categoría</label>
+            <select class="form-control" v-model.number="selectedCategoryId">
+              <option :value="null">Todas</option>
+              <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-2">
+            <label class="small text-muted mb-1">Familia</label>
+            <select class="form-control" v-model.number="selectedFamilyId" :disabled="!isFamilyEnabled">
+              <option :value="null">Todas</option>
+              <option v-for="f in families" :key="f.id" :value="f.id">{{ f.name }}</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-2">
+            <label class="small text-muted mb-1">Línea</label>
+            <select class="form-control" v-model.number="selectedLineId" :disabled="!isLineEnabled">
+              <option :value="null">Todas</option>
+              <option v-for="l in lines" :key="l.id" :value="l.id">{{ l.name }}</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <div class="col-12" v-if="loadError">
@@ -238,5 +263,9 @@ export default Component;
 .chart-bar__value {
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+.dashboard-filters {
+  margin: 0.5rem 0 0.75rem;
 }
 </style>

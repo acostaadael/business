@@ -8,6 +8,7 @@ import {
   Param,
   Post as PostMethod,
   Put,
+  Query,
   Req,
   UseGuards,
   UseInterceptors,
@@ -68,8 +69,16 @@ export class ProductShipmentController {
   @Roles(RoleType.USER)
   @ApiOperation({ summary: 'Dashboard resumen de ventas (periodo abierto)' })
   @ApiResponse({ status: 200, description: 'Resumen de ventas', type: SalesDashboardDTO })
-  async getSummary(): Promise<SalesDashboardDTO> {
-    return await this.productShipmentService.getSalesDashboard();
+  async getSummary(
+    @Query('productCategoryId') productCategoryId?: string,
+    @Query('productFamilyId') productFamilyId?: string,
+    @Query('productLineId') productLineId?: string,
+  ): Promise<SalesDashboardDTO> {
+    return await this.productShipmentService.getSalesDashboard({
+      productCategoryId: productCategoryId ? Number(productCategoryId) : undefined,
+      productFamilyId: productFamilyId ? Number(productFamilyId) : undefined,
+      productLineId: productLineId ? Number(productLineId) : undefined,
+    });
   }
 
   @Get('/:id')

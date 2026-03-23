@@ -10,6 +10,7 @@ import { ProductShipmentRepository } from '../repository/inventary.shipment.repo
 import { ExitType } from '../domain/enumeration/exit-type';
 import { SalesDashboardDTO } from './dto/sales-dashboard.dto';
 import { EntryRepository } from '../repository/entry.repository';
+import { SalesDashboardFilterDTO } from './dto/sales-dashboard-filter.dto';
 
 const relations = {
   product: true,
@@ -104,7 +105,7 @@ export class ProductShipmentService {
     }
   }
 
-  async getSalesDashboard(): Promise<SalesDashboardDTO> {
+  async getSalesDashboard(filter?: SalesDashboardFilterDTO): Promise<SalesDashboardDTO> {
     const openPeriod = await this.periodService.findOpen();
     const currentCompany = await this.companyService.findActive();
 
@@ -114,33 +115,47 @@ export class ProductShipmentService {
 
     const type = ExitType.VENTA;
 
-    const [totalSalesCount, totalSalesAmount, totalCostAmount, salesByDay, topProducts] = await Promise.all([
-      this.productShipmentRepository.sumCountByPeriodCompanyType({
+    const productCategoryId = filter?.productCategoryId;
+    const productFamilyId = filter?.productFamilyId;
+    const productLineId = filter?.productLineId;
+
+    const [totalSalesAmount, totalCostAmount, salesByDay, topProducts] = await Promise.all([
+      this.productShipmentRepository.sumAmountByPeriodCompanyTypeFiltered({
         companyId: currentCompany.id,
         periodId: openPeriod.id,
         type,
+        productCategoryId,
+        productFamilyId,
+        productLineId,
       }),
-      this.productShipmentRepository.sumAmountByPeriodCompanyType({
+      this.entryRepository.sumCostAmountByPeriodCompanyFiltered({
+        companyId: currentCompany.id,
+        periodId: openPeriod.id,
+        productCategoryId,
+        productFamilyId,
+        productLineId,
+      }),
+      this.productShipmentRepository.sumCountAndAmountByDayFiltered({
         companyId: currentCompany.id,
         periodId: openPeriod.id,
         type,
+        productCategoryId,
+        productFamilyId,
+        productLineId,
       }),
-      this.entryRepository.sumCostAmountByPeriodCompany({
-        companyId: currentCompany.id,
-        periodId: openPeriod.id,
-      }),
-      this.productShipmentRepository.sumCountAndAmountByDay({
-        companyId: currentCompany.id,
-        periodId: openPeriod.id,
-        type,
-      }),
-      this.productShipmentRepository.topProductsByCountAndAmount({
+      this.productShipmentRepository.topProductsByCountAndAmountFiltered({
         companyId: currentCompany.id,
         periodId: openPeriod.id,
         type,
         limit: 8,
+        productCategoryId,
+        productFamilyId,
+        productLineId,
       }),
     ]);
+
+    // Cantidad total se deja calculada por sumCount si lo necesitan, pero como lo quitamos del UI evitamos costo extra.
+    const totalSalesCount = 0;
 
     const totalProfitAmount = (totalSalesAmount ?? 0) - (totalCostAmount ?? 0);
 

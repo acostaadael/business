@@ -96,6 +96,45 @@ export class ProductShipmentRepository extends Repository<ProductShipment> {
     return Number.isFinite(num) ? num : 0;
   }
 
+  async sumAmountByPeriodCompanyTypeFiltered(params: {
+    companyId: number;
+    periodId: number;
+    type: string;
+    productCategoryId?: number;
+    productFamilyId?: number;
+    productLineId?: number;
+  }): Promise<number> {
+    const { companyId, periodId, type, productCategoryId, productFamilyId, productLineId } = params;
+
+    const qb = this.createQueryBuilder('product_shipment')
+      .select('COALESCE(SUM(product_shipment.count * product.selling_price), 0)', 'sum')
+      .innerJoin('product_shipment.product', 'product')
+      .innerJoin('product_shipment.company', 'company')
+      .innerJoin('product_shipment.period', 'period')
+      .where('company.id = :companyId', { companyId })
+      .andWhere('period.id = :periodId', { periodId })
+      .andWhere('product_shipment.type = :type', { type });
+
+    if (productLineId || productFamilyId || productCategoryId) {
+      qb.innerJoin('product.productLine', 'productLine');
+    }
+    if (productFamilyId || productCategoryId) {
+      qb.innerJoin('productLine.productFamily', 'productFamily');
+    }
+    if (productCategoryId) {
+      qb.innerJoin('productFamily.productCategory', 'productCategory');
+    }
+
+    if (productLineId) qb.andWhere('productLine.id = :productLineId', { productLineId });
+    if (productFamilyId) qb.andWhere('productFamily.id = :productFamilyId', { productFamilyId });
+    if (productCategoryId) qb.andWhere('productCategory.id = :productCategoryId', { productCategoryId });
+
+    const raw = await qb.getRawOne<{ sum: string | number }>();
+    const val = raw?.sum;
+    const num = typeof val === 'number' ? val : parseFloat(String(val ?? 0));
+    return Number.isFinite(num) ? num : 0;
+  }
+
   /**
    * Ventas por día (day 1..31) para un tipo.
    */
@@ -143,6 +182,54 @@ export class ProductShipmentRepository extends Repository<ProductShipment> {
       .groupBy('product_shipment.day')
       .orderBy('product_shipment.day', 'ASC')
       .getRawMany<{ day: string | number; total: string | number; amount: string | number }>();
+
+    return (rows ?? []).map(r => ({
+      day: typeof r.day === 'number' ? r.day : parseInt(String(r.day), 10),
+      total: typeof r.total === 'number' ? r.total : parseFloat(String(r.total ?? 0)),
+      amount: typeof r.amount === 'number' ? r.amount : parseFloat(String(r.amount ?? 0)),
+    }));
+  }
+
+  async sumCountAndAmountByDayFiltered(params: {
+    companyId: number;
+    periodId: number;
+    type: string;
+    productCategoryId?: number;
+    productFamilyId?: number;
+    productLineId?: number;
+  }): Promise<Array<{ day: number; total: number; amount: number }>> {
+    const { companyId, periodId, type, productCategoryId, productFamilyId, productLineId } = params;
+
+    const qb = this.createQueryBuilder('product_shipment')
+      .select('product_shipment.day', 'day')
+      .addSelect('COALESCE(SUM(product_shipment.count), 0)', 'total')
+      .addSelect('COALESCE(SUM(product_shipment.count * product.selling_price), 0)', 'amount')
+      .innerJoin('product_shipment.product', 'product')
+      .innerJoin('product_shipment.company', 'company')
+      .innerJoin('product_shipment.period', 'period')
+      .where('company.id = :companyId', { companyId })
+      .andWhere('period.id = :periodId', { periodId })
+      .andWhere('product_shipment.type = :type', { type });
+
+    if (productLineId || productFamilyId || productCategoryId) {
+      qb.innerJoin('product.productLine', 'productLine');
+    }
+    if (productFamilyId || productCategoryId) {
+      qb.innerJoin('productLine.productFamily', 'productFamily');
+    }
+    if (productCategoryId) {
+      qb.innerJoin('productFamily.productCategory', 'productCategory');
+    }
+
+    if (productLineId) qb.andWhere('productLine.id = :productLineId', { productLineId });
+    if (productFamilyId) qb.andWhere('productFamily.id = :productFamilyId', { productFamilyId });
+    if (productCategoryId) qb.andWhere('productCategory.id = :productCategoryId', { productCategoryId });
+
+    const rows = await qb.groupBy('product_shipment.day').orderBy('product_shipment.day', 'ASC').getRawMany<{
+      day: string | number;
+      total: string | number;
+      amount: string | number;
+    }>();
 
     return (rows ?? []).map(r => ({
       day: typeof r.day === 'number' ? r.day : parseInt(String(r.day), 10),
@@ -209,6 +296,62 @@ export class ProductShipmentRepository extends Repository<ProductShipment> {
       .where('company.id = :companyId', { companyId })
       .andWhere('period.id = :periodId', { periodId })
       .andWhere('product_shipment.type = :type', { type })
+      .groupBy('product.id')
+      .addGroupBy('product.name')
+      .addGroupBy('um.name')
+      .orderBy('total', 'DESC')
+      .limit(limit)
+      .getRawMany<{ productId: string | number; productName: string; umName: string; total: string | number; amount: string | number }>();
+
+    return (rows ?? []).map(r => ({
+      productId: typeof r.productId === 'number' ? r.productId : parseInt(String(r.productId), 10),
+      productName: String(r.productName ?? ''),
+      umName: String(r.umName ?? ''),
+      total: typeof r.total === 'number' ? r.total : parseFloat(String(r.total ?? 0)),
+      amount: typeof r.amount === 'number' ? r.amount : parseFloat(String(r.amount ?? 0)),
+    }));
+  }
+
+  async topProductsByCountAndAmountFiltered(params: {
+    companyId: number;
+    periodId: number;
+    type: string;
+    limit?: number;
+    productCategoryId?: number;
+    productFamilyId?: number;
+    productLineId?: number;
+  }): Promise<Array<{ productId: number; productName: string; total: number; amount: number; umName: string }>> {
+    const { companyId, periodId, type, limit = 5, productCategoryId, productFamilyId, productLineId } = params;
+
+    const qb = this.createQueryBuilder('product_shipment')
+      .select('product.id', 'productId')
+      .addSelect('product.name', 'productName')
+      .addSelect('um.name', 'umName')
+      .addSelect('COALESCE(SUM(product_shipment.count), 0)', 'total')
+      .addSelect('COALESCE(SUM(product_shipment.count * product.selling_price), 0)', 'amount')
+      .innerJoin('product_shipment.product', 'product')
+      .innerJoin('product.um', 'um')
+      .innerJoin('product_shipment.company', 'company')
+      .innerJoin('product_shipment.period', 'period')
+      .where('company.id = :companyId', { companyId })
+      .andWhere('period.id = :periodId', { periodId })
+      .andWhere('product_shipment.type = :type', { type });
+
+    if (productLineId || productFamilyId || productCategoryId) {
+      qb.innerJoin('product.productLine', 'productLine');
+    }
+    if (productFamilyId || productCategoryId) {
+      qb.innerJoin('productLine.productFamily', 'productFamily');
+    }
+    if (productCategoryId) {
+      qb.innerJoin('productFamily.productCategory', 'productCategory');
+    }
+
+    if (productLineId) qb.andWhere('productLine.id = :productLineId', { productLineId });
+    if (productFamilyId) qb.andWhere('productFamily.id = :productFamilyId', { productFamilyId });
+    if (productCategoryId) qb.andWhere('productCategory.id = :productCategoryId', { productCategoryId });
+
+    const rows = await qb
       .groupBy('product.id')
       .addGroupBy('product.name')
       .addGroupBy('um.name')
