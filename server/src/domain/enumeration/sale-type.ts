@@ -1,0 +1,4 @@
+export enum SaleType {
+  EFECTIVO = 'EFECTIVO',
+  TRANSFERENCIA = 'TRANSFERENCIA',
+}
