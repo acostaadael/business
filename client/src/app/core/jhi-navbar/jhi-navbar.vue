@@ -26,8 +26,6 @@
           </b-nav-item>
 
           <template v-if="authenticated">
-            <div class="dropdown-divider my-2"></div>
-
             <details class="jh-left-collapsible" open>
               <summary class="jh-left-collapsible-summary">
                 <!-- Misma apariencia/color que un item (Inicio): quitar text-muted -->
@@ -82,6 +80,12 @@
                   </b-nav-item>
                 </div>
               </details>
+              <div class="dropdown-divider my-2"></div>
+
+              <b-nav-item to="cash-register" @click="closeLeftMenu">
+                <font-awesome-icon icon="cash-register" class="mr-2" />
+                <span>Ventas</span>
+              </b-nav-item>
             </template>
           </template>
 

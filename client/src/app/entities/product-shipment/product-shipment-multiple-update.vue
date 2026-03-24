@@ -57,7 +57,7 @@ const areas: Ref<IArea[]> = ref([]);
 const products: Ref<IProduct[]> = ref([]);
 const productLoading = ref(false);
 
-const exitTypeValues: Ref<string[]> = ref(Object.keys(ExitType));
+const exitTypeValues: Ref<string[]> = ref(Object.keys(ExitType).filter(item => item !== 'VENTA'));
 
 const isSaving = ref(false);
 

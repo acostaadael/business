@@ -45,6 +45,7 @@ import { faBox } from '@fortawesome/free-solid-svg-icons/faBox';
 import { faStore } from '@fortawesome/free-solid-svg-icons/faStore';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons/faFileAlt';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons/faEllipsisV';
+import { faCashRegister } from '@fortawesome/free-solid-svg-icons/faCashRegister';
 
 const datetimeFormats: IntlDateTimeFormats = {
   es: {
@@ -147,6 +148,7 @@ export function initFortAwesome(vue) {
     faStore,
     faFileAlt,
     faEllipsisV,
+    faCashRegister,
   );
 }
 export function initI18N(opts: any = {}) {
