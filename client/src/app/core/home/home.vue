@@ -77,6 +77,41 @@
             </div>
           </div>
 
+          <!-- NUEVO: Ventas por tipo -->
+          <div class="col-md-4 mb-3">
+            <div class="card dashboard-card dashboard-card--type">
+              <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <div class="text-muted">Efectivo</div>
+                    <div class="h3 mb-0">{{ formatMoney(dashboard.cashSalesAmount ?? 0) }}</div>
+                  </div>
+                  <div class="dashboard-icon dashboard-icon--type">
+                    <font-awesome-icon icon="money-bill-wave" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <div class="card dashboard-card dashboard-card--type">
+              <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <div class="text-muted">Transferencia</div>
+                    <div class="h3 mb-0">{{ formatMoney(dashboard.transferSalesAmount ?? 0) }}</div>
+                  </div>
+                  <div class="dashboard-icon dashboard-icon--type">
+                    <font-awesome-icon icon="right-left" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
           <div class="col-md-4 mb-3">
             <div class="card dashboard-card">
               <div class="card-body">
@@ -221,6 +256,11 @@ export default Component;
   color: #b91c1c;
 }
 
+.dashboard-card--type {
+  background: rgba(45, 120, 255, 0.08);
+  border-color: rgba(45, 120, 255, 0.22);
+}
+
 .dashboard-icon {
   width: 42px;
   height: 42px;
@@ -231,6 +271,11 @@ export default Component;
   background: rgba(45, 120, 255, 0.12);
   color: #2d78ff;
   font-size: 18px;
+}
+
+.dashboard-icon--type {
+  background: rgba(45, 120, 255, 0.12);
+  color: #2d78ff;
 }
 
 .chart-bar__row {

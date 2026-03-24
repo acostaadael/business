@@ -7,10 +7,11 @@ import { CompanyService } from '../service/company.service';
 import { InventaryService } from '../service/inventary.service';
 import { InventoryMovementQueryDTO } from './dto/inventory-movement.query.dto';
 import { ProductShipmentRepository } from '../repository/inventary.shipment.repository';
-import { ExitType } from '../domain/enumeration/exit-type';
 import { SalesDashboardDTO } from './dto/sales-dashboard.dto';
 import { EntryRepository } from '../repository/entry.repository';
 import { SalesDashboardFilterDTO } from './dto/sales-dashboard-filter.dto';
+import { SaleRepository } from '../repository/sale.repository';
+import { SaleType } from '../domain/enumeration/sale-type';
 
 const relations = {
   product: true,
@@ -28,6 +29,7 @@ export class ProductShipmentService {
     private companyService: CompanyService,
     private inventaryService: InventaryService,
     private readonly entryRepository: EntryRepository,
+    private readonly saleRepository: SaleRepository,
   ) {}
 
   async findById(id: number): Promise<ProductShipmentDTO | undefined> {
@@ -113,17 +115,30 @@ export class ProductShipmentService {
       throw new HttpException('No existe un periodo abierto o una compañía activa para calcular el dashboard.', HttpStatus.BAD_REQUEST);
     }
 
-    const type = ExitType.VENTA;
-
     const productCategoryId = filter?.productCategoryId;
     const productFamilyId = filter?.productFamilyId;
     const productLineId = filter?.productLineId;
 
-    const [totalSalesAmount, totalCostAmount, salesByDay, topProducts] = await Promise.all([
-      this.productShipmentRepository.sumAmountByPeriodCompanyTypeFiltered({
+    const [totalSalesAmount, cashSalesAmount, transferSalesAmount, totalCostAmount, salesByDay, topProducts] = await Promise.all([
+      this.saleRepository.sumSalesAmountFiltered({
         companyId: currentCompany.id,
         periodId: openPeriod.id,
-        type,
+        productCategoryId,
+        productFamilyId,
+        productLineId,
+      }),
+      this.saleRepository.sumSalesAmountByTypeFiltered({
+        companyId: currentCompany.id,
+        periodId: openPeriod.id,
+        type: SaleType.EFECTIVO,
+        productCategoryId,
+        productFamilyId,
+        productLineId,
+      }),
+      this.saleRepository.sumSalesAmountByTypeFiltered({
+        companyId: currentCompany.id,
+        periodId: openPeriod.id,
+        type: SaleType.TRANSFERENCIA,
         productCategoryId,
         productFamilyId,
         productLineId,
@@ -135,18 +150,16 @@ export class ProductShipmentService {
         productFamilyId,
         productLineId,
       }),
-      this.productShipmentRepository.sumCountAndAmountByDayFiltered({
+      this.saleRepository.sumSalesByDayFiltered({
         companyId: currentCompany.id,
         periodId: openPeriod.id,
-        type,
         productCategoryId,
         productFamilyId,
         productLineId,
       }),
-      this.productShipmentRepository.topProductsByCountAndAmountFiltered({
+      this.saleRepository.topProductsByAmountFiltered({
         companyId: currentCompany.id,
         periodId: openPeriod.id,
-        type,
         limit: 8,
         productCategoryId,
         productFamilyId,
@@ -154,7 +167,7 @@ export class ProductShipmentService {
       }),
     ]);
 
-    // Cantidad total se deja calculada por sumCount si lo necesitan, pero como lo quitamos del UI evitamos costo extra.
+    // Cantidad total se deja en 0 por ahora (no se usa en UI)
     const totalSalesCount = 0;
 
     const totalProfitAmount = (totalSalesAmount ?? 0) - (totalCostAmount ?? 0);
@@ -164,10 +177,12 @@ export class ProductShipmentService {
       month: openPeriod.month,
       totalSalesCount,
       totalSalesAmount,
+      cashSalesAmount,
+      transferSalesAmount,
       totalCostAmount,
       totalProfitAmount,
-      salesByDay,
-      topProducts,
+      salesByDay: (salesByDay as any) ?? [],
+      topProducts: (topProducts as any) ?? [],
     };
   }
 }

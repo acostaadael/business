@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class SalesByDayDTO {
   @ApiProperty({ example: 1 })
@@ -46,6 +46,12 @@ export class SalesDashboardDTO {
 
   @ApiProperty({ example: 13578.45, description: 'Ganancia estimada del periodo (totalSalesAmount - totalCostAmount)' })
   totalProfitAmount: number;
+
+  @ApiPropertyOptional({ example: 12000.5, description: 'Importe total vendido del periodo por EFECTIVO' })
+  cashSalesAmount?: number;
+
+  @ApiPropertyOptional({ example: 2500.0, description: 'Importe total vendido del periodo por TRANSFERENCIA' })
+  transferSalesAmount?: number;
 
   @ApiProperty({ type: () => [SalesByDayDTO] })
   salesByDay: SalesByDayDTO[];
