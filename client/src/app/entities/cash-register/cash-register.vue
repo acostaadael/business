@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, onMounted, ref, type Ref } from 'vue';
+import { computed, inject, onMounted, ref, type Ref, watch, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { debounce } from 'lodash';
 
@@ -43,6 +43,14 @@ const areas: Ref<IArea[]> = ref([]);
 const saleType = ref<SaleType>(SaleType.EFECTIVO);
 const transferNumber = ref<string>('');
 const saleTypeValues = [SaleType.EFECTIVO, SaleType.TRANSFERENCIA] as const;
+
+// Mantener estado consistente: si no es transferencia, no guardamos número.
+watch(saleType, newVal => {
+  if (newVal !== SaleType.TRANSFERENCIA) transferNumber.value = '';
+});
+
+// Ref para enfocar el input cuando falte el número de transferencia
+const transferNumberInput = ref<HTMLInputElement | null>(null);
 
 // --- Buscar productos por nombre o código
 const products: Ref<IProduct[]> = ref([]);
@@ -128,9 +136,14 @@ async function confirmSale() {
     alertService.showError('Agrega al menos un producto al vale.');
     return;
   }
-  if (saleType.value === SaleType.TRANSFERENCIA && !transferNumber.value.trim()) {
-    alertService.showError('Ingresa el número de transferencia.');
-    return;
+  if (saleType.value === SaleType.TRANSFERENCIA) {
+    const tn = transferNumber.value?.trim() ?? '';
+    if (!tn) {
+      alertService.showError('Ingresa el número de transferencia.');
+      await nextTick();
+      transferNumberInput.value?.focus();
+      return;
+    }
   }
 
   const shipments = saleItems.value.map(it => ({
@@ -232,7 +245,14 @@ onMounted(async () => {
 
         <b-col cols="6" v-if="saleType === SaleType.TRANSFERENCIA">
           <label class="form-control-label" for="cr-transfer-number">Nro. transferencia</label>
-          <input id="cr-transfer-number" type="text" class="form-control" v-model.trim="transferNumber" placeholder="Ej: 123456" />
+          <input
+            id="cr-transfer-number"
+            ref="transferNumberInput"
+            type="text"
+            class="form-control"
+            v-model.trim="transferNumber"
+            placeholder="Ej: 123456"
+          />
         </b-col>
       </b-form-row>
     </div>

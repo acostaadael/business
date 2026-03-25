@@ -130,7 +130,10 @@ export class InventaryService {
         const inventary = await this.createOrUpdateInventaryFromEntry(entry);
         return inventary;
       }
-      throw new HttpException('La cantidad a mover supera lo que está en inventario!', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        `La cantidad a mover supera lo que está en inventario (Producto: ${movement.product?.name}, Existencia: ${inventoryCount} ${movement.product?.um?.name})!`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
     throw new HttpException('No existe inventario de este producto!', HttpStatus.BAD_REQUEST);
   }
@@ -159,7 +162,10 @@ export class InventaryService {
           return await this.update(exitsInventary, productShipment.lastModifiedBy);
         }
       }
-      throw new HttpException('La cantidad a mover supera lo que está en inventario!', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        `La cantidad a mover supera lo que está en inventario (Producto: ${productShipment.product?.name}, Existencia: ${inventoryCount} ${productShipment.product?.um?.name})!`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
     throw new HttpException('No existe inventario de este producto!', HttpStatus.BAD_REQUEST);
   }

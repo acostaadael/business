@@ -80,10 +80,88 @@ export class ProductShipmentService {
   /**
    * Guarda múltiples salidas.
    * Se ejecuta en serie para mantener consistencia al actualizar inventario.
+   *
+   * Reglas:
+   * - Antes de guardar, TODOS los ProductShipment deben tener inventario existente.
+   * - La suma de counts por (product, area, company) debe ser <= inventary.count.
+   * - Si alguno falla, no se guarda ninguno.
    */
   async saveMany(items: ProductShipmentDTO[], creator?: string): Promise<ProductShipmentDTO[]> {
+    const list = items ?? [];
+    if (!list.length) return [];
+
+    // 1) Normalizar y validar datos mínimos
+    const openPeriod = await this.periodService.findOpen();
+    const currentCompany = await this.companyService.findActive();
+
+    if (!openPeriod || !currentCompany) {
+      throw new HttpException('No se puede crear salida sin un periodo abierto y una compañía activa!', HttpStatus.BAD_REQUEST);
+    }
+
+    // Agrupa cantidades por producto+área+compañía para validar stock agregado.
+    type StockKey = string;
+    const requiredByKey = new Map<
+      StockKey,
+      { productId: number; areaId: number; companyId: number; required: number; first: ProductShipmentDTO }
+    >();
+
+    for (const it of list) {
+      const productId = it.product?.id;
+      const areaId = it.area?.id;
+      const companyId = (it.company?.id ?? currentCompany.id) as number;
+      const count = Number(it.count ?? 0);
+
+      if (!productId) throw new HttpException('Cada salida debe tener product.id', HttpStatus.BAD_REQUEST);
+      if (!areaId) throw new HttpException('Cada salida debe tener area.id', HttpStatus.BAD_REQUEST);
+      if (!Number.isFinite(count) || count <= 0) {
+        throw new HttpException(`Cantidad inválida para el producto ${it.product?.name ?? productId}`, HttpStatus.BAD_REQUEST);
+      }
+
+      const key = `${companyId}:${areaId}:${productId}`;
+      const prev = requiredByKey.get(key);
+      if (prev) {
+        prev.required += count;
+      } else {
+        requiredByKey.set(key, { productId, areaId, companyId, required: count, first: it });
+      }
+    }
+
+    // 2) Validar contra inventario TODO antes de guardar
+    for (const req of requiredByKey.values()) {
+      const inv = await this.inventaryService.findByFields({
+        relations: { product: true, area: true, company: true },
+        where: {
+          product: { id: req.productId },
+          area: { id: req.areaId },
+          company: { id: req.companyId },
+        },
+      });
+
+      if (!inv) {
+        throw new HttpException(
+          `No existe inventario para el producto ${req.first.product?.name ?? req.productId} en el área seleccionada.`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const inventoryCount = Number(inv.count ?? 0);
+      if (req.required > inventoryCount) {
+        const umName = req.first.product?.um?.name ? ` ${req.first.product.um.name}` : '';
+        throw new HttpException(
+          `La cantidad a despachar supera lo que está en inventario (Producto: ${req.first.product?.name ?? req.productId}, ` +
+            `Requerido: ${req.required}${umName}, Existencia: ${inventoryCount}${umName}).`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    // 3) Si todo está OK, guardar en serie (cada save actualiza inventario)
     const productShipmentDTOS: ProductShipmentDTO[] = [];
-    for (const item of items ?? []) {
+    for (const item of list) {
+      // asegurar periodo/compañía actuales (no confiar en el cliente)
+      item.period = openPeriod;
+      item.company = currentCompany;
+
       const created = await this.save(item, creator);
       if (created) productShipmentDTOS.push(created);
     }
