@@ -3,7 +3,7 @@
     :title="`${t$('businessApp.report.reports.entry')} (Mes: ${period.month}; Año: ${period.year})`"
     :data="entries"
     :columns="entriesColumns"
-    :total-columns="['total_price']"
+    :total-columns="['total_price', 'total_selling_price']"
     filename="reporte-inventario"
   />
 </template>
@@ -19,6 +19,7 @@ import type { Ref } from 'vue';
 import type { IEntry } from '@/shared/model/entry.model';
 import { type IPeriod, Period } from '@/shared/model/period.model.ts';
 import PeriodService from '@/entities/period/period.service.ts';
+import type { IProductShipment } from '@/shared/model/product-shipment.model.ts';
 
 const entryService = inject('entryService', () => new EntryService());
 const periodService = inject('periodService', () => new PeriodService());
@@ -44,6 +45,8 @@ const retrieveEntries = async () => {
       ...item,
       unit_price: item.product?.costPrice,
       total_price: item.product?.costPrice && item.count ? item.product?.costPrice * item.count : 0,
+      unit_selling_price: item.product?.sellingPrice,
+      total_selling_price: item.product?.sellingPrice && item.count ? item.product?.sellingPrice * item.count : 0,
     }));
   } catch (err: any) {
     alertService.showHttpError(err.response);
@@ -84,6 +87,16 @@ const entriesColumns = [
     key: 'total_price',
     label: t$('businessApp.entry.totalPrice'),
     render: (row: IEntry) => `${row.total_price} $`,
+  },
+  {
+    key: 'unit_selling_price',
+    label: t$('businessApp.inventary.unitSellingPrice'),
+    render: (row: IEntry) => `${row.unit_selling_price} $`,
+  },
+  {
+    key: 'total_selling_price',
+    label: t$('businessApp.inventary.totalSellingPrice'),
+    render: (row: IEntry) => `${row.total_selling_price} $`,
   },
   { key: 'area', label: t$('businessApp.entry.area'), render: (row: IEntry) => row.area?.name },
 ];

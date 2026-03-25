@@ -76,12 +76,12 @@ const invetariesColumns = [
   {
     key: 'unit_selling_price',
     label: t$('businessApp.inventary.unitSellingPrice'),
-    render: (row: IInventary) => `${row.unit_price} $`,
+    render: (row: IInventary) => `${row.unit_selling_price} $`,
   },
   {
     key: 'total_selling_price',
     label: t$('businessApp.inventary.totalSellingPrice'),
-    render: (row: IInventary) => `${row.total_price} $`,
+    render: (row: IInventary) => `${row.total_selling_price} $`,
   },
   { key: 'area', label: t$('businessApp.inventary.area'), render: (row: IInventary) => row.area?.name },
 ];

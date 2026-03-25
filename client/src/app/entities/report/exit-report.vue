@@ -3,7 +3,7 @@
     :title="`${t$('businessApp.report.reports.exit')} (Mes: ${period.month}; Año: ${period.year})`"
     :data="productShipments"
     :columns="productShipmentsColumns"
-    :total-columns="['total_price']"
+    :total-columns="['total_price', 'total_selling_price']"
     filename="reporte-inventario"
   />
 </template>
@@ -45,6 +45,8 @@ const retrieveProductShipments = async () => {
       ...item,
       unit_price: item.product?.costPrice,
       total_price: item.product?.costPrice && item.count ? item.product?.costPrice * item.count : 0,
+      unit_selling_price: item.product?.sellingPrice,
+      total_selling_price: item.product?.sellingPrice && item.count ? item.product?.sellingPrice * item.count : 0,
     }));
   } catch (err: any) {
     alertService.showHttpError(err.response);
@@ -85,6 +87,16 @@ const productShipmentsColumns = [
     key: 'total_price',
     label: t$('businessApp.productShipment.totalPrice'),
     render: (row: IProductShipment) => `${row.total_price} $`,
+  },
+  {
+    key: 'unit_selling_price',
+    label: t$('businessApp.inventary.unitSellingPrice'),
+    render: (row: IProductShipment) => `${row.unit_selling_price} $`,
+  },
+  {
+    key: 'total_selling_price',
+    label: t$('businessApp.inventary.totalSellingPrice'),
+    render: (row: IProductShipment) => `${row.total_selling_price} $`,
   },
   { key: 'area', label: t$('businessApp.productShipment.area'), render: (row: IProductShipment) => row.area?.name },
   { key: 'type', label: t$('businessApp.productShipment.type'), render: (row: IProductShipment) => row.type },

@@ -16,6 +16,7 @@ export class Inventary implements IInventary {
   constructor(
     public id?: number,
     public count?: number,
+    public product?: IProduct,
     public area?: IArea,
     public unit_price?: number,
     public total_price?: number,

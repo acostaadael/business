@@ -15,6 +15,8 @@ export interface IProductShipment {
   area?: IArea;
   unit_price?: number;
   total_price?: number;
+  unit_selling_price?: number;
+  total_selling_price?: number;
 }
 
 export class ProductShipment implements IProductShipment {
@@ -29,6 +31,8 @@ export class ProductShipment implements IProductShipment {
     public area?: IArea,
     public unit_price?: number,
     public total_price?: number,
+    public unit_selling_price?: number,
+    public total_selling_price?: number,
   ) {
     const date = new Date();
     this.day = date.getDate();
